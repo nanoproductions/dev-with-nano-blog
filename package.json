@@ -1,0 +1,25 @@
+{
+  "name": "gatsby-nano-blog",
+  "version": "1.0.0",
+  "description": "A Coding Blog/Community by Nano",
+  "main": "index.js",
+  "scripts": {
+    "dev": "gatsby develop -H 0.0.0.0 -p 8080 "
+  },
+  "keywords": [
+    "Blog"
+  ],
+  "author": "Nano Adam",
+  "license": "ISC",
+  "dependencies": {
+    "@mdx-js/mdx": "^1.5.7",
+    "@mdx-js/react": "^1.5.7",
+    "gatsby": "^2.19.22",
+    "gatsby-plugin-mdx": "^1.0.74",
+    "gatsby-plugin-sass": "^2.1.29",
+    "gatsby-source-filesystem": "^2.1.48",
+    "node-sass": "^4.13.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}
