@@ -1,3 +1,4 @@
+@import './Variables.scss';
 * {
   margin: 0;
   padding: 0;
@@ -7,6 +8,8 @@
 body {
   font-family: sans-serif;
   line-height: 1.2;
+  background: $primary-color;
+  color: white;
 }
 
 .container {
@@ -15,6 +18,33 @@ body {
   margin: 0 auto;
 
   @media (max-width: 600px) {
-    width: 100%;
+    width: 95%;
   }
+}
+
+.btn {
+  color: white;
+  text-decoration: none;
+  padding: 1rem 1.3rem;
+
+  &-primary {
+    color: white;
+    background: $primary-color;
+  }
+}
+
+// Default Reset
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+p {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }

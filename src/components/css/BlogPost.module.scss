@@ -1,0 +1,31 @@
+@import './Variables.scss';
+
+.post {
+  line-height: 1.5;
+  .heading {
+    text-align: center;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 2rem;
+      padding: 0 1rem;
+      margin-bottom: 0;
+    }
+  }
+
+  .date {
+    color: rgb(231, 228, 228);
+    padding: 0 1rem;
+  }
+
+  .body {
+    width: 60%;
+    margin: 0 auto;
+
+    @media (max-width: 600px) {
+      width: 95%;
+      margin: 0 auto;
+    }
+  }
+}

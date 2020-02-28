@@ -1,5 +1,7 @@
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql, useStaticQuery, Link } from 'gatsby';
 import React, { Fragment } from 'react';
+
+import styles from '../components/css/LatestPost.module.scss';
 
 export default () => {
   const data = useStaticQuery(graphql`
@@ -10,26 +12,36 @@ export default () => {
       ) {
         nodes {
           id
-          excerpt(pruneLength: 250)
+          excerpt(pruneLength: 200)
           frontmatter {
             title
-            date
+            date(formatString: "YYYY MMMM Do")
+          }
+          fields {
+            slug
           }
         }
       }
     }
   `);
   return (
-    <div>
-      {data.allMdx.nodes.map(({ frontmatter, excerpt }) => {
-        return (
-          <Fragment>
-            <h1>{frontmatter.title}</h1>
-            <small>{Date(frontmatter.date).toString()}</small>
-            <p>{excerpt}</p>
-          </Fragment>
-        );
-      })}
-    </div>
+    <Fragment>
+      <h1 className={styles.heading}>My Latest Posts</h1>
+      <div className={styles.root}>
+        {data.allMdx.nodes.map(({ frontmatter, excerpt, fields }) => {
+          return (
+            <div key={Math.random()} className={styles.post}>
+              <h1>
+                <Link to={fields.slug} className={styles.link}>
+                  {frontmatter.title}
+                </Link>
+              </h1>
+              <small>{frontmatter.date}</small>
+              <p>{excerpt}</p>
+            </div>
+          );
+        })}
+      </div>
+    </Fragment>
   );
 };

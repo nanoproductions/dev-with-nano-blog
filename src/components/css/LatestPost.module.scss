@@ -1,0 +1,36 @@
+@import './Variables.scss';
+@import './Global.scss';
+
+.heading {
+  @extend .container;
+  padding: 2rem 1rem 0 0;
+}
+
+.root {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+
+  @extend .container;
+
+  margin-bottom: 1rem;
+}
+
+.post {
+  padding: 1rem 2rem;
+  background: $secondary-color;
+  color: white;
+  margin: 1rem 1rem 0.5rem 0.5rem;
+  line-height: 1.5;
+
+  h1 {
+    padding: 0.5rem 0 0 0;
+  }
+  .link {
+    text-decoration: none;
+    color: #fff;
+  }
+}

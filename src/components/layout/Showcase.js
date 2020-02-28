@@ -1,13 +1,15 @@
-import React from 'react';
-import styles from '../css/Showcase.module.scss';
-import { Link } from 'gatsby';
+import React from "react";
+import styles from "../css/Showcase.module.scss";
+import { Link } from "gatsby";
 
 const Showcase = () => {
   return (
     <div className={styles.showcase}>
       <div className="container">
         <h2>Learn Code with Nano</h2>
-        <Link to="/posts">Get Reading</Link>
+        <Link to="/posts" className="btn btn-primary">
+          Get Reading
+        </Link>
       </div>
     </div>
   );
