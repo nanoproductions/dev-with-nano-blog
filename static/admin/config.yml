@@ -16,4 +16,5 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Published", name: "published", default: true }
       - { label: "Body", name: "body", widget: "markdown" }
