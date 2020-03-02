@@ -4,7 +4,7 @@
   "description": "A Coding Blog/Community by Nano",
   "main": "index.js",
   "scripts": {
-    "dev": "gatsby develop -H 0.0.0.0 -p 8080 ",
+    "dev": "gatsby develop -H 0.0.0.0 -p 8081 ",
     "build": "gatsby build"
   },
   "keywords": [
