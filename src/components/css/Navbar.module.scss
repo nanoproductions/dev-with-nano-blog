@@ -1,4 +1,4 @@
-@import './Variables.scss';
+@import "./Variables.scss";
 .root {
   background: $primary-color;
   display: flex;
@@ -7,10 +7,10 @@
   .brand {
     color: white;
     display: inline-block;
-    padding: 1rem;
+    padding: 0.9rem;
     text-decoration: none;
     font-weight: bolder;
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 
   ul {
@@ -23,7 +23,8 @@
         text-decoration: none;
         color: white;
         display: block;
-        padding: 1.35rem;
+        padding: 1rem;
+        font-size: 0.8rem;
       }
     }
   }
