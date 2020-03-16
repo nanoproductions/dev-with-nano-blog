@@ -4,6 +4,9 @@ import Layout from '../components/layout/Layout';
 const About = () => {
   return (
     <Layout>
+      <Helmet>
+        <title>About | Dev with Nano</title>
+      </Helmet>
       <div className="container" style={{ lineHeight: '1.5' }}>
         <h1>About</h1>
         <p>

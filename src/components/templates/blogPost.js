@@ -2,16 +2,18 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 import styles from '../css/BlogPost.module.scss';
+import { Helmet } from 'react-helmet';
 
 import Layout from '../layout/Layout';
 
 export default ({ data }) => {
   const { frontmatter, body } = data.mdx;
 
-  document.title = frontmatter.title;
-
   return (
     <Layout>
+      <Helmet>
+        <title>{frontmatter.title}</title>
+      </Helmet>
       <div className="container">
         <div className={styles.post}>
           <div className={styles.heading}>
