@@ -8,6 +8,8 @@ import Layout from '../layout/Layout';
 export default ({ data }) => {
   const { frontmatter, body } = data.mdx;
 
+  document.title = frontmatter.title;
+
   return (
     <Layout>
       <div className="container">
