@@ -6,7 +6,7 @@ import React from 'react';
 
 const components = {
   h2: ({ children }) => <h2 style={{}}>{children}</h2>,
-  'p.inlineCode': props => <code className={styles.precode} {...props} />,
+  'p.inlineCode': (props) => <code className={styles.precode} {...props} />,
   pre: ({ children: { props } }) => {
     if (props.mdxType === 'code') {
       return (
@@ -19,11 +19,16 @@ const components = {
       );
     }
   },
-  a: props => (
+  a: (props) => (
     <a {...props} style={{ color: 'white' }}>
       {props.children}
     </a>
-  )
+  ),
+  li: (props) => (
+    <li {...props} style={{ marginLeft: '1.2rem' }}>
+      {props.children}
+    </li>
+  ),
 };
 
 export const wrapRootElement = ({ element }) => (
