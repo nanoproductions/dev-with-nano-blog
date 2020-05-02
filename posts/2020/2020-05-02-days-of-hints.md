@@ -11,5 +11,5 @@ Well, there is something for you to do. Check here on this post daily, as I will
 
 ## Hints
 
-### Hint #1
+#### Hint #1
 > "Wait, there is a next button" - John Doe (2020)
