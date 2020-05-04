@@ -115,7 +115,7 @@ In the code above, I have used the app variable I created, and using the `route`
 Then, right underneath it, we will define a function with the `def` keyword, and call the function `main()`. Then, the main function simply returns some basic `Hello World` HTML for us to see in the browser. 
 
 To see our code in the browser, let's run:
-```
+```sh
 flask run --reload
 ```
 **!! Make sure you are always in your virtual environment `pipenv shell`**
@@ -124,4 +124,28 @@ So, `flask run` just runs the file and does not allow us to have the ability to 
 
 Hopefully, when you navigate to the URL, you will see, Hello World. So, let's now render a HTML template to the browser. 
 
-Create a directory called, `templates` and create a file called `app.html`
+### Render Template
+
+Create a directory called, `templates` and create a file inside `templates` called `app.html`. Once the file is created, we can modify our main function to render the template. 
+
+```python
+@app.route('/')
+def main():
+    return render_template("app.html")
+``` 
+Remember that we imported render_template from Flask. 
+
+Now, save and go to your browser, and you should see a blank page. Since a blank page is boring, let's add some basic HTML markup. 
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flask Calculator</title>
+  </head>
+  <body>
+    <h1>Flask Calculator</h1>
+    <small>By Nano Adam</small>
+  </body>
+</html>
+```
