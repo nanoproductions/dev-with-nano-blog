@@ -58,4 +58,18 @@ cd flask_calculator # get into that directory
 code . # open Visual Studio code in the current directory
 ```
 
+### Pipenv Setup
+So, inside the directory, run:
+```
+pipenv shell
+```
 
+This would get us into the environment shell. Now everytime you want to work for this project, run `pipenv shell`. 
+
+In the terminal, you would see something like: 
+
+```
+(flask_calculator) user@computer$ __
+```
+
+Pay attention to the `(flask_calculator)`, if that is present, then that means we are in the `virtual environment`. 
