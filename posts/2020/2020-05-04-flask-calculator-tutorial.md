@@ -107,9 +107,21 @@ Now, let's create a route for flask as `/` or root, so we can start seeing somet
 ```python
 @app.route('/')
 def main():
-    return render_template('app.html')
+    return '<h1>Hello World</h1>'
 ```
 
 In the code above, I have used the app variable I created, and using the `route` method, I created the route for the root "/". 
 
-Then, right underneath it, we will define a function with the `def` keyword, and call the function `main()`. So, 
+Then, right underneath it, we will define a function with the `def` keyword, and call the function `main()`. Then, the main function simply returns some basic `Hello World` HTML for us to see in the browser. 
+
+To see our code in the browser, let's run:
+```
+flask run --reload
+```
+**!! Make sure you are always in your virtual environment `pipenv shell`**
+
+So, `flask run` just runs the file and does not allow us to have the ability to see changes in our code `realtime` in the browser. But adding the `--reload` tag, allows us to do so.
+
+Hopefully, when you navigate to the URL, you will see, Hello World. So, let's now render a HTML template to the browser. 
+
+Create a directory called, `templates` and create a file called `app.html`
