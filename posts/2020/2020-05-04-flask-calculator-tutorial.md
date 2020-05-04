@@ -73,3 +73,43 @@ In the terminal, you would see something like:
 ```
 
 Pay attention to the `(flask_calculator)`, if that is present, then that means we are in the `virtual environment`. 
+
+### Install Flask
+In your terminal, we simply run: `pipenv install flask`. And that is it! We are now ready to move on to actual coding.
+
+### VsCode Warnings
+If VsCode is warning you about formatter and linting, run the following commands: 
+```
+pipenv install pylint
+
+```
+```
+pipenv install autopep8
+
+```
+
+## Creating Simple Flask App
+Create a file called: `app.py`. 
+
+And let's import Flask and the other packages we need:
+```python
+# app.py
+from flask import Flask, render_template, request
+```
+
+Now, we need to declare that the app we are going to write is an app for Flask basically. (in the simplest terms)
+
+```python
+app = Flask(__name__)
+```
+
+Now, let's create a route for flask as `/` or root, so we can start seeing something working. 
+```python
+@app.route('/')
+def main():
+    return render_template('app.html')
+```
+
+In the code above, I have used the app variable I created, and using the `route` method, I created the route for the root "/". 
+
+Then, right underneath it, we will define a function with the `def` keyword, and call the function `main()`. So, 
