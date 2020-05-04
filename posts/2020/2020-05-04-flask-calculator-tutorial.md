@@ -347,4 +347,17 @@ def calculate():
 
 Now, make sure you are indented correctly. As python relies on indentation compared to curly braces. 
 
-To complete, we just add `{{ result }}` in our template. And let's test the application. 
+To complete, we just add `{{ result }}` in our template. And let's test the application. Just like:
+
+```
+<div class="alert">
+    {{ result }}
+</div>
+```
+Now, just test the calculator and indeed it should be working correctly! 
+
+## Conclusion
+If you would like to see the complete source code, you can check it out on the github repo: https://github.com/nanoproductions/flask-calculator
+
+
+
