@@ -149,3 +149,8 @@ Now, save and go to your browser, and you should see a blank page. Since a blank
   </body>
 </html>
 ```
+Since, a Simple Title page is nothing, let's add the form and buttons for the Calculator we are going to be creating. 
+
+```html
+
+```
