@@ -45,4 +45,24 @@ p {
   margin-top: 1rem;
 }
 
+.gt-header-textarea {
+  background: black !important;
+}
+
+.gt-svg {
+  background: white;
+}
+
+.gt-btn-preview .gt-btn-text {
+  color: black;
+}
+
+.gt-header-preview .markdown-body {
+  background: black !important;
+}
+
+.gt-popup {
+  background: black !important;
+}
+
 @import '../../../node_modules/bootstrap/scss/bootstrap.scss';

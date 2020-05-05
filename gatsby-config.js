@@ -15,6 +15,7 @@ module.exports = {
       options: {
         path: `${__dirname}/posts`,
         name: 'posts',
+        modulePath: `${__dirname}/src/cms/cms.js`,
       },
     },
     `gatsby-plugin-sass`,
