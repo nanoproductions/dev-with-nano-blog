@@ -15,12 +15,15 @@ module.exports = {
       options: {
         path: `${__dirname}/posts`,
         name: 'posts',
-        modulePath: `${__dirname}/src/cms/cms.js`,
       },
     },
     `gatsby-plugin-sass`,
-    `gatsby-plugin-netlify-cms`,
-    `gatsby-plugin-react-helmet`,
+    {
+      resolve: `gatsby-plugin-netlify-cms`,
+      options: {
+        modulePath: `${__dirname}/src/cms/cms.js`,
+      },
+    }`gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
