@@ -1,6 +1,9 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import { useSiteMeta } from '../../utils/hooks/useSiteMeta'
+import React from "react";
+import { Link } from "gatsby";
+import { useSiteMeta } from "../../utils/hooks/useSiteMeta";
 
 const Navbar = () => {
   const { title } = useSiteMeta()
