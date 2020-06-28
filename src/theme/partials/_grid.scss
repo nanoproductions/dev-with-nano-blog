@@ -1,0 +1,25 @@
+.grid {
+  display: grid;
+
+  &-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.flex {
+  display: flex;
+
+  &-space-between {
+    justify-content: space-between;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .flex {
+    display: block;
+  }
+}

@@ -9,7 +9,6 @@ export default () => {
       allMdx(
         sort: { fields: [frontmatter___date], order: DESC }
         filter: { frontmatter: { published: { eq: true } } }
-        limit: 2
       ) {
         nodes {
           id
@@ -27,11 +26,11 @@ export default () => {
   `);
   return (
     <Fragment>
-      <h1 className={styles.heading}>My Latest Posts</h1>
+      <h1 className={styles.heading}>All My Posts</h1>
       <div className={styles.root}>
-        {data.allMdx.nodes.map(({ frontmatter, excerpt, fields }) => {
+        {data.allMdx.nodes.map(({ frontmatter, excerpt, fields, id }) => {
           return (
-            <div key={Math.random()} className={styles.post}>
+            <div key={id} className={styles.post}>
               <h1>
                 <Link to={fields.slug} className={styles.link}>
                   {frontmatter.title}

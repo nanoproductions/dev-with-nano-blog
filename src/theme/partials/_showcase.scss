@@ -1,0 +1,13 @@
+.showcase {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: url("../img/dev-blog-cover.png") no-repeat bottom center/cover;
+
+  h2 {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 1.5rem;
+  }
+}

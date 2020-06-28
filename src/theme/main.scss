@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import "./partials/variables";
+@import "./partials/showcase";
+@import "./partials/footer";
+@import "./partials/card";
+@import "./partials/navbar";
+@import "./partials/grid";
+@import "./partials/forms";
+@import "./partials/spacing";
+@import "./partials/btn";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arimo";
+  line-height: 1.2;
+  background: $primary-color;
+  color: white;
+}
+
+.container {
+  width: 90%;
+  max-width: 1280px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    width: 95%;
+  }
+}
+
+.full-width {
+  width: 100%;
+}

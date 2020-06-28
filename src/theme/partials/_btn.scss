@@ -1,0 +1,18 @@
+.btn {
+  display: inline-block;
+  padding: 0.6rem 0.83rem;
+  text-decoration: none;
+  border: none;
+
+  &-primary {
+    background: $primary-color;
+  }
+
+  &-danger {
+    background: $danger-color;
+  }
+
+  &-bold {
+    font-weight: bold;
+  }
+}

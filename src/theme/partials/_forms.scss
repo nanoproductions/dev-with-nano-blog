@@ -1,0 +1,11 @@
+input[type="text"] {
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+}
+
+.form-border {
+  &-danger {
+    border: 1px solid $danger-color;
+  }
+}

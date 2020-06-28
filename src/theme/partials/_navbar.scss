@@ -1,0 +1,30 @@
+.navbar {
+  background: $primary-color;
+  display: flex;
+  justify-content: space-between;
+
+  .brand {
+    color: white;
+    display: inline-block;
+    padding: 1rem;
+    text-decoration: none;
+    font-weight: bolder;
+    font-size: 1.5rem;
+  }
+
+  ul {
+    display: flex;
+
+    li {
+      list-style: none;
+      align-self: center;
+
+      .link {
+        text-decoration: none;
+        color: white;
+        display: block;
+        padding: 0rem 1rem;
+      }
+    }
+  }
+}
