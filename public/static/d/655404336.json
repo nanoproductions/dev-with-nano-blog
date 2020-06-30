@@ -1,1 +1,23 @@
-{"data":{"allMdx":{"nodes":[{"id":"982d8b12-ade8-5860-adee-3354a9e8e3bc","excerpt":"If you know of my YouTube Channel,  Nano Education , then you probably know about the video I created that is one of my most popular ones on creating a simple basic Calculator with Flask.  Now the…","frontmatter":{"title":"Flask Calculator Tutorial","date":"2020 May 4th"},"fields":{"slug":"/2020/2020-05-04-flask-calculator-tutorial/"}},{"id":"0234a2b6-0f57-5f91-8af2-04e4c018bffc","excerpt":"If you are reading this, you are probably confused with the title, well guess what! I am going to be soon releasing a \"open-source\" project/platform in the next couple of days.  What can I do? Well…","frontmatter":{"title":"Days of Hints","date":"2020 May 2nd"},"fields":{"slug":"/2020/2020-05-02-days-of-hints/"}}]}}}
+{
+  "data": {
+    "allMdx": {
+      "nodes": [
+        {
+          "id": "982d8b12-ade8-5860-adee-3354a9e8e3bc",
+          "excerpt": "If you know of my YouTube Channel,  Nano Education , then you probably know about the video I created that is one of my most popular ones on creating a simple basic Calculator with Flask.  Now the…",
+          "frontmatter": {
+            "title": "Flask Calculator Tutorial",
+            "date": "2020 May 4th"
+          },
+          "fields": { "slug": "/2020/2020-05-04-flask-calculator-tutorial/" }
+        },
+        {
+          "id": "0234a2b6-0f57-5f91-8af2-04e4c018bffc",
+          "excerpt": "If you are reading this, you are probably confused with the title, well guess what! I am going to be soon releasing a \"open-source\" project/platform in the next couple of days.  What can I do? Well…",
+          "frontmatter": { "title": "Days of Hints", "date": "2020 May 2nd" },
+          "fields": { "slug": "/2020/2020-05-02-days-of-hints/" }
+        }
+      ]
+    }
+  }
+}

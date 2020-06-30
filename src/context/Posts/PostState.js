@@ -1,15 +1,15 @@
-import React, { useReducer } from 'react';
-import PostContext from './postContext';
-import postReducer from './postReducer';
+import React, { useReducer } from 'react'
+import PostContext from './postContext'
+import postReducer from './postReducer'
 
-const PostState = props => {
+const PostState = (props) => {
   const initialState = {
-    posts: []
-  };
+    posts: [],
+  }
 
-  const [state, dispatch] = useReducer(postReducer, initialState);
+  const [state, dispatch] = useReducer(postReducer, initialState)
 
-  return <PostContext.Provider>{props.children}</PostContext.Provider>;
-};
+  return <PostContext.Provider>{props.children}</PostContext.Provider>
+}
 
-export default PostState;
+export default PostState

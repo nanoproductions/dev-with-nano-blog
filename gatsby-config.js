@@ -4,11 +4,29 @@ module.exports = {
     description: '...Learn Code',
   },
   plugins: [
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
     {
       resolve: 'gatsby-plugin-mdx',
       options: {
         extensions: ['.mdx', '.md'],
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-images`,
+            options: {
+              maxWidth: 540,
+            },
+          },
+        ],
       },
+      plugin: [
+        {
+          resolve: `gatsby-remark-images`,
+          options: {
+            maxWidth: 540,
+          },
+        },
+      ],
     },
     {
       resolve: 'gatsby-source-filesystem',
@@ -34,4 +52,4 @@ module.exports = {
       },
     },
   ],
-};
+}

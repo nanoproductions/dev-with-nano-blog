@@ -1,5 +1,5 @@
-@import "./Variables.scss";
-@import "./Global.scss";
+@import './Variables.scss';
+@import './Global.scss';
 
 .heading {
   @extend .container;
@@ -22,7 +22,7 @@
 }
 
 .post {
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   background: $secondary-color;
   color: white;
   margin: 1rem 1rem 0.5rem 0.5rem;

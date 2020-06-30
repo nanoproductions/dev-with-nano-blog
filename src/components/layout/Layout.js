@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
-import "../../theme/main.scss";
+import React, { Fragment } from 'react'
+import '../../theme/main.scss'
 // import '../css/Global.scss'
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import PostState from "../../context/Posts/PostState";
+import Navbar from './Navbar'
+import Footer from './Footer'
+import PostState from '../../context/Posts/PostState'
 
 const Layout = (props) => {
   return (
@@ -14,7 +14,7 @@ const Layout = (props) => {
         <Footer />
       </Fragment>
     </PostState>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

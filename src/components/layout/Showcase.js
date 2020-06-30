@@ -1,6 +1,6 @@
-import React from "react";
-import Wrapper from "./Wrapper";
-import { Link } from "gatsby";
+import React from 'react'
+import Wrapper from './Wrapper'
+import { Link } from 'gatsby'
 
 const Showcase = () => {
   return (
@@ -14,7 +14,7 @@ const Showcase = () => {
         </div>
       </div>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Showcase;
+export default Showcase

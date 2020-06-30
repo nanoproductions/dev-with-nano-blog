@@ -1,0 +1,33 @@
+.post {
+  display: grid;
+  padding: 0.5rem 2rem;
+
+  grid-template-columns: 1fr 1fr;
+
+  color: white;
+  margin: 1rem 1rem 0.5rem 0.5rem;
+  line-height: 1.5;
+
+  .post-content {
+    align-self: center;
+  }
+
+  h1 {
+    padding: 0.5rem 0 0 0;
+    font-size: 1.2rem;
+  }
+  .link {
+    text-decoration: none;
+    color: #fff;
+  }
+
+  .image {
+    margin: 1rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .post {
+    display: block;
+  }
+}

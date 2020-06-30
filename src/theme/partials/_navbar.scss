@@ -1,5 +1,5 @@
 .navbar {
-  background: $primary-color;
+  background: darken($primary-color, 5);
   display: flex;
   justify-content: space-between;
 
@@ -24,6 +24,30 @@
         color: white;
         display: block;
         padding: 0rem 1rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .navbar {
+    display: block;
+
+    .brand {
+      display: block;
+      text-align: center;
+      padding: 1rem 0 0 0;
+    }
+
+    ul {
+      justify-content: center;
+
+      li {
+        display: flex;
+
+        .link {
+          padding: 1rem 0.5rem;
+        }
       }
     }
   }

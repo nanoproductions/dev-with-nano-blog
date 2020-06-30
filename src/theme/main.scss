@@ -1,13 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-@import "./partials/variables";
-@import "./partials/showcase";
-@import "./partials/footer";
-@import "./partials/card";
-@import "./partials/navbar";
-@import "./partials/grid";
-@import "./partials/forms";
-@import "./partials/spacing";
-@import "./partials/btn";
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+@import './partials/variables';
+@import './partials/showcase';
+@import './partials/footer';
+@import './partials/card';
+@import './partials/navbar';
+@import './partials/grid';
+@import './partials/forms';
+@import './partials/spacing';
+@import './partials/btn';
+@import './partials/posts';
 
 * {
   margin: 0;
@@ -16,7 +17,7 @@
 }
 
 body {
-  font-family: "Arimo";
+  font-family: 'Quicksand', sans-serif;
   line-height: 1.2;
   background: $primary-color;
   color: white;

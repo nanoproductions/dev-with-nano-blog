@@ -1,5 +1,5 @@
-import React from "react";
-import Wrapper from "./layout/Wrapper";
+import React from 'react'
+import Wrapper from './layout/Wrapper'
 
 const EmailAdd = () => {
   return (
@@ -19,7 +19,7 @@ const EmailAdd = () => {
         </form>
       </div>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default EmailAdd;
+export default EmailAdd

@@ -1,9 +1,9 @@
-import React from "react";
-import { Link } from "gatsby";
-import { useSiteMeta } from "../../utils/hooks/useSiteMeta";
+import React from 'react'
+import { Link } from 'gatsby'
+import { useSiteMeta } from '../../utils/hooks/useSiteMeta'
 
 const Navbar = () => {
-  const { title } = useSiteMeta();
+  const { title } = useSiteMeta()
   return (
     <nav className="navbar">
       <Link to="/" className="brand">
@@ -27,7 +27,7 @@ const Navbar = () => {
         </li>
       </ul>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

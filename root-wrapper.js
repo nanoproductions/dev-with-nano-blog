@@ -1,8 +1,8 @@
-import { MDXProvider } from '@mdx-js/react';
-import Code from './src/components/Code';
-import styles from './src/components/css/Markdown.module.scss';
+import { MDXProvider } from '@mdx-js/react'
+import Code from './src/components/Code'
+import styles from './src/components/css/Markdown.module.scss'
 
-import React from 'react';
+import React from 'react'
 
 const components = {
   h2: ({ children }) => <h2 style={{}}>{children}</h2>,
@@ -16,7 +16,7 @@ const components = {
           language={props.className && props.className.replace('language-', '')}
           {...props}
         />
-      );
+      )
     }
   },
   a: (props) => (
@@ -29,8 +29,8 @@ const components = {
       {props.children}
     </li>
   ),
-};
+}
 
 export const wrapRootElement = ({ element }) => (
   <MDXProvider components={components}>{element}</MDXProvider>
-);
+)

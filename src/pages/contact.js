@@ -1,5 +1,5 @@
-import React from 'react';
-import Layout from '../components/layout/Layout';
+import React from 'react'
+import Layout from '../components/layout/Layout'
 
 const Contact = () => {
   return (
@@ -9,7 +9,7 @@ const Contact = () => {
         <p>Email me at: nanoproductions2@gmail.com</p>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default Contact;
+export default Contact
