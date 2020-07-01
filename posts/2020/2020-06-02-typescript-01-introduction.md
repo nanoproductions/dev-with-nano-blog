@@ -2,6 +2,7 @@
 title: TypeScript - 01 - Introduction
 date: 2020-06-02T01:51:20.818Z
 published: true
+cover: ./img/ts-part-1.png
 ---
 ## Welcome to Typescript
 I am so glad that you decided to click on this post to learn about TypeScript. It is an honor to learn typescript. 
