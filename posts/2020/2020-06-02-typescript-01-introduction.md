@@ -52,7 +52,10 @@ let numbers = ['2', '3']
 
 console.log(add(numbers[0], numbers[1]))
 
-// Result = TypeScript would fail to compile this file, since the two numbers we passed are not numbers, instead they are strings.
+/* 
+Result = TypeScript would fail to compile this file, 
+since the two numbers we passed are not numbers, instead they are strings.
+*/
 ```
 
 ### What does TypeScript do?
