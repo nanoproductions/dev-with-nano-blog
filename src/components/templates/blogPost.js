@@ -5,8 +5,8 @@ import styles from '../css/BlogPost.module.scss'
 import { Helmet } from 'react-helmet'
 import Image from 'gatsby-image'
 
-import Layout from "../layout/Layout";
-import { Utterences } from "../../utils/Utterances";
+import Layout from '../layout/Layout'
+import { Utterences } from '../../utils/Utterances'
 
 export default ({ data }) => {
   const { frontmatter, body } = data.mdx
