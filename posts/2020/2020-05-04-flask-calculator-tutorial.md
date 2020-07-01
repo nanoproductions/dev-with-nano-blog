@@ -375,7 +375,7 @@ Now, make sure you are indented correctly. As python relies on indentation compa
 
 To complete, we just add `{{ result }}` in our template. And let's test the application. Just like:
 
-```
+```html
 <div class="alert">
     {{ result }}
 </div>
