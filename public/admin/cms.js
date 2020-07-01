@@ -1,1004 +1,3 @@
-/******/ ;(function (modules) {
-  // webpackBootstrap
-  /******/ function hotDisposeChunk(chunkId) {
-    /******/ delete installedChunks[chunkId]
-    /******/
-  }
-  /******/ var parentHotUpdateCallback = window['webpackHotUpdate']
-  /******/ window[
-    'webpackHotUpdate'
-  ] = /******/ function webpackHotUpdateCallback(chunkId, moreModules) { // eslint-disable-next-line no-unused-vars
-    /******/ hotAddUpdateChunk(chunkId, moreModules)
-    /******/ if (parentHotUpdateCallback)
-      parentHotUpdateCallback(chunkId, moreModules)
-    /******/
-  } // eslint-disable-next-line no-unused-vars
-  /******/
-  /******/ /******/ function hotDownloadUpdateChunk(chunkId) {
-    /******/ var script = document.createElement('script')
-    /******/ script.charset = 'utf-8'
-    /******/ script.src =
-      __webpack_require__.p +
-      '' +
-      chunkId +
-      '.' +
-      hotCurrentHash +
-      '.hot-update.js'
-    /******/ if (null) script.crossOrigin = null
-    /******/ document.head.appendChild(script)
-    /******/
-  } // eslint-disable-next-line no-unused-vars
-  /******/
-  /******/ /******/ function hotDownloadManifest(requestTimeout) {
-    /******/ requestTimeout = requestTimeout || 10000
-    /******/ return new Promise(function (resolve, reject) {
-      /******/ if (typeof XMLHttpRequest === 'undefined') {
-        /******/ return reject(new Error('No browser support'))
-        /******/
-      }
-      /******/ try {
-        /******/ var request = new XMLHttpRequest()
-        /******/ var requestPath =
-          __webpack_require__.p + '' + hotCurrentHash + '.hot-update.json'
-        /******/ request.open('GET', requestPath, true)
-        /******/ request.timeout = requestTimeout
-        /******/ request.send(null)
-        /******/
-      } catch (err) {
-        /******/ return reject(err)
-        /******/
-      }
-      /******/ request.onreadystatechange = function () {
-        /******/ if (request.readyState !== 4) return
-        /******/ if (request.status === 0) {
-          /******/ // timeout
-          /******/ reject(
-            /******/ new Error(
-              'Manifest request to ' + requestPath + ' timed out.'
-            )
-            /******/
-          )
-          /******/
-        } else if (request.status === 404) {
-          /******/ // no update available
-          /******/ resolve()
-          /******/
-        } else if (request.status !== 200 && request.status !== 304) {
-          /******/ // other failure
-          /******/ reject(
-            new Error('Manifest request to ' + requestPath + ' failed.')
-          )
-          /******/
-        } else {
-          /******/ // success
-          /******/ try {
-            /******/ var update = JSON.parse(request.responseText)
-            /******/
-          } catch (e) {
-            /******/ reject(e)
-            /******/ return
-            /******/
-          }
-          /******/ resolve(update)
-          /******/
-        }
-        /******/
-      }
-      /******/
-    })
-    /******/
-  }
-  /******/
-  /******/ var hotApplyOnUpdate = true // eslint-disable-next-line no-unused-vars
-  /******/ /******/ var hotCurrentHash = '12780b3d90dc1a6c4a1b'
-  /******/ var hotRequestTimeout = 10000
-  /******/ var hotCurrentModuleData = {}
-  /******/ var hotCurrentChildModule // eslint-disable-next-line no-unused-vars
-  /******/ /******/ var hotCurrentParents = [] // eslint-disable-next-line no-unused-vars
-  /******/ /******/ var hotCurrentParentsTemp = [] // eslint-disable-next-line no-unused-vars
-  /******/
-  /******/ /******/ function hotCreateRequire(moduleId) {
-    /******/ var me = installedModules[moduleId]
-    /******/ if (!me) return __webpack_require__
-    /******/ var fn = function (request) {
-      /******/ if (me.hot.active) {
-        /******/ if (installedModules[request]) {
-          /******/ if (
-            installedModules[request].parents.indexOf(moduleId) === -1
-          ) {
-            /******/ installedModules[request].parents.push(moduleId)
-            /******/
-          }
-          /******/
-        } else {
-          /******/ hotCurrentParents = [moduleId]
-          /******/ hotCurrentChildModule = request
-          /******/
-        }
-        /******/ if (me.children.indexOf(request) === -1) {
-          /******/ me.children.push(request)
-          /******/
-        }
-        /******/
-      } else {
-        /******/ console.warn(
-          /******/ '[HMR] unexpected require(' +
-            /******/ request +
-            /******/ ') from disposed module ' +
-            /******/ moduleId
-          /******/
-        )
-        /******/ hotCurrentParents = []
-        /******/
-      }
-      /******/ return __webpack_require__(request)
-      /******/
-    }
-    /******/ var ObjectFactory = function ObjectFactory(name) {
-      /******/ return {
-        /******/ configurable: true,
-        /******/ enumerable: true,
-        /******/ get: function () {
-          /******/ return __webpack_require__[name]
-          /******/
-        },
-        /******/ set: function (value) {
-          /******/ __webpack_require__[name] = value
-          /******/
-        },
-        /******/
-      }
-      /******/
-    }
-    /******/ for (var name in __webpack_require__) {
-      /******/ if (
-        /******/ Object.prototype.hasOwnProperty.call(
-          __webpack_require__,
-          name
-        ) &&
-        /******/ name !== 'e' &&
-        /******/ name !== 't'
-        /******/
-      ) {
-        /******/ Object.defineProperty(fn, name, ObjectFactory(name))
-        /******/
-      }
-      /******/
-    }
-    /******/ fn.e = function (chunkId) {
-      /******/ if (hotStatus === 'ready') hotSetStatus('prepare')
-      /******/ hotChunksLoading++
-      /******/ return __webpack_require__
-        .e(chunkId)
-        .then(finishChunkLoading, function (err) {
-          /******/ finishChunkLoading()
-          /******/ throw err
-          /******/
-        })
-      /******/
-      /******/ function finishChunkLoading() {
-        /******/ hotChunksLoading--
-        /******/ if (hotStatus === 'prepare') {
-          /******/ if (!hotWaitingFilesMap[chunkId]) {
-            /******/ hotEnsureUpdateChunk(chunkId)
-            /******/
-          }
-          /******/ if (hotChunksLoading === 0 && hotWaitingFiles === 0) {
-            /******/ hotUpdateDownloaded()
-            /******/
-          }
-          /******/
-        }
-        /******/
-      }
-      /******/
-    }
-    /******/ fn.t = function (value, mode) {
-      /******/ if (mode & 1) value = fn(value)
-      /******/ return __webpack_require__.t(value, mode & ~1)
-      /******/
-    }
-    /******/ return fn
-    /******/
-  } // eslint-disable-next-line no-unused-vars
-  /******/
-  /******/ /******/ function hotCreateModule(moduleId) {
-    /******/ var hot = {
-      /******/ // private stuff
-      /******/ _acceptedDependencies: {},
-      /******/ _declinedDependencies: {},
-      /******/ _selfAccepted: false,
-      /******/ _selfDeclined: false,
-      /******/ _disposeHandlers: [],
-      /******/ _main: hotCurrentChildModule !== moduleId, // Module API
-      /******/
-      /******/ /******/ active: true,
-      /******/ accept: function (dep, callback) {
-        /******/ if (dep === undefined) hot._selfAccepted = true
-        /******/ else if (typeof dep === 'function') hot._selfAccepted = dep
-        /******/ else if (typeof dep === 'object')
-          /******/ for (var i = 0; i < dep.length; i++)
-            /******/ hot._acceptedDependencies[dep[i]] =
-              callback || function () {}
-        /******/ else
-          hot._acceptedDependencies[dep] = callback || function () {}
-        /******/
-      },
-      /******/ decline: function (dep) {
-        /******/ if (dep === undefined) hot._selfDeclined = true
-        /******/ else if (typeof dep === 'object')
-          /******/ for (var i = 0; i < dep.length; i++)
-            /******/ hot._declinedDependencies[dep[i]] = true
-        /******/ else hot._declinedDependencies[dep] = true
-        /******/
-      },
-      /******/ dispose: function (callback) {
-        /******/ hot._disposeHandlers.push(callback)
-        /******/
-      },
-      /******/ addDisposeHandler: function (callback) {
-        /******/ hot._disposeHandlers.push(callback)
-        /******/
-      },
-      /******/ removeDisposeHandler: function (callback) {
-        /******/ var idx = hot._disposeHandlers.indexOf(callback)
-        /******/ if (idx >= 0) hot._disposeHandlers.splice(idx, 1)
-        /******/
-      }, // Management API
-      /******/
-      /******/ /******/ check: hotCheck,
-      /******/ apply: hotApply,
-      /******/ status: function (l) {
-        /******/ if (!l) return hotStatus
-        /******/ hotStatusHandlers.push(l)
-        /******/
-      },
-      /******/ addStatusHandler: function (l) {
-        /******/ hotStatusHandlers.push(l)
-        /******/
-      },
-      /******/ removeStatusHandler: function (l) {
-        /******/ var idx = hotStatusHandlers.indexOf(l)
-        /******/ if (idx >= 0) hotStatusHandlers.splice(idx, 1)
-        /******/
-      }, //inherit from previous dispose call
-      /******/
-      /******/ /******/ data: hotCurrentModuleData[moduleId],
-      /******/
-    }
-    /******/ hotCurrentChildModule = undefined
-    /******/ return hot
-    /******/
-  }
-  /******/
-  /******/ var hotStatusHandlers = []
-  /******/ var hotStatus = 'idle'
-  /******/
-  /******/ function hotSetStatus(newStatus) {
-    /******/ hotStatus = newStatus
-    /******/ for (var i = 0; i < hotStatusHandlers.length; i++)
-      /******/ hotStatusHandlers[i].call(null, newStatus)
-    /******/
-  } // while downloading
-  /******/
-  /******/ /******/ var hotWaitingFiles = 0
-  /******/ var hotChunksLoading = 0
-  /******/ var hotWaitingFilesMap = {}
-  /******/ var hotRequestedFilesMap = {}
-  /******/ var hotAvailableFilesMap = {}
-  /******/ var hotDeferred // The update info
-  /******/
-  /******/ /******/ var hotUpdate, hotUpdateNewHash
-  /******/
-  /******/ function toModuleId(id) {
-    /******/ var isNumber = +id + '' === id
-    /******/ return isNumber ? +id : id
-    /******/
-  }
-  /******/
-  /******/ function hotCheck(apply) {
-    /******/ if (hotStatus !== 'idle') {
-      /******/ throw new Error('check() is only allowed in idle status')
-      /******/
-    }
-    /******/ hotApplyOnUpdate = apply
-    /******/ hotSetStatus('check')
-    /******/ return hotDownloadManifest(hotRequestTimeout).then(function (
-      update
-    ) {
-      /******/ if (!update) {
-        /******/ hotSetStatus('idle')
-        /******/ return null
-        /******/
-      }
-      /******/ hotRequestedFilesMap = {}
-      /******/ hotWaitingFilesMap = {}
-      /******/ hotAvailableFilesMap = update.c
-      /******/ hotUpdateNewHash = update.h
-      /******/
-      /******/ hotSetStatus('prepare')
-      /******/ var promise = new Promise(function (resolve, reject) {
-        /******/ hotDeferred = {
-          /******/ resolve: resolve,
-          /******/ reject: reject,
-          /******/
-        }
-        /******/
-      })
-      /******/ hotUpdate = {}
-      /******/ var chunkId = 'cms' // eslint-disable-next-line no-lone-blocks
-      /******/ /******/ {
-        /******/ hotEnsureUpdateChunk(chunkId)
-        /******/
-      }
-      /******/ if (
-        /******/ hotStatus === 'prepare' &&
-        /******/ hotChunksLoading === 0 &&
-        /******/ hotWaitingFiles === 0
-        /******/
-      ) {
-        /******/ hotUpdateDownloaded()
-        /******/
-      }
-      /******/ return promise
-      /******/
-    })
-    /******/
-  } // eslint-disable-next-line no-unused-vars
-  /******/
-  /******/ /******/ function hotAddUpdateChunk(chunkId, moreModules) {
-    /******/ if (
-      !hotAvailableFilesMap[chunkId] ||
-      !hotRequestedFilesMap[chunkId]
-    )
-      /******/ return
-    /******/ hotRequestedFilesMap[chunkId] = false
-    /******/ for (var moduleId in moreModules) {
-      /******/ if (
-        Object.prototype.hasOwnProperty.call(moreModules, moduleId)
-      ) {
-        /******/ hotUpdate[moduleId] = moreModules[moduleId]
-        /******/
-      }
-      /******/
-    }
-    /******/ if (--hotWaitingFiles === 0 && hotChunksLoading === 0) {
-      /******/ hotUpdateDownloaded()
-      /******/
-    }
-    /******/
-  }
-  /******/
-  /******/ function hotEnsureUpdateChunk(chunkId) {
-    /******/ if (!hotAvailableFilesMap[chunkId]) {
-      /******/ hotWaitingFilesMap[chunkId] = true
-      /******/
-    } else {
-      /******/ hotRequestedFilesMap[chunkId] = true
-      /******/ hotWaitingFiles++
-      /******/ hotDownloadUpdateChunk(chunkId)
-      /******/
-    }
-    /******/
-  }
-  /******/
-  /******/ function hotUpdateDownloaded() {
-    /******/ hotSetStatus('ready')
-    /******/ var deferred = hotDeferred
-    /******/ hotDeferred = null
-    /******/ if (!deferred) return
-    /******/ if (hotApplyOnUpdate) {
-      /******/ // Wrap deferred object in Promise to mark it as a well-handled Promise to
-      /******/ // avoid triggering uncaught exception warning in Chrome.
-      /******/ // See https://bugs.chromium.org/p/chromium/issues/detail?id=465666
-      /******/ Promise.resolve()
-        /******/ .then(function () {
-          /******/ return hotApply(hotApplyOnUpdate)
-          /******/
-        })
-        /******/ .then(
-          /******/ function (result) {
-            /******/ deferred.resolve(result)
-            /******/
-          },
-          /******/ function (err) {
-            /******/ deferred.reject(err)
-            /******/
-          }
-          /******/
-        )
-      /******/
-    } else {
-      /******/ var outdatedModules = []
-      /******/ for (var id in hotUpdate) {
-        /******/ if (Object.prototype.hasOwnProperty.call(hotUpdate, id)) {
-          /******/ outdatedModules.push(toModuleId(id))
-          /******/
-        }
-        /******/
-      }
-      /******/ deferred.resolve(outdatedModules)
-      /******/
-    }
-    /******/
-  }
-  /******/
-  /******/ function hotApply(options) {
-    /******/ if (hotStatus !== 'ready')
-      /******/ throw new Error('apply() is only allowed in ready status')
-    /******/ options = options || {}
-    /******/
-    /******/ var cb
-    /******/ var i
-    /******/ var j
-    /******/ var module
-    /******/ var moduleId
-    /******/
-    /******/ function getAffectedStuff(updateModuleId) {
-      /******/ var outdatedModules = [updateModuleId]
-      /******/ var outdatedDependencies = {}
-      /******/
-      /******/ var queue = outdatedModules.map(function (id) {
-        /******/ return {
-          /******/ chain: [id],
-          /******/ id: id,
-          /******/
-        }
-        /******/
-      })
-      /******/ while (queue.length > 0) {
-        /******/ var queueItem = queue.pop()
-        /******/ var moduleId = queueItem.id
-        /******/ var chain = queueItem.chain
-        /******/ module = installedModules[moduleId]
-        /******/ if (!module || module.hot._selfAccepted) continue
-        /******/ if (module.hot._selfDeclined) {
-          /******/ return {
-            /******/ type: 'self-declined',
-            /******/ chain: chain,
-            /******/ moduleId: moduleId,
-            /******/
-          }
-          /******/
-        }
-        /******/ if (module.hot._main) {
-          /******/ return {
-            /******/ type: 'unaccepted',
-            /******/ chain: chain,
-            /******/ moduleId: moduleId,
-            /******/
-          }
-          /******/
-        }
-        /******/ for (var i = 0; i < module.parents.length; i++) {
-          /******/ var parentId = module.parents[i]
-          /******/ var parent = installedModules[parentId]
-          /******/ if (!parent) continue
-          /******/ if (parent.hot._declinedDependencies[moduleId]) {
-            /******/ return {
-              /******/ type: 'declined',
-              /******/ chain: chain.concat([parentId]),
-              /******/ moduleId: moduleId,
-              /******/ parentId: parentId,
-              /******/
-            }
-            /******/
-          }
-          /******/ if (outdatedModules.indexOf(parentId) !== -1) continue
-          /******/ if (parent.hot._acceptedDependencies[moduleId]) {
-            /******/ if (!outdatedDependencies[parentId])
-              /******/ outdatedDependencies[parentId] = []
-            /******/ addAllToSet(outdatedDependencies[parentId], [moduleId])
-            /******/ continue
-            /******/
-          }
-          /******/ delete outdatedDependencies[parentId]
-          /******/ outdatedModules.push(parentId)
-          /******/ queue.push({
-            /******/ chain: chain.concat([parentId]),
-            /******/ id: parentId,
-            /******/
-          })
-          /******/
-        }
-        /******/
-      }
-      /******/
-      /******/ return {
-        /******/ type: 'accepted',
-        /******/ moduleId: updateModuleId,
-        /******/ outdatedModules: outdatedModules,
-        /******/ outdatedDependencies: outdatedDependencies,
-        /******/
-      }
-      /******/
-    }
-    /******/
-    /******/ function addAllToSet(a, b) {
-      /******/ for (var i = 0; i < b.length; i++) {
-        /******/ var item = b[i]
-        /******/ if (a.indexOf(item) === -1) a.push(item)
-        /******/
-      }
-      /******/
-    } // at begin all updates modules are outdated // the "outdated" status can propagate to parents if they don't accept the children
-    /******/
-    /******/ /******/ /******/ var outdatedDependencies = {}
-    /******/ var outdatedModules = []
-    /******/ var appliedUpdate = {}
-    /******/
-    /******/ var warnUnexpectedRequire = function warnUnexpectedRequire() {
-      /******/ console.warn(
-        /******/ '[HMR] unexpected require(' +
-          result.moduleId +
-          ') to disposed module'
-        /******/
-      )
-      /******/
-    }
-    /******/
-    /******/ for (var id in hotUpdate) {
-      /******/ if (Object.prototype.hasOwnProperty.call(hotUpdate, id)) {
-        /******/ moduleId = toModuleId(id)
-        /******/ /** @type {TODO} */
-        /******/ var result
-        /******/ if (hotUpdate[id]) {
-          /******/ result = getAffectedStuff(moduleId)
-          /******/
-        } else {
-          /******/ result = {
-            /******/ type: 'disposed',
-            /******/ moduleId: id,
-            /******/
-          }
-          /******/
-        }
-        /******/ /** @type {Error|false} */
-        /******/ var abortError = false
-        /******/ var doApply = false
-        /******/ var doDispose = false
-        /******/ var chainInfo = ''
-        /******/ if (result.chain) {
-          /******/ chainInfo =
-            '\nUpdate propagation: ' + result.chain.join(' -> ')
-          /******/
-        }
-        /******/ switch (result.type) {
-          /******/ case 'self-declined':
-            /******/ if (options.onDeclined) options.onDeclined(result)
-            /******/ if (!options.ignoreDeclined)
-              /******/ abortError = new Error(
-                /******/ 'Aborted because of self decline: ' +
-                  /******/ result.moduleId +
-                  /******/ chainInfo
-                /******/
-              )
-            /******/ break
-          /******/ case 'declined':
-            /******/ if (options.onDeclined) options.onDeclined(result)
-            /******/ if (!options.ignoreDeclined)
-              /******/ abortError = new Error(
-                /******/ 'Aborted because of declined dependency: ' +
-                  /******/ result.moduleId +
-                  /******/ ' in ' +
-                  /******/ result.parentId +
-                  /******/ chainInfo
-                /******/
-              )
-            /******/ break
-          /******/ case 'unaccepted':
-            /******/ if (options.onUnaccepted) options.onUnaccepted(result)
-            /******/ if (!options.ignoreUnaccepted)
-              /******/ abortError = new Error(
-                /******/ 'Aborted because ' +
-                  moduleId +
-                  ' is not accepted' +
-                  chainInfo
-                /******/
-              )
-            /******/ break
-          /******/ case 'accepted':
-            /******/ if (options.onAccepted) options.onAccepted(result)
-            /******/ doApply = true
-            /******/ break
-          /******/ case 'disposed':
-            /******/ if (options.onDisposed) options.onDisposed(result)
-            /******/ doDispose = true
-            /******/ break
-          /******/ default:
-            /******/ throw new Error('Unexception type ' + result.type)
-          /******/
-        }
-        /******/ if (abortError) {
-          /******/ hotSetStatus('abort')
-          /******/ return Promise.reject(abortError)
-          /******/
-        }
-        /******/ if (doApply) {
-          /******/ appliedUpdate[moduleId] = hotUpdate[moduleId]
-          /******/ addAllToSet(outdatedModules, result.outdatedModules)
-          /******/ for (moduleId in result.outdatedDependencies) {
-            /******/ if (
-              /******/ Object.prototype.hasOwnProperty.call(
-                /******/ result.outdatedDependencies,
-                /******/ moduleId
-                /******/
-              )
-              /******/
-            ) {
-              /******/ if (!outdatedDependencies[moduleId])
-                /******/ outdatedDependencies[moduleId] = []
-              /******/ addAllToSet(
-                /******/ outdatedDependencies[moduleId],
-                /******/ result.outdatedDependencies[moduleId]
-                /******/
-              )
-              /******/
-            }
-            /******/
-          }
-          /******/
-        }
-        /******/ if (doDispose) {
-          /******/ addAllToSet(outdatedModules, [result.moduleId])
-          /******/ appliedUpdate[moduleId] = warnUnexpectedRequire
-          /******/
-        }
-        /******/
-      }
-      /******/
-    } // Store self accepted outdated modules to require them later by the module system
-    /******/
-    /******/ /******/ var outdatedSelfAcceptedModules = []
-    /******/ for (i = 0; i < outdatedModules.length; i++) {
-      /******/ moduleId = outdatedModules[i]
-      /******/ if (
-        /******/ installedModules[moduleId] &&
-        /******/ installedModules[moduleId].hot._selfAccepted && // removed self-accepted modules should not be required
-        /******/ /******/ appliedUpdate[moduleId] !== warnUnexpectedRequire
-        /******/
-      ) {
-        /******/ outdatedSelfAcceptedModules.push({
-          /******/ module: moduleId,
-          /******/ errorHandler: installedModules[moduleId].hot._selfAccepted,
-          /******/
-        })
-        /******/
-      }
-      /******/
-    } // Now in "dispose" phase
-    /******/
-    /******/ /******/ hotSetStatus('dispose')
-    /******/ Object.keys(hotAvailableFilesMap).forEach(function (chunkId) {
-      /******/ if (hotAvailableFilesMap[chunkId] === false) {
-        /******/ hotDisposeChunk(chunkId)
-        /******/
-      }
-      /******/
-    })
-    /******/
-    /******/ var idx
-    /******/ var queue = outdatedModules.slice()
-    /******/ while (queue.length > 0) {
-      /******/ moduleId = queue.pop()
-      /******/ module = installedModules[moduleId]
-      /******/ if (!module) continue
-      /******/
-      /******/ var data = {} // Call dispose handlers
-      /******/
-      /******/ /******/ var disposeHandlers = module.hot._disposeHandlers
-      /******/ for (j = 0; j < disposeHandlers.length; j++) {
-        /******/ cb = disposeHandlers[j]
-        /******/ cb(data)
-        /******/
-      }
-      /******/ hotCurrentModuleData[moduleId] = data // disable module (this disables requires from this module)
-      /******/
-      /******/ /******/ module.hot.active = false // remove module from cache
-      /******/
-      /******/ /******/ delete installedModules[moduleId] // when disposing there is no need to call dispose handler
-      /******/
-      /******/ /******/ delete outdatedDependencies[moduleId] // remove "parents" references from all children
-      /******/
-      /******/ /******/ for (j = 0; j < module.children.length; j++) {
-        /******/ var child = installedModules[module.children[j]]
-        /******/ if (!child) continue
-        /******/ idx = child.parents.indexOf(moduleId)
-        /******/ if (idx >= 0) {
-          /******/ child.parents.splice(idx, 1)
-          /******/
-        }
-        /******/
-      }
-      /******/
-    } // remove outdated dependency from module children
-    /******/
-    /******/ /******/ var dependency
-    /******/ var moduleOutdatedDependencies
-    /******/ for (moduleId in outdatedDependencies) {
-      /******/ if (
-        /******/ Object.prototype.hasOwnProperty.call(
-          outdatedDependencies,
-          moduleId
-        )
-        /******/
-      ) {
-        /******/ module = installedModules[moduleId]
-        /******/ if (module) {
-          /******/ moduleOutdatedDependencies = outdatedDependencies[moduleId]
-          /******/ for (j = 0; j < moduleOutdatedDependencies.length; j++) {
-            /******/ dependency = moduleOutdatedDependencies[j]
-            /******/ idx = module.children.indexOf(dependency)
-            /******/ if (idx >= 0) module.children.splice(idx, 1)
-            /******/
-          }
-          /******/
-        }
-        /******/
-      }
-      /******/
-    } // Now in "apply" phase
-    /******/
-    /******/ /******/ hotSetStatus('apply')
-    /******/
-    /******/ hotCurrentHash = hotUpdateNewHash // insert new code
-    /******/
-    /******/ /******/ for (moduleId in appliedUpdate) {
-      /******/ if (
-        Object.prototype.hasOwnProperty.call(appliedUpdate, moduleId)
-      ) {
-        /******/ modules[moduleId] = appliedUpdate[moduleId]
-        /******/
-      }
-      /******/
-    } // call accept handlers
-    /******/
-    /******/ /******/ var error = null
-    /******/ for (moduleId in outdatedDependencies) {
-      /******/ if (
-        /******/ Object.prototype.hasOwnProperty.call(
-          outdatedDependencies,
-          moduleId
-        )
-        /******/
-      ) {
-        /******/ module = installedModules[moduleId]
-        /******/ if (module) {
-          /******/ moduleOutdatedDependencies = outdatedDependencies[moduleId]
-          /******/ var callbacks = []
-          /******/ for (i = 0; i < moduleOutdatedDependencies.length; i++) {
-            /******/ dependency = moduleOutdatedDependencies[i]
-            /******/ cb = module.hot._acceptedDependencies[dependency]
-            /******/ if (cb) {
-              /******/ if (callbacks.indexOf(cb) !== -1) continue
-              /******/ callbacks.push(cb)
-              /******/
-            }
-            /******/
-          }
-          /******/ for (i = 0; i < callbacks.length; i++) {
-            /******/ cb = callbacks[i]
-            /******/ try {
-              /******/ cb(moduleOutdatedDependencies)
-              /******/
-            } catch (err) {
-              /******/ if (options.onErrored) {
-                /******/ options.onErrored({
-                  /******/ type: 'accept-errored',
-                  /******/ moduleId: moduleId,
-                  /******/ dependencyId: moduleOutdatedDependencies[i],
-                  /******/ error: err,
-                  /******/
-                })
-                /******/
-              }
-              /******/ if (!options.ignoreErrored) {
-                /******/ if (!error) error = err
-                /******/
-              }
-              /******/
-            }
-            /******/
-          }
-          /******/
-        }
-        /******/
-      }
-      /******/
-    } // Load self accepted modules
-    /******/
-    /******/ /******/ for (i = 0; i < outdatedSelfAcceptedModules.length; i++) {
-      /******/ var item = outdatedSelfAcceptedModules[i]
-      /******/ moduleId = item.module
-      /******/ hotCurrentParents = [moduleId]
-      /******/ try {
-        /******/ __webpack_require__(moduleId)
-        /******/
-      } catch (err) {
-        /******/ if (typeof item.errorHandler === 'function') {
-          /******/ try {
-            /******/ item.errorHandler(err)
-            /******/
-          } catch (err2) {
-            /******/ if (options.onErrored) {
-              /******/ options.onErrored({
-                /******/ type: 'self-accept-error-handler-errored',
-                /******/ moduleId: moduleId,
-                /******/ error: err2,
-                /******/ originalError: err,
-                /******/
-              })
-              /******/
-            }
-            /******/ if (!options.ignoreErrored) {
-              /******/ if (!error) error = err2
-              /******/
-            }
-            /******/ if (!error) error = err
-            /******/
-          }
-          /******/
-        } else {
-          /******/ if (options.onErrored) {
-            /******/ options.onErrored({
-              /******/ type: 'self-accept-errored',
-              /******/ moduleId: moduleId,
-              /******/ error: err,
-              /******/
-            })
-            /******/
-          }
-          /******/ if (!options.ignoreErrored) {
-            /******/ if (!error) error = err
-            /******/
-          }
-          /******/
-        }
-        /******/
-      }
-      /******/
-    } // handle errors in accept handlers and self accepted module load
-    /******/
-    /******/ /******/ if (error) {
-      /******/ hotSetStatus('fail')
-      /******/ return Promise.reject(error)
-      /******/
-    }
-    /******/
-    /******/ hotSetStatus('idle')
-    /******/ return new Promise(function (resolve) {
-      /******/ resolve(outdatedModules)
-      /******/
-    })
-    /******/
-  } // The module cache
-  /******/
-  /******/ /******/ var installedModules = {} // The require function
-  /******/
-  /******/ /******/ function __webpack_require__(moduleId) {
-    /******/
-    /******/ // Check if module is in cache
-    /******/ if (installedModules[moduleId]) {
-      /******/ return installedModules[moduleId].exports
-      /******/
-    } // Create a new module (and put it into the cache)
-    /******/ /******/ var module = (installedModules[moduleId] = {
-      /******/ i: moduleId,
-      /******/ l: false,
-      /******/ exports: {},
-      /******/ hot: hotCreateModule(moduleId),
-      /******/ parents:
-        ((hotCurrentParentsTemp = hotCurrentParents),
-        (hotCurrentParents = []),
-        hotCurrentParentsTemp),
-      /******/ children: [],
-      /******/
-    }) // Execute the module function
-    /******/
-    /******/ /******/ modules[moduleId].call(
-      module.exports,
-      module,
-      module.exports,
-      hotCreateRequire(moduleId)
-    ) // Flag the module as loaded
-    /******/
-    /******/ /******/ module.l = true // Return the exports of the module
-    /******/
-    /******/ /******/ return module.exports
-    /******/
-  } // expose the modules object (__webpack_modules__)
-  /******/
-  /******/
-  /******/ /******/ __webpack_require__.m = modules // expose the module cache
-  /******/
-  /******/ /******/ __webpack_require__.c = installedModules // define getter function for harmony exports
-  /******/
-  /******/ /******/ __webpack_require__.d = function (exports, name, getter) {
-    /******/ if (!__webpack_require__.o(exports, name)) {
-      /******/ Object.defineProperty(exports, name, {
-        enumerable: true,
-        get: getter,
-      })
-      /******/
-    }
-    /******/
-  } // define __esModule on exports
-  /******/
-  /******/ /******/ __webpack_require__.r = function (exports) {
-    /******/ if (typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-      /******/ Object.defineProperty(exports, Symbol.toStringTag, {
-        value: 'Module',
-      })
-      /******/
-    }
-    /******/ Object.defineProperty(exports, '__esModule', { value: true })
-    /******/
-  } // create a fake namespace object // mode & 1: value is a module id, require it // mode & 2: merge all properties of value into the ns // mode & 4: return value when already ns object // mode & 8|1: behave like require
-  /******/
-  /******/ /******/ /******/ /******/ /******/ /******/ __webpack_require__.t = function (
-    value,
-    mode
-  ) {
-    /******/ if (mode & 1) value = __webpack_require__(value)
-    /******/ if (mode & 8) return value
-    /******/ if (
-      mode & 4 &&
-      typeof value === 'object' &&
-      value &&
-      value.__esModule
-    )
-      return value
-    /******/ var ns = Object.create(null)
-    /******/ __webpack_require__.r(ns)
-    /******/ Object.defineProperty(ns, 'default', {
-      enumerable: true,
-      value: value,
-    })
-    /******/ if (mode & 2 && typeof value != 'string')
-      for (var key in value)
-        __webpack_require__.d(
-          ns,
-          key,
-          function (key) {
-            return value[key]
-          }.bind(null, key)
-        )
-    /******/ return ns
-    /******/
-  } // getDefaultExport function for compatibility with non-harmony modules
-  /******/
-  /******/ /******/ __webpack_require__.n = function (module) {
-    /******/ var getter =
-      module && module.__esModule
-        ? /******/ function getDefault() {
-            return module['default']
-          }
-        : /******/ function getModuleExports() {
-            return module
-          }
-    /******/ __webpack_require__.d(getter, 'a', getter)
-    /******/ return getter
-    /******/
-  } // Object.prototype.hasOwnProperty.call
-  /******/
-  /******/ /******/ __webpack_require__.o = function (object, property) {
-    return Object.prototype.hasOwnProperty.call(object, property)
-  } // __webpack_public_path__
-  /******/
-  /******/ /******/ __webpack_require__.p = '' // __webpack_hash__
-  /******/
-  /******/ /******/ __webpack_require__.h = function () {
-    return hotCurrentHash
-  } // Load entry module and return exports
-  /******/
-  /******/
-  /******/ /******/ return hotCreateRequire(0)((__webpack_require__.s = 0))
-  /******/
-})(
-  /************************************************************************/
-  /******/ {
-    /***/ './node_modules/@babel/runtime/helpers/interopRequireDefault.js':
-      /*!**********************************************************************!*\
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	function hotDisposeChunk(chunkId) {
 /******/ 		delete installedChunks[chunkId];
@@ -1064,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "9c6dbc8cdb160a0cfd7e";
+/******/ 	var hotCurrentHash = "95c0744285490fac6263";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1798,3483 +797,3241 @@
 
 /***/ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js":
 /*!**********************************************************************!*\
-
   !*** ./node_modules/@babel/runtime/helpers/interopRequireDefault.js ***!
   \**********************************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports) {
-        function _interopRequireDefault(obj) {
-          return obj && obj.__esModule
-            ? obj
-            : {
-                default: obj,
-              }
-        }
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-        module.exports = _interopRequireDefault
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
 
-        /***/
-      },
+module.exports = _interopRequireDefault;
 
-    /***/ './node_modules/gatsby-plugin-netlify-cms/cms-identity.js':
-      /*!****************************************************************!*\
+/***/ }),
+
+/***/ "./node_modules/gatsby-plugin-netlify-cms/cms-identity.js":
+/*!****************************************************************!*\
   !*** ./node_modules/gatsby-plugin-netlify-cms/cms-identity.js ***!
   \****************************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
-        /* WEBPACK VAR INJECTION */ ;(function (module, setImmediate) {
-          ;(function () {
-            var enterModule =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.enterModule
-                : undefined
-            enterModule && enterModule(module)
-          })()
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-          var __signature__ =
-            typeof reactHotLoaderGlobal !== 'undefined'
-              ? reactHotLoaderGlobal.default.signature
-              : function (a) {
-                  return a
-                }
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module, setImmediate) {
 
-          var _interopRequireDefault = __webpack_require__(
-            /*! @babel/runtime/helpers/interopRequireDefault */ './node_modules/@babel/runtime/helpers/interopRequireDefault.js'
-          )
+(function () {
+  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
+  enterModule && enterModule(module);
+})();
 
-          var _netlifyIdentityWidget = _interopRequireDefault(
-            __webpack_require__(
-              /*! netlify-identity-widget */ 'netlify-identity-widget'
-            )
-          )
-          /* global __PATH_PREFIX__ CMS_PUBLIC_PATH */
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
 
-          window.netlifyIdentity = _netlifyIdentityWidget.default
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
 
-          var addLoginListener = function addLoginListener() {
-            return _netlifyIdentityWidget.default.on('login', function () {
-              document.location.href = '' + '/' + 'admin' + '/'
-            })
-          }
+var _netlifyIdentityWidget = _interopRequireDefault(__webpack_require__(/*! netlify-identity-widget */ "netlify-identity-widget"));
+/* global __PATH_PREFIX__ CMS_PUBLIC_PATH */
 
-          _netlifyIdentityWidget.default.on('init', function (user) {
-            if (!user) {
-              addLoginListener()
-            } else {
-              _netlifyIdentityWidget.default.on('logout', function () {
-                addLoginListener()
-              })
-            }
-          }) // Boot on next tick to prevent clashes with css injected into NetlifyCMS
-          // preview pane.
 
-          setImmediate(function () {
-            _netlifyIdentityWidget.default.init()
-          })
-          ;(function () {
-            var reactHotLoader =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.default
-                : undefined
+window.netlifyIdentity = _netlifyIdentityWidget.default;
 
-            if (!reactHotLoader) {
-              return
-            }
+var addLoginListener = function addLoginListener() {
+  return _netlifyIdentityWidget.default.on("login", function () {
+    document.location.href = "" + "/" + "admin" + "/";
+  });
+};
 
-            reactHotLoader.register(
-              _netlifyIdentityWidget,
-              '_netlifyIdentityWidget',
-              '/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms-identity.js'
-            )
-            reactHotLoader.register(
-              addLoginListener,
-              'addLoginListener',
-              '/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms-identity.js'
-            )
-          })()
+_netlifyIdentityWidget.default.on("init", function (user) {
+  if (!user) {
+    addLoginListener();
+  } else {
+    _netlifyIdentityWidget.default.on("logout", function () {
+      addLoginListener();
+    });
+  }
+}); // Boot on next tick to prevent clashes with css injected into NetlifyCMS
+// preview pane.
 
-          ;(function () {
-            var leaveModule =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.leaveModule
-                : undefined
-            leaveModule && leaveModule(module)
-          })()
-          /* WEBPACK VAR INJECTION */
-        }.call(
-          this,
-          __webpack_require__(
-            /*! ./node_modules/webpack/buildin/module.js */ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js'
-          )(module),
-          __webpack_require__(
-            /*! ./../timers-browserify/main.js */ './node_modules/timers-browserify/main.js'
-          ).setImmediate
-        ))
 
-        /***/
-      },
+setImmediate(function () {
+  _netlifyIdentityWidget.default.init();
+});
+;
 
-    /***/ './node_modules/gatsby-plugin-netlify-cms/cms.js':
-      /*!*******************************************************!*\
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
+
+  if (!reactHotLoader) {
+    return;
+  }
+
+  reactHotLoader.register(_netlifyIdentityWidget, "_netlifyIdentityWidget", "/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms-identity.js");
+  reactHotLoader.register(addLoginListener, "addLoginListener", "/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms-identity.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/webpack/buildin/module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module), __webpack_require__(/*! ./../timers-browserify/main.js */ "./node_modules/timers-browserify/main.js").setImmediate))
+
+/***/ }),
+
+/***/ "./node_modules/gatsby-plugin-netlify-cms/cms.js":
+/*!*******************************************************!*\
   !*** ./node_modules/gatsby-plugin-netlify-cms/cms.js ***!
   \*******************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
-        /* WEBPACK VAR INJECTION */ ;(function (module) {
-          ;(function () {
-            var enterModule =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.enterModule
-                : undefined
-            enterModule && enterModule(module)
-          })()
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-          var __signature__ =
-            typeof reactHotLoaderGlobal !== 'undefined'
-              ? reactHotLoaderGlobal.default.signature
-              : function (a) {
-                  return a
-                }
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
 
-          var _interopRequireDefault = __webpack_require__(
-            /*! @babel/runtime/helpers/interopRequireDefault */ './node_modules/@babel/runtime/helpers/interopRequireDefault.js'
-          )
+(function () {
+  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
+  enterModule && enterModule(module);
+})();
 
-          var _netlifyCmsApp = _interopRequireDefault(
-            __webpack_require__(/*! netlify-cms-app */ 'netlify-cms-app')
-          )
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
 
-          var _emitter = _interopRequireDefault(
-            __webpack_require__(
-              /*! gatsby/cache-dir/emitter */ './node_modules/gatsby/cache-dir/emitter.js'
-            )
-          ) // set global variables required by Gatsby's components
-          // https://github.com/gatsbyjs/gatsby/blob/deb41cdfefbefe0c170b5dd7c10a19ba2b338f6e/docs/docs/production-app.md#window-variables
-          // some Gatsby components require these global variables set here:
-          // https://github.com/gatsbyjs/gatsby/blob/deb41cdfefbefe0c170b5dd7c10a19ba2b338f6e/packages/gatsby/cache-dir/production-app.js#L28
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
 
-          window.___emitter = _emitter.default
-          window.___loader = {
-            enqueue: function enqueue() {},
-            hovering: function hovering() {},
-          }
-          /**
-           * Load Netlify CMS automatically if `window.CMS_MANUAL_INIT` is set.
-           */
-          // eslint-disable-next-line no-undef
+var _netlifyCmsApp = _interopRequireDefault(__webpack_require__(/*! netlify-cms-app */ "netlify-cms-app"));
 
-          if (true) {
-            _netlifyCmsApp.default.init()
-          } else {
-          }
-          /**
-           * The stylesheet output from the modules at `modulePath` will be at `cms.css`.
-           */
+var _emitter = _interopRequireDefault(__webpack_require__(/*! gatsby/cache-dir/emitter */ "./node_modules/gatsby/cache-dir/emitter.js")); // set global variables required by Gatsby's components
+// https://github.com/gatsbyjs/gatsby/blob/deb41cdfefbefe0c170b5dd7c10a19ba2b338f6e/docs/docs/production-app.md#window-variables
+// some Gatsby components require these global variables set here:
+// https://github.com/gatsbyjs/gatsby/blob/deb41cdfefbefe0c170b5dd7c10a19ba2b338f6e/packages/gatsby/cache-dir/production-app.js#L28
 
-          _netlifyCmsApp.default.registerPreviewStyle('cms.css')
 
-          ;(function () {
-            var reactHotLoader =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.default
-                : undefined
+window.___emitter = _emitter.default;
+window.___loader = {
+  enqueue: function enqueue() {},
+  hovering: function hovering() {}
+};
+/**
+ * Load Netlify CMS automatically if `window.CMS_MANUAL_INIT` is set.
+ */
+// eslint-disable-next-line no-undef
 
-            if (!reactHotLoader) {
-              return
-            }
+if (true) {
+  _netlifyCmsApp.default.init();
+} else {}
+/**
+ * The stylesheet output from the modules at `modulePath` will be at `cms.css`.
+ */
 
-            reactHotLoader.register(
-              _netlifyCmsApp,
-              '_netlifyCmsApp',
-              '/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms.js'
-            )
-            reactHotLoader.register(
-              _emitter,
-              '_emitter',
-              '/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms.js'
-            )
-          })()
 
-          ;(function () {
-            var leaveModule =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.leaveModule
-                : undefined
-            leaveModule && leaveModule(module)
-          })()
-          /* WEBPACK VAR INJECTION */
-        }.call(
-          this,
-          __webpack_require__(
-            /*! ./node_modules/webpack/buildin/module.js */ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js'
-          )(module)
-        ))
+_netlifyCmsApp.default.registerPreviewStyle("cms.css");
 
-        /***/
-      },
+;
 
-    /***/ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js':
-      /*!***********************************!*\
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
+
+  if (!reactHotLoader) {
+    return;
+  }
+
+  reactHotLoader.register(_netlifyCmsApp, "_netlifyCmsApp", "/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms.js");
+  reactHotLoader.register(_emitter, "_emitter", "/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/webpack/buildin/module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
+/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
   \***********************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        /* WEBPACK VAR INJECTION */ ;(function (module) {
-          ;(function () {
-            var enterModule =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.enterModule
-                : undefined
-            enterModule && enterModule(module)
-          })()
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-          var __signature__ =
-            typeof reactHotLoaderGlobal !== 'undefined'
-              ? reactHotLoaderGlobal.default.signature
-              : function (a) {
-                  return a
-                }
+/* WEBPACK VAR INJECTION */(function(module) {(function () {
+  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
+  enterModule && enterModule(module);
+})();
 
-          var g // This works in non-strict mode
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
 
-          g = (function () {
-            return this
-          })()
+var g; // This works in non-strict mode
 
-          try {
-            // This works if eval is allowed (see CSP)
-            g = g || new Function('return this')()
-          } catch (e) {
-            // This works if the window reference is available
-            if (typeof window === 'object') g = window
-          } // g can still be undefined, but nothing to do about it...
-          // We return undefined, instead of nothing here, so it's
-          // easier to handle this case. if(!global) { ...}
+g = function () {
+  return this;
+}();
 
-          module.exports = g
-          ;(function () {
-            var reactHotLoader =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.default
-                : undefined
+try {
+  // This works if eval is allowed (see CSP)
+  g = g || new Function("return this")();
+} catch (e) {
+  // This works if the window reference is available
+  if (typeof window === "object") g = window;
+} // g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
 
-            if (!reactHotLoader) {
-              return
-            }
 
-            reactHotLoader.register(
-              g,
-              'g',
-              '/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js'
-            )
-          })()
+module.exports = g;
+;
 
-          ;(function () {
-            var leaveModule =
-              typeof reactHotLoaderGlobal !== 'undefined'
-                ? reactHotLoaderGlobal.leaveModule
-                : undefined
-            leaveModule && leaveModule(module)
-          })()
-          /* WEBPACK VAR INJECTION */
-        }.call(
-          this,
-          __webpack_require__(
-            /*! ./module.js */ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js'
-          )(module)
-        ))
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
 
-        /***/
-      },
+  if (!reactHotLoader) {
+    return;
+  }
 
-    /***/ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js':
-      /*!***********************************!*\
+  reactHotLoader.register(g, "g", "/Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
+/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js":
+/*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
   \***********************************/
-      /*! no static exports found */
-      /***/ function (module, exports) {
-        var __signature__ =
-          typeof reactHotLoaderGlobal !== 'undefined'
-            ? reactHotLoaderGlobal.default.signature
-            : function (a) {
-                return a
-              }
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-        module.exports = function (module) {
-          if (!module.webpackPolyfill) {
-            module.deprecate = function () {}
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
 
-            module.paths = [] // module.parent = undefined by default
+module.exports = function (module) {
+  if (!module.webpackPolyfill) {
+    module.deprecate = function () {};
 
-            if (!module.children) module.children = []
-            Object.defineProperty(module, 'loaded', {
-              enumerable: true,
-              get: function get() {
-                return module.l
-              },
-            })
-            Object.defineProperty(module, 'id', {
-              enumerable: true,
-              get: function get() {
-                return module.i
-              },
-            })
-            module.webpackPolyfill = 1
-          }
+    module.paths = []; // module.parent = undefined by default
 
-          return module
-        }
+    if (!module.children) module.children = [];
+    Object.defineProperty(module, "loaded", {
+      enumerable: true,
+      get: function get() {
+        return module.l;
+      }
+    });
+    Object.defineProperty(module, "id", {
+      enumerable: true,
+      get: function get() {
+        return module.i;
+      }
+    });
+    module.webpackPolyfill = 1;
+  }
 
-        /***/
-      },
+  return module;
+};
 
-    /***/ './node_modules/gatsby/cache-dir/emitter.js':
-      /*!**************************************************!*\
+/***/ }),
+
+/***/ "./node_modules/gatsby/cache-dir/emitter.js":
+/*!**************************************************!*\
   !*** ./node_modules/gatsby/cache-dir/emitter.js ***!
   \**************************************************/
-      /*! exports provided: default */
-      /***/ function (module, __webpack_exports__, __webpack_require__) {
-        'use strict'
-        __webpack_require__.r(__webpack_exports__)
-        /* harmony import */ var mitt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
-          /*! mitt */ './node_modules/mitt/dist/mitt.es.js'
-        )
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-        const emitter = Object(mitt__WEBPACK_IMPORTED_MODULE_0__['default'])()
-        /* harmony default export */ __webpack_exports__['default'] = emitter
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var mitt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mitt */ "./node_modules/mitt/dist/mitt.es.js");
 
-        /***/
-      },
 
-    /***/ './node_modules/is-plain-obj/index.js':
-      /*!********************************************!*\
+const emitter = Object(mitt__WEBPACK_IMPORTED_MODULE_0__["default"])()
+/* harmony default export */ __webpack_exports__["default"] = (emitter);
+
+
+/***/ }),
+
+/***/ "./node_modules/is-plain-obj/index.js":
+/*!********************************************!*\
   !*** ./node_modules/is-plain-obj/index.js ***!
   \********************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        var toString = Object.prototype.toString
+"use strict";
 
-        module.exports = function (x) {
-          var prototype
-          return (
-            toString.call(x) === '[object Object]' &&
-            ((prototype = Object.getPrototypeOf(x)),
-            prototype === null || prototype === Object.getPrototypeOf({}))
-          )
-        }
+var toString = Object.prototype.toString;
 
-        /***/
-      },
+module.exports = function (x) {
+	var prototype;
+	return toString.call(x) === '[object Object]' && (prototype = Object.getPrototypeOf(x), prototype === null || prototype === Object.getPrototypeOf({}));
+};
 
-    /***/ './node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js':
-      /*!*******************************************************************************!*\
+
+/***/ }),
+
+/***/ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js":
+/*!*******************************************************************************!*\
   !*** ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js ***!
   \*******************************************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        /* eslint-env browser */
+"use strict";
 
-        /*
+
+/* eslint-env browser */
+
+/*
   eslint-disable
   no-console,
   func-names
 */
-        var normalizeUrl = __webpack_require__(
-          /*! normalize-url */ './node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js'
-        )
+var normalizeUrl = __webpack_require__(/*! normalize-url */ "./node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js");
 
-        var srcByModuleId = Object.create(null)
-        var noDocument = typeof document === 'undefined'
-        var forEach = Array.prototype.forEach
+var srcByModuleId = Object.create(null);
+var noDocument = typeof document === 'undefined';
+var forEach = Array.prototype.forEach;
 
-        function debounce(fn, time) {
-          var timeout = 0
-          return function () {
-            var self = this // eslint-disable-next-line prefer-rest-params
+function debounce(fn, time) {
+  var timeout = 0;
+  return function () {
+    var self = this; // eslint-disable-next-line prefer-rest-params
 
-            var args = arguments
+    var args = arguments;
 
-            var functionCall = function functionCall() {
-              return fn.apply(self, args)
-            }
+    var functionCall = function functionCall() {
+      return fn.apply(self, args);
+    };
 
-            clearTimeout(timeout)
-            timeout = setTimeout(functionCall, time)
-          }
-        }
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
+}
 
-        function noop() {}
+function noop() {}
 
-        function getCurrentScriptUrl(moduleId) {
-          var src = srcByModuleId[moduleId]
+function getCurrentScriptUrl(moduleId) {
+  var src = srcByModuleId[moduleId];
 
-          if (!src) {
-            if (document.currentScript) {
-              src = document.currentScript.src
-            } else {
-              var scripts = document.getElementsByTagName('script')
-              var lastScriptTag = scripts[scripts.length - 1]
+  if (!src) {
+    if (document.currentScript) {
+      src = document.currentScript.src;
+    } else {
+      var scripts = document.getElementsByTagName('script');
+      var lastScriptTag = scripts[scripts.length - 1];
 
-              if (lastScriptTag) {
-                src = lastScriptTag.src
-              }
-            }
+      if (lastScriptTag) {
+        src = lastScriptTag.src;
+      }
+    }
 
-            srcByModuleId[moduleId] = src
-          }
+    srcByModuleId[moduleId] = src;
+  }
 
-          return function (fileMap) {
-            if (!src) {
-              return null
-            }
+  return function (fileMap) {
+    if (!src) {
+      return null;
+    }
 
-            var splitResult = src.split(/([^\\/]+)\.js$/)
-            var filename = splitResult && splitResult[1]
+    var splitResult = src.split(/([^\\/]+)\.js$/);
+    var filename = splitResult && splitResult[1];
 
-            if (!filename) {
-              return [src.replace('.js', '.css')]
-            }
+    if (!filename) {
+      return [src.replace('.js', '.css')];
+    }
 
-            if (!fileMap) {
-              return [src.replace('.js', '.css')]
-            }
+    if (!fileMap) {
+      return [src.replace('.js', '.css')];
+    }
 
-            return fileMap.split(',').map(function (mapRule) {
-              var reg = new RegExp(''.concat(filename, '\\.js$'), 'g')
-              return normalizeUrl(
-                src.replace(
-                  reg,
-                  ''.concat(mapRule.replace(/{fileName}/g, filename), '.css')
-                ),
-                {
-                  stripWWW: false,
-                }
-              )
-            })
-          }
-        }
+    return fileMap.split(',').map(function (mapRule) {
+      var reg = new RegExp("".concat(filename, "\\.js$"), 'g');
+      return normalizeUrl(src.replace(reg, "".concat(mapRule.replace(/{fileName}/g, filename), ".css")), {
+        stripWWW: false
+      });
+    });
+  };
+}
 
-        function updateCss(el, url) {
-          if (!url) {
-            if (!el.href) {
-              return
-            } // eslint-disable-next-line
+function updateCss(el, url) {
+  if (!url) {
+    if (!el.href) {
+      return;
+    } // eslint-disable-next-line
 
-            url = el.href.split('?')[0]
-          }
 
-          if (!isUrlRequest(url)) {
-            return
-          }
+    url = el.href.split('?')[0];
+  }
 
-          if (el.isLoaded === false) {
-            // We seem to be about to replace a css link that hasn't loaded yet.
-            // We're probably changing the same file more than once.
-            return
-          }
+  if (!isUrlRequest(url)) {
+    return;
+  }
 
-          if (!url || !(url.indexOf('.css') > -1)) {
-            return
-          } // eslint-disable-next-line no-param-reassign
+  if (el.isLoaded === false) {
+    // We seem to be about to replace a css link that hasn't loaded yet.
+    // We're probably changing the same file more than once.
+    return;
+  }
 
-          el.visited = true
-          var newEl = el.cloneNode()
-          newEl.isLoaded = false
-          newEl.addEventListener('load', function () {
-            newEl.isLoaded = true
-            el.parentNode.removeChild(el)
-          })
-          newEl.addEventListener('error', function () {
-            newEl.isLoaded = true
-            el.parentNode.removeChild(el)
-          })
-          newEl.href = ''.concat(url, '?').concat(Date.now())
+  if (!url || !(url.indexOf('.css') > -1)) {
+    return;
+  } // eslint-disable-next-line no-param-reassign
 
-          if (el.nextSibling) {
-            el.parentNode.insertBefore(newEl, el.nextSibling)
-          } else {
-            el.parentNode.appendChild(newEl)
-          }
-        }
 
-        function getReloadUrl(href, src) {
-          var ret // eslint-disable-next-line no-param-reassign
+  el.visited = true;
+  var newEl = el.cloneNode();
+  newEl.isLoaded = false;
+  newEl.addEventListener('load', function () {
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.addEventListener('error', function () {
+    newEl.isLoaded = true;
+    el.parentNode.removeChild(el);
+  });
+  newEl.href = "".concat(url, "?").concat(Date.now());
 
-          href = normalizeUrl(href, {
-            stripWWW: false,
-          }) // eslint-disable-next-line array-callback-return
+  if (el.nextSibling) {
+    el.parentNode.insertBefore(newEl, el.nextSibling);
+  } else {
+    el.parentNode.appendChild(newEl);
+  }
+}
 
-          src.some(function (url) {
-            if (href.indexOf(src) > -1) {
-              ret = url
-            }
-          })
-          return ret
-        }
+function getReloadUrl(href, src) {
+  var ret; // eslint-disable-next-line no-param-reassign
 
-        function reloadStyle(src) {
-          var elements = document.querySelectorAll('link')
-          var loaded = false
-          forEach.call(elements, function (el) {
-            if (!el.href) {
-              return
-            }
+  href = normalizeUrl(href, {
+    stripWWW: false
+  }); // eslint-disable-next-line array-callback-return
 
-            var url = getReloadUrl(el.href, src)
+  src.some(function (url) {
+    if (href.indexOf(src) > -1) {
+      ret = url;
+    }
+  });
+  return ret;
+}
 
-            if (!isUrlRequest(url)) {
-              return
-            }
+function reloadStyle(src) {
+  var elements = document.querySelectorAll('link');
+  var loaded = false;
+  forEach.call(elements, function (el) {
+    if (!el.href) {
+      return;
+    }
 
-            if (el.visited === true) {
-              return
-            }
+    var url = getReloadUrl(el.href, src);
 
-            if (url) {
-              updateCss(el, url)
-              loaded = true
-            }
-          })
-          return loaded
-        }
+    if (!isUrlRequest(url)) {
+      return;
+    }
 
-        function reloadAll() {
-          var elements = document.querySelectorAll('link')
-          forEach.call(elements, function (el) {
-            if (el.visited === true) {
-              return
-            }
+    if (el.visited === true) {
+      return;
+    }
 
-            updateCss(el)
-          })
-        }
+    if (url) {
+      updateCss(el, url);
+      loaded = true;
+    }
+  });
+  return loaded;
+}
 
-        function isUrlRequest(url) {
-          // An URL is not an request if
-          // It is not http or https
-          if (!/^https?:/i.test(url)) {
-            return false
-          }
+function reloadAll() {
+  var elements = document.querySelectorAll('link');
+  forEach.call(elements, function (el) {
+    if (el.visited === true) {
+      return;
+    }
 
-          return true
-        }
+    updateCss(el);
+  });
+}
 
-        module.exports = function (moduleId, options) {
-          if (noDocument) {
-            console.log('no window.document found, will not HMR CSS')
-            return noop
-          }
+function isUrlRequest(url) {
+  // An URL is not an request if
+  // It is not http or https
+  if (!/^https?:/i.test(url)) {
+    return false;
+  }
 
-          var getScriptSrc = getCurrentScriptUrl(moduleId)
+  return true;
+}
 
-          function update() {
-            var src = getScriptSrc(options.filename)
-            var reloaded = reloadStyle(src)
+module.exports = function (moduleId, options) {
+  if (noDocument) {
+    console.log('no window.document found, will not HMR CSS');
+    return noop;
+  }
 
-            if (options.locals) {
-              console.log('[HMR] Detected local css modules. Reload all css')
-              reloadAll()
-              return
-            }
+  var getScriptSrc = getCurrentScriptUrl(moduleId);
 
-            if (reloaded && !options.reloadAll) {
-              console.log('[HMR] css reload %s', src.join(' '))
-            } else {
-              console.log('[HMR] Reload all css')
-              reloadAll()
-            }
-          }
+  function update() {
+    var src = getScriptSrc(options.filename);
+    var reloaded = reloadStyle(src);
 
-          return debounce(update, 50)
-        }
+    if (options.locals) {
+      console.log('[HMR] Detected local css modules. Reload all css');
+      reloadAll();
+      return;
+    }
 
-        /***/
-      },
+    if (reloaded && !options.reloadAll) {
+      console.log('[HMR] css reload %s', src.join(' '));
+    } else {
+      console.log('[HMR] Reload all css');
+      reloadAll();
+    }
+  }
 
-    /***/ './node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js':
-      /*!**********************************************************************************!*\
+  return debounce(update, 50);
+};
+
+/***/ }),
+
+/***/ "./node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js":
+/*!**********************************************************************************!*\
   !*** ./node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js ***!
   \**********************************************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        var url = __webpack_require__(/*! url */ './node_modules/url/url.js')
-        var punycode = __webpack_require__(
-          /*! punycode */ './node_modules/node-libs-browser/node_modules/punycode/punycode.js'
-        )
-        var queryString = __webpack_require__(
-          /*! query-string */ './node_modules/mini-css-extract-plugin/node_modules/query-string/index.js'
-        )
-        var prependHttp = __webpack_require__(
-          /*! prepend-http */ './node_modules/prepend-http/index.js'
-        )
-        var sortKeys = __webpack_require__(
-          /*! sort-keys */ './node_modules/sort-keys/index.js'
-        )
-        var objectAssign = __webpack_require__(
-          /*! object-assign */ './node_modules/object-assign/index.js'
-        )
+"use strict";
 
-        var DEFAULT_PORTS = {
-          'http:': 80,
-          'https:': 443,
-          'ftp:': 21,
-        }
+var url = __webpack_require__(/*! url */ "./node_modules/url/url.js");
+var punycode = __webpack_require__(/*! punycode */ "./node_modules/node-libs-browser/node_modules/punycode/punycode.js");
+var queryString = __webpack_require__(/*! query-string */ "./node_modules/mini-css-extract-plugin/node_modules/query-string/index.js");
+var prependHttp = __webpack_require__(/*! prepend-http */ "./node_modules/prepend-http/index.js");
+var sortKeys = __webpack_require__(/*! sort-keys */ "./node_modules/sort-keys/index.js");
+var objectAssign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
 
-        // protocols that always contain a `//`` bit
-        var slashedProtocol = {
-          http: true,
-          https: true,
-          ftp: true,
-          gopher: true,
-          file: true,
-          'http:': true,
-          'https:': true,
-          'ftp:': true,
-          'gopher:': true,
-          'file:': true,
-        }
+var DEFAULT_PORTS = {
+	'http:': 80,
+	'https:': 443,
+	'ftp:': 21
+};
 
-        function testParameter(name, filters) {
-          return filters.some(function (filter) {
-            return filter instanceof RegExp
-              ? filter.test(name)
-              : filter === name
-          })
-        }
+// protocols that always contain a `//`` bit
+var slashedProtocol = {
+	'http': true,
+	'https': true,
+	'ftp': true,
+	'gopher': true,
+	'file': true,
+	'http:': true,
+	'https:': true,
+	'ftp:': true,
+	'gopher:': true,
+	'file:': true
+};
 
-        module.exports = function (str, opts) {
-          opts = objectAssign(
-            {
-              normalizeProtocol: true,
-              normalizeHttps: false,
-              stripFragment: true,
-              stripWWW: true,
-              removeQueryParameters: [/^utm_\w+/i],
-              removeTrailingSlash: true,
-              removeDirectoryIndex: false,
-            },
-            opts
-          )
+function testParameter(name, filters) {
+	return filters.some(function (filter) {
+		return filter instanceof RegExp ? filter.test(name) : filter === name;
+	});
+}
 
-          if (typeof str !== 'string') {
-            throw new TypeError('Expected a string')
-          }
+module.exports = function (str, opts) {
+	opts = objectAssign({
+		normalizeProtocol: true,
+		normalizeHttps: false,
+		stripFragment: true,
+		stripWWW: true,
+		removeQueryParameters: [/^utm_\w+/i],
+		removeTrailingSlash: true,
+		removeDirectoryIndex: false
+	}, opts);
 
-          var hasRelativeProtocol = str.indexOf('//') === 0
+	if (typeof str !== 'string') {
+		throw new TypeError('Expected a string');
+	}
 
-          // prepend protocol
-          str = prependHttp(str.trim()).replace(/^\/\//, 'http://')
+	var hasRelativeProtocol = str.indexOf('//') === 0;
 
-          var urlObj = url.parse(str)
+	// prepend protocol
+	str = prependHttp(str.trim()).replace(/^\/\//, 'http://');
 
-          if (opts.normalizeHttps && urlObj.protocol === 'https:') {
-            urlObj.protocol = 'http:'
-          }
+	var urlObj = url.parse(str);
 
-          if (!urlObj.hostname && !urlObj.pathname) {
-            throw new Error('Invalid URL')
-          }
+	if (opts.normalizeHttps && urlObj.protocol === 'https:') {
+		urlObj.protocol = 'http:';
+	}
 
-          // prevent these from being used by `url.format`
-          delete urlObj.host
-          delete urlObj.query
+	if (!urlObj.hostname && !urlObj.pathname) {
+		throw new Error('Invalid URL');
+	}
 
-          // remove fragment
-          if (opts.stripFragment) {
-            delete urlObj.hash
-          }
+	// prevent these from being used by `url.format`
+	delete urlObj.host;
+	delete urlObj.query;
 
-          // remove default port
-          var port = DEFAULT_PORTS[urlObj.protocol]
-          if (Number(urlObj.port) === port) {
-            delete urlObj.port
-          }
+	// remove fragment
+	if (opts.stripFragment) {
+		delete urlObj.hash;
+	}
 
-          // remove duplicate slashes
-          if (urlObj.pathname) {
-            urlObj.pathname = urlObj.pathname.replace(/\/{2,}/g, '/')
-          }
+	// remove default port
+	var port = DEFAULT_PORTS[urlObj.protocol];
+	if (Number(urlObj.port) === port) {
+		delete urlObj.port;
+	}
 
-          // decode URI octets
-          if (urlObj.pathname) {
-            urlObj.pathname = decodeURI(urlObj.pathname)
-          }
+	// remove duplicate slashes
+	if (urlObj.pathname) {
+		urlObj.pathname = urlObj.pathname.replace(/\/{2,}/g, '/');
+	}
 
-          // remove directory index
-          if (opts.removeDirectoryIndex === true) {
-            opts.removeDirectoryIndex = [/^index\.[a-z]+$/]
-          }
+	// decode URI octets
+	if (urlObj.pathname) {
+		urlObj.pathname = decodeURI(urlObj.pathname);
+	}
 
-          if (
-            Array.isArray(opts.removeDirectoryIndex) &&
-            opts.removeDirectoryIndex.length
-          ) {
-            var pathComponents = urlObj.pathname.split('/')
-            var lastComponent = pathComponents[pathComponents.length - 1]
+	// remove directory index
+	if (opts.removeDirectoryIndex === true) {
+		opts.removeDirectoryIndex = [/^index\.[a-z]+$/];
+	}
 
-            if (testParameter(lastComponent, opts.removeDirectoryIndex)) {
-              pathComponents = pathComponents.slice(
-                0,
-                pathComponents.length - 1
-              )
-              urlObj.pathname = pathComponents.slice(1).join('/') + '/'
-            }
-          }
+	if (Array.isArray(opts.removeDirectoryIndex) && opts.removeDirectoryIndex.length) {
+		var pathComponents = urlObj.pathname.split('/');
+		var lastComponent = pathComponents[pathComponents.length - 1];
 
-          // resolve relative paths, but only for slashed protocols
-          if (slashedProtocol[urlObj.protocol]) {
-            var domain = urlObj.protocol + '//' + urlObj.hostname
-            var relative = url.resolve(domain, urlObj.pathname)
-            urlObj.pathname = relative.replace(domain, '')
-          }
+		if (testParameter(lastComponent, opts.removeDirectoryIndex)) {
+			pathComponents = pathComponents.slice(0, pathComponents.length - 1);
+			urlObj.pathname = pathComponents.slice(1).join('/') + '/';
+		}
+	}
 
-          if (urlObj.hostname) {
-            // IDN to Unicode
-            urlObj.hostname = punycode.toUnicode(urlObj.hostname).toLowerCase()
+	// resolve relative paths, but only for slashed protocols
+	if (slashedProtocol[urlObj.protocol]) {
+		var domain = urlObj.protocol + '//' + urlObj.hostname;
+		var relative = url.resolve(domain, urlObj.pathname);
+		urlObj.pathname = relative.replace(domain, '');
+	}
 
-            // remove trailing dot
-            urlObj.hostname = urlObj.hostname.replace(/\.$/, '')
+	if (urlObj.hostname) {
+		// IDN to Unicode
+		urlObj.hostname = punycode.toUnicode(urlObj.hostname).toLowerCase();
 
-            // remove `www.`
-            if (opts.stripWWW) {
-              urlObj.hostname = urlObj.hostname.replace(/^www\./, '')
-            }
-          }
+		// remove trailing dot
+		urlObj.hostname = urlObj.hostname.replace(/\.$/, '');
 
-          // remove URL with empty query string
-          if (urlObj.search === '?') {
-            delete urlObj.search
-          }
+		// remove `www.`
+		if (opts.stripWWW) {
+			urlObj.hostname = urlObj.hostname.replace(/^www\./, '');
+		}
+	}
 
-          var queryParameters = queryString.parse(urlObj.search)
+	// remove URL with empty query string
+	if (urlObj.search === '?') {
+		delete urlObj.search;
+	}
 
-          // remove query unwanted parameters
-          if (Array.isArray(opts.removeQueryParameters)) {
-            for (var key in queryParameters) {
-              if (testParameter(key, opts.removeQueryParameters)) {
-                delete queryParameters[key]
-              }
-            }
-          }
+	var queryParameters = queryString.parse(urlObj.search);
 
-          // sort query parameters
-          urlObj.search = queryString.stringify(sortKeys(queryParameters))
+	// remove query unwanted parameters
+	if (Array.isArray(opts.removeQueryParameters)) {
+		for (var key in queryParameters) {
+			if (testParameter(key, opts.removeQueryParameters)) {
+				delete queryParameters[key];
+			}
+		}
+	}
 
-          // decode query parameters
-          urlObj.search = decodeURIComponent(urlObj.search)
+	// sort query parameters
+	urlObj.search = queryString.stringify(sortKeys(queryParameters));
 
-          // take advantage of many of the Node `url` normalizations
-          str = url.format(urlObj)
+	// decode query parameters
+	urlObj.search = decodeURIComponent(urlObj.search);
 
-          // remove ending `/`
-          if (opts.removeTrailingSlash || urlObj.pathname === '/') {
-            str = str.replace(/\/$/, '')
-          }
+	// take advantage of many of the Node `url` normalizations
+	str = url.format(urlObj);
 
-          // restore relative protocol, if applicable
-          if (hasRelativeProtocol && !opts.normalizeProtocol) {
-            str = str.replace(/^http:\/\//, '//')
-          }
+	// remove ending `/`
+	if (opts.removeTrailingSlash || urlObj.pathname === '/') {
+		str = str.replace(/\/$/, '');
+	}
 
-          return str
-        }
+	// restore relative protocol, if applicable
+	if (hasRelativeProtocol && !opts.normalizeProtocol) {
+		str = str.replace(/^http:\/\//, '//');
+	}
 
-        /***/
-      },
+	return str;
+};
 
-    /***/ './node_modules/mini-css-extract-plugin/node_modules/query-string/index.js':
-      /*!*********************************************************************************!*\
+
+/***/ }),
+
+/***/ "./node_modules/mini-css-extract-plugin/node_modules/query-string/index.js":
+/*!*********************************************************************************!*\
   !*** ./node_modules/mini-css-extract-plugin/node_modules/query-string/index.js ***!
   \*********************************************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        var strictUriEncode = __webpack_require__(
-          /*! strict-uri-encode */ './node_modules/strict-uri-encode/index.js'
-        )
-        var objectAssign = __webpack_require__(
-          /*! object-assign */ './node_modules/object-assign/index.js'
-        )
+"use strict";
 
-        function encoderForArrayFormat(opts) {
-          switch (opts.arrayFormat) {
-            case 'index':
-              return function (key, value, index) {
-                return value === null
-                  ? [encode(key, opts), '[', index, ']'].join('')
-                  : [
-                      encode(key, opts),
-                      '[',
-                      encode(index, opts),
-                      ']=',
-                      encode(value, opts),
-                    ].join('')
-              }
+var strictUriEncode = __webpack_require__(/*! strict-uri-encode */ "./node_modules/strict-uri-encode/index.js");
+var objectAssign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
 
-            case 'bracket':
-              return function (key, value) {
-                return value === null
-                  ? encode(key, opts)
-                  : [encode(key, opts), '[]=', encode(value, opts)].join('')
-              }
+function encoderForArrayFormat(opts) {
+	switch (opts.arrayFormat) {
+		case 'index':
+			return function (key, value, index) {
+				return value === null ? [
+					encode(key, opts),
+					'[',
+					index,
+					']'
+				].join('') : [
+					encode(key, opts),
+					'[',
+					encode(index, opts),
+					']=',
+					encode(value, opts)
+				].join('');
+			};
 
-            default:
-              return function (key, value) {
-                return value === null
-                  ? encode(key, opts)
-                  : [encode(key, opts), '=', encode(value, opts)].join('')
-              }
-          }
-        }
+		case 'bracket':
+			return function (key, value) {
+				return value === null ? encode(key, opts) : [
+					encode(key, opts),
+					'[]=',
+					encode(value, opts)
+				].join('');
+			};
 
-        function parserForArrayFormat(opts) {
-          var result
+		default:
+			return function (key, value) {
+				return value === null ? encode(key, opts) : [
+					encode(key, opts),
+					'=',
+					encode(value, opts)
+				].join('');
+			};
+	}
+}
 
-          switch (opts.arrayFormat) {
-            case 'index':
-              return function (key, value, accumulator) {
-                result = /\[(\d*)\]$/.exec(key)
+function parserForArrayFormat(opts) {
+	var result;
 
-                key = key.replace(/\[\d*\]$/, '')
+	switch (opts.arrayFormat) {
+		case 'index':
+			return function (key, value, accumulator) {
+				result = /\[(\d*)\]$/.exec(key);
 
-                if (!result) {
-                  accumulator[key] = value
-                  return
-                }
+				key = key.replace(/\[\d*\]$/, '');
 
-                if (accumulator[key] === undefined) {
-                  accumulator[key] = {}
-                }
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				}
 
-                accumulator[key][result[1]] = value
-              }
+				if (accumulator[key] === undefined) {
+					accumulator[key] = {};
+				}
 
-            case 'bracket':
-              return function (key, value, accumulator) {
-                result = /(\[\])$/.exec(key)
-                key = key.replace(/\[\]$/, '')
+				accumulator[key][result[1]] = value;
+			};
 
-                if (!result) {
-                  accumulator[key] = value
-                  return
-                } else if (accumulator[key] === undefined) {
-                  accumulator[key] = [value]
-                  return
-                }
+		case 'bracket':
+			return function (key, value, accumulator) {
+				result = /(\[\])$/.exec(key);
+				key = key.replace(/\[\]$/, '');
 
-                accumulator[key] = [].concat(accumulator[key], value)
-              }
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				} else if (accumulator[key] === undefined) {
+					accumulator[key] = [value];
+					return;
+				}
 
-            default:
-              return function (key, value, accumulator) {
-                if (accumulator[key] === undefined) {
-                  accumulator[key] = value
-                  return
-                }
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
 
-                accumulator[key] = [].concat(accumulator[key], value)
-              }
-          }
-        }
+		default:
+			return function (key, value, accumulator) {
+				if (accumulator[key] === undefined) {
+					accumulator[key] = value;
+					return;
+				}
 
-        function encode(value, opts) {
-          if (opts.encode) {
-            return opts.strict
-              ? strictUriEncode(value)
-              : encodeURIComponent(value)
-          }
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
+	}
+}
 
-          return value
-        }
+function encode(value, opts) {
+	if (opts.encode) {
+		return opts.strict ? strictUriEncode(value) : encodeURIComponent(value);
+	}
 
-        function keysSorter(input) {
-          if (Array.isArray(input)) {
-            return input.sort()
-          } else if (typeof input === 'object') {
-            return keysSorter(Object.keys(input))
-              .sort(function (a, b) {
-                return Number(a) - Number(b)
-              })
-              .map(function (key) {
-                return input[key]
-              })
-          }
+	return value;
+}
 
-          return input
-        }
+function keysSorter(input) {
+	if (Array.isArray(input)) {
+		return input.sort();
+	} else if (typeof input === 'object') {
+		return keysSorter(Object.keys(input)).sort(function (a, b) {
+			return Number(a) - Number(b);
+		}).map(function (key) {
+			return input[key];
+		});
+	}
 
-        exports.extract = function (str) {
-          return str.split('?')[1] || ''
-        }
+	return input;
+}
 
-        exports.parse = function (str, opts) {
-          opts = objectAssign({ arrayFormat: 'none' }, opts)
+exports.extract = function (str) {
+	return str.split('?')[1] || '';
+};
 
-          var formatter = parserForArrayFormat(opts)
+exports.parse = function (str, opts) {
+	opts = objectAssign({arrayFormat: 'none'}, opts);
 
-          // Create an object with no prototype
-          // https://github.com/sindresorhus/query-string/issues/47
-          var ret = Object.create(null)
+	var formatter = parserForArrayFormat(opts);
 
-          if (typeof str !== 'string') {
-            return ret
-          }
+	// Create an object with no prototype
+	// https://github.com/sindresorhus/query-string/issues/47
+	var ret = Object.create(null);
 
-          str = str.trim().replace(/^(\?|#|&)/, '')
+	if (typeof str !== 'string') {
+		return ret;
+	}
 
-          if (!str) {
-            return ret
-          }
+	str = str.trim().replace(/^(\?|#|&)/, '');
 
-          str.split('&').forEach(function (param) {
-            var parts = param.replace(/\+/g, ' ').split('=')
-            // Firefox (pre 40) decodes `%3D` to `=`
-            // https://github.com/sindresorhus/query-string/pull/37
-            var key = parts.shift()
-            var val = parts.length > 0 ? parts.join('=') : undefined
+	if (!str) {
+		return ret;
+	}
 
-            // missing `=` should be `null`:
-            // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-            val = val === undefined ? null : decodeURIComponent(val)
+	str.split('&').forEach(function (param) {
+		var parts = param.replace(/\+/g, ' ').split('=');
+		// Firefox (pre 40) decodes `%3D` to `=`
+		// https://github.com/sindresorhus/query-string/pull/37
+		var key = parts.shift();
+		var val = parts.length > 0 ? parts.join('=') : undefined;
 
-            formatter(decodeURIComponent(key), val, ret)
-          })
+		// missing `=` should be `null`:
+		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+		val = val === undefined ? null : decodeURIComponent(val);
 
-          return Object.keys(ret)
-            .sort()
-            .reduce(function (result, key) {
-              var val = ret[key]
-              if (
-                Boolean(val) &&
-                typeof val === 'object' &&
-                !Array.isArray(val)
-              ) {
-                // Sort object keys, not values
-                result[key] = keysSorter(val)
-              } else {
-                result[key] = val
-              }
+		formatter(decodeURIComponent(key), val, ret);
+	});
 
-              return result
-            }, Object.create(null))
-        }
+	return Object.keys(ret).sort().reduce(function (result, key) {
+		var val = ret[key];
+		if (Boolean(val) && typeof val === 'object' && !Array.isArray(val)) {
+			// Sort object keys, not values
+			result[key] = keysSorter(val);
+		} else {
+			result[key] = val;
+		}
 
-        exports.stringify = function (obj, opts) {
-          var defaults = {
-            encode: true,
-            strict: true,
-            arrayFormat: 'none',
-          }
+		return result;
+	}, Object.create(null));
+};
 
-          opts = objectAssign(defaults, opts)
+exports.stringify = function (obj, opts) {
+	var defaults = {
+		encode: true,
+		strict: true,
+		arrayFormat: 'none'
+	};
 
-          var formatter = encoderForArrayFormat(opts)
+	opts = objectAssign(defaults, opts);
 
-          return obj
-            ? Object.keys(obj)
-                .sort()
-                .map(function (key) {
-                  var val = obj[key]
+	var formatter = encoderForArrayFormat(opts);
 
-                  if (val === undefined) {
-                    return ''
-                  }
+	return obj ? Object.keys(obj).sort().map(function (key) {
+		var val = obj[key];
 
-                  if (val === null) {
-                    return encode(key, opts)
-                  }
+		if (val === undefined) {
+			return '';
+		}
 
-                  if (Array.isArray(val)) {
-                    var result = []
+		if (val === null) {
+			return encode(key, opts);
+		}
 
-                    val.slice().forEach(function (val2) {
-                      if (val2 === undefined) {
-                        return
-                      }
+		if (Array.isArray(val)) {
+			var result = [];
 
-                      result.push(formatter(key, val2, result.length))
-                    })
+			val.slice().forEach(function (val2) {
+				if (val2 === undefined) {
+					return;
+				}
 
-                    return result.join('&')
-                  }
+				result.push(formatter(key, val2, result.length));
+			});
 
-                  return encode(key, opts) + '=' + encode(val, opts)
-                })
-                .filter(function (x) {
-                  return x.length > 0
-                })
-                .join('&')
-            : ''
-        }
+			return result.join('&');
+		}
 
-        /***/
-      },
+		return encode(key, opts) + '=' + encode(val, opts);
+	}).filter(function (x) {
+		return x.length > 0;
+	}).join('&') : '';
+};
 
-    /***/ './node_modules/mitt/dist/mitt.es.js':
-      /*!*******************************************!*\
+
+/***/ }),
+
+/***/ "./node_modules/mitt/dist/mitt.es.js":
+/*!*******************************************!*\
   !*** ./node_modules/mitt/dist/mitt.es.js ***!
   \*******************************************/
-      /*! exports provided: default */
-      /***/ function (module, __webpack_exports__, __webpack_require__) {
-        'use strict'
-        __webpack_require__.r(__webpack_exports__)
-        //
-        // An event handler can take an optional event argument
-        // and should not return a value
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-        // An array of all currently registered event handlers for a type
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//      
+// An event handler can take an optional event argument
+// and should not return a value
+                                          
+                                                               
 
-        // A map of event types and their corresponding event handlers.
+// An array of all currently registered event handlers for a type
+                                            
+                                                            
+// A map of event types and their corresponding event handlers.
+                        
+                                 
+                                   
+  
 
-        /** Mitt: Tiny (~200b) functional event emitter / pubsub.
-         *  @name mitt
-         *  @returns {Mitt}
-         */
-        function mitt(all) {
-          all = all || Object.create(null)
+/** Mitt: Tiny (~200b) functional event emitter / pubsub.
+ *  @name mitt
+ *  @returns {Mitt}
+ */
+function mitt(all                 ) {
+	all = all || Object.create(null);
 
-          return {
-            /**
-             * Register an event handler for the given type.
-             *
-             * @param  {String} type	Type of event to listen for, or `"*"` for all events
-             * @param  {Function} handler Function to call in response to given event
-             * @memberOf mitt
-             */
-            on: function on(type, handler) {
-              ;(all[type] || (all[type] = [])).push(handler)
-            },
+	return {
+		/**
+		 * Register an event handler for the given type.
+		 *
+		 * @param  {String} type	Type of event to listen for, or `"*"` for all events
+		 * @param  {Function} handler Function to call in response to given event
+		 * @memberOf mitt
+		 */
+		on: function on(type        , handler              ) {
+			(all[type] || (all[type] = [])).push(handler);
+		},
 
-            /**
-             * Remove an event handler for the given type.
-             *
-             * @param  {String} type	Type of event to unregister `handler` from, or `"*"`
-             * @param  {Function} handler Handler function to remove
-             * @memberOf mitt
-             */
-            off: function off(type, handler) {
-              if (all[type]) {
-                all[type].splice(all[type].indexOf(handler) >>> 0, 1)
-              }
-            },
+		/**
+		 * Remove an event handler for the given type.
+		 *
+		 * @param  {String} type	Type of event to unregister `handler` from, or `"*"`
+		 * @param  {Function} handler Handler function to remove
+		 * @memberOf mitt
+		 */
+		off: function off(type        , handler              ) {
+			if (all[type]) {
+				all[type].splice(all[type].indexOf(handler) >>> 0, 1);
+			}
+		},
 
-            /**
-             * Invoke all handlers for the given type.
-             * If present, `"*"` handlers are invoked after type-matched handlers.
-             *
-             * @param {String} type  The event type to invoke
-             * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
-             * @memberOf mitt
-             */
-            emit: function emit(type, evt) {
-              ;(all[type] || []).slice().map(function (handler) {
-                handler(evt)
-              })
-              ;(all['*'] || []).slice().map(function (handler) {
-                handler(type, evt)
-              })
-            },
-          }
-        }
+		/**
+		 * Invoke all handlers for the given type.
+		 * If present, `"*"` handlers are invoked after type-matched handlers.
+		 *
+		 * @param {String} type  The event type to invoke
+		 * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
+		 * @memberOf mitt
+		 */
+		emit: function emit(type        , evt     ) {
+			(all[type] || []).slice().map(function (handler) { handler(evt); });
+			(all['*'] || []).slice().map(function (handler) { handler(type, evt); });
+		}
+	};
+}
 
-        /* harmony default export */ __webpack_exports__['default'] = mitt
-        //# sourceMappingURL=mitt.es.js.map
+/* harmony default export */ __webpack_exports__["default"] = (mitt);
+//# sourceMappingURL=mitt.es.js.map
 
-        /***/
-      },
 
-    /***/ './node_modules/node-libs-browser/node_modules/punycode/punycode.js':
-      /*!**************************************************************************!*\
+/***/ }),
+
+/***/ "./node_modules/node-libs-browser/node_modules/punycode/punycode.js":
+/*!**************************************************************************!*\
   !*** ./node_modules/node-libs-browser/node_modules/punycode/punycode.js ***!
   \**************************************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        /* WEBPACK VAR INJECTION */ ;(function (module, global) {
-          var __WEBPACK_AMD_DEFINE_RESULT__ /*! https://mths.be/punycode v1.4.1 by @mathias */
-          ;(function (root) {
-            /** Detect free variables */
-            var freeExports = true && exports && !exports.nodeType && exports
-            var freeModule = true && module && !module.nodeType && module
-            var freeGlobal = typeof global == 'object' && global
-            if (
-              freeGlobal.global === freeGlobal ||
-              freeGlobal.window === freeGlobal ||
-              freeGlobal.self === freeGlobal
-            ) {
-              root = freeGlobal
-            }
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-            /**
-             * The `punycode` object.
-             * @name punycode
-             * @type Object
-             */
-            var punycode,
-              /** Highest positive signed 32-bit float value */
-              maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
-              /** Bootstring parameters */
-              base = 36,
-              tMin = 1,
-              tMax = 26,
-              skew = 38,
-              damp = 700,
-              initialBias = 72,
-              initialN = 128, // 0x80
-              delimiter = '-', // '\x2D'
-              /** Regular expressions */
-              regexPunycode = /^xn--/,
-              regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
-              regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
-              /** Error messages */
-              errors = {
-                overflow: 'Overflow: input needs wider integers to process',
-                'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-                'invalid-input': 'Invalid input',
-              },
-              /** Convenience shortcuts */
-              baseMinusTMin = base - tMin,
-              floor = Math.floor,
-              stringFromCharCode = String.fromCharCode,
-              /** Temporary variable */
-              key
+/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
+;(function(root) {
 
-            /*--------------------------------------------------------------------------*/
+	/** Detect free variables */
+	var freeExports =  true && exports &&
+		!exports.nodeType && exports;
+	var freeModule =  true && module &&
+		!module.nodeType && module;
+	var freeGlobal = typeof global == 'object' && global;
+	if (
+		freeGlobal.global === freeGlobal ||
+		freeGlobal.window === freeGlobal ||
+		freeGlobal.self === freeGlobal
+	) {
+		root = freeGlobal;
+	}
 
-            /**
-             * A generic error utility function.
-             * @private
-             * @param {String} type The error type.
-             * @returns {Error} Throws a `RangeError` with the applicable error message.
-             */
-            function error(type) {
-              throw new RangeError(errors[type])
-            }
+	/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */
+	var punycode,
 
-            /**
-             * A generic `Array#map` utility function.
-             * @private
-             * @param {Array} array The array to iterate over.
-             * @param {Function} callback The function that gets called for every array
-             * item.
-             * @returns {Array} A new array of values returned by the callback function.
-             */
-            function map(array, fn) {
-              var length = array.length
-              var result = []
-              while (length--) {
-                result[length] = fn(array[length])
-              }
-              return result
-            }
+	/** Highest positive signed 32-bit float value */
+	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
 
-            /**
-             * A simple `Array#map`-like wrapper to work with domain name strings or email
-             * addresses.
-             * @private
-             * @param {String} domain The domain name or email address.
-             * @param {Function} callback The function that gets called for every
-             * character.
-             * @returns {Array} A new string of characters returned by the callback
-             * function.
-             */
-            function mapDomain(string, fn) {
-              var parts = string.split('@')
-              var result = ''
-              if (parts.length > 1) {
-                // In email addresses, only the domain name should be punycoded. Leave
-                // the local part (i.e. everything up to `@`) intact.
-                result = parts[0] + '@'
-                string = parts[1]
-              }
-              // Avoid `split(regex)` for IE8 compatibility. See #17.
-              string = string.replace(regexSeparators, '\x2E')
-              var labels = string.split('.')
-              var encoded = map(labels, fn).join('.')
-              return result + encoded
-            }
+	/** Bootstring parameters */
+	base = 36,
+	tMin = 1,
+	tMax = 26,
+	skew = 38,
+	damp = 700,
+	initialBias = 72,
+	initialN = 128, // 0x80
+	delimiter = '-', // '\x2D'
 
-            /**
-             * Creates an array containing the numeric code points of each Unicode
-             * character in the string. While JavaScript uses UCS-2 internally,
-             * this function will convert a pair of surrogate halves (each of which
-             * UCS-2 exposes as separate characters) into a single code point,
-             * matching UTF-16.
-             * @see `punycode.ucs2.encode`
-             * @see <https://mathiasbynens.be/notes/javascript-encoding>
-             * @memberOf punycode.ucs2
-             * @name decode
-             * @param {String} string The Unicode input string (UCS-2).
-             * @returns {Array} The new array of code points.
-             */
-            function ucs2decode(string) {
-              var output = [],
-                counter = 0,
-                length = string.length,
-                value,
-                extra
-              while (counter < length) {
-                value = string.charCodeAt(counter++)
-                if (value >= 0xd800 && value <= 0xdbff && counter < length) {
-                  // high surrogate, and there is a next character
-                  extra = string.charCodeAt(counter++)
-                  if ((extra & 0xfc00) == 0xdc00) {
-                    // low surrogate
-                    output.push(
-                      ((value & 0x3ff) << 10) + (extra & 0x3ff) + 0x10000
-                    )
-                  } else {
-                    // unmatched surrogate; only append this code unit, in case the next
-                    // code unit is the high surrogate of a surrogate pair
-                    output.push(value)
-                    counter--
-                  }
-                } else {
-                  output.push(value)
-                }
-              }
-              return output
-            }
+	/** Regular expressions */
+	regexPunycode = /^xn--/,
+	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
+	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
 
-            /**
-             * Creates a string based on an array of numeric code points.
-             * @see `punycode.ucs2.decode`
-             * @memberOf punycode.ucs2
-             * @name encode
-             * @param {Array} codePoints The array of numeric code points.
-             * @returns {String} The new Unicode string (UCS-2).
-             */
-            function ucs2encode(array) {
-              return map(array, function (value) {
-                var output = ''
-                if (value > 0xffff) {
-                  value -= 0x10000
-                  output += stringFromCharCode(
-                    ((value >>> 10) & 0x3ff) | 0xd800
-                  )
-                  value = 0xdc00 | (value & 0x3ff)
-                }
-                output += stringFromCharCode(value)
-                return output
-              }).join('')
-            }
+	/** Error messages */
+	errors = {
+		'overflow': 'Overflow: input needs wider integers to process',
+		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+		'invalid-input': 'Invalid input'
+	},
 
-            /**
-             * Converts a basic code point into a digit/integer.
-             * @see `digitToBasic()`
-             * @private
-             * @param {Number} codePoint The basic numeric code point value.
-             * @returns {Number} The numeric value of a basic code point (for use in
-             * representing integers) in the range `0` to `base - 1`, or `base` if
-             * the code point does not represent a value.
-             */
-            function basicToDigit(codePoint) {
-              if (codePoint - 48 < 10) {
-                return codePoint - 22
-              }
-              if (codePoint - 65 < 26) {
-                return codePoint - 65
-              }
-              if (codePoint - 97 < 26) {
-                return codePoint - 97
-              }
-              return base
-            }
+	/** Convenience shortcuts */
+	baseMinusTMin = base - tMin,
+	floor = Math.floor,
+	stringFromCharCode = String.fromCharCode,
 
-            /**
-             * Converts a digit/integer into a basic code point.
-             * @see `basicToDigit()`
-             * @private
-             * @param {Number} digit The numeric value of a basic code point.
-             * @returns {Number} The basic code point whose value (when used for
-             * representing integers) is `digit`, which needs to be in the range
-             * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-             * used; else, the lowercase form is used. The behavior is undefined
-             * if `flag` is non-zero and `digit` has no uppercase form.
-             */
-            function digitToBasic(digit, flag) {
-              //  0..25 map to ASCII a..z or A..Z
-              // 26..35 map to ASCII 0..9
-              return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5)
-            }
+	/** Temporary variable */
+	key;
 
-            /**
-             * Bias adaptation function as per section 3.4 of RFC 3492.
-             * https://tools.ietf.org/html/rfc3492#section-3.4
-             * @private
-             */
-            function adapt(delta, numPoints, firstTime) {
-              var k = 0
-              delta = firstTime ? floor(delta / damp) : delta >> 1
-              delta += floor(delta / numPoints)
-              for (
-                ;
-                /* no initialization */ delta > (baseMinusTMin * tMax) >> 1;
-                k += base
-              ) {
-                delta = floor(delta / baseMinusTMin)
-              }
-              return floor(k + ((baseMinusTMin + 1) * delta) / (delta + skew))
-            }
+	/*--------------------------------------------------------------------------*/
 
-            /**
-             * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-             * symbols.
-             * @memberOf punycode
-             * @param {String} input The Punycode string of ASCII-only symbols.
-             * @returns {String} The resulting string of Unicode symbols.
-             */
-            function decode(input) {
-              // Don't use UCS-2
-              var output = [],
-                inputLength = input.length,
-                out,
-                i = 0,
-                n = initialN,
-                bias = initialBias,
-                basic,
-                j,
-                index,
-                oldi,
-                w,
-                k,
-                digit,
-                t,
-                /** Cached calculation results */
-                baseMinusT
+	/**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */
+	function error(type) {
+		throw new RangeError(errors[type]);
+	}
 
-              // Handle the basic code points: let `basic` be the number of input code
-              // points before the last delimiter, or `0` if there is none, then copy
-              // the first basic code points to the output.
+	/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */
+	function map(array, fn) {
+		var length = array.length;
+		var result = [];
+		while (length--) {
+			result[length] = fn(array[length]);
+		}
+		return result;
+	}
 
-              basic = input.lastIndexOf(delimiter)
-              if (basic < 0) {
-                basic = 0
-              }
+	/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings or email
+	 * addresses.
+	 * @private
+	 * @param {String} domain The domain name or email address.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */
+	function mapDomain(string, fn) {
+		var parts = string.split('@');
+		var result = '';
+		if (parts.length > 1) {
+			// In email addresses, only the domain name should be punycoded. Leave
+			// the local part (i.e. everything up to `@`) intact.
+			result = parts[0] + '@';
+			string = parts[1];
+		}
+		// Avoid `split(regex)` for IE8 compatibility. See #17.
+		string = string.replace(regexSeparators, '\x2E');
+		var labels = string.split('.');
+		var encoded = map(labels, fn).join('.');
+		return result + encoded;
+	}
 
-              for (j = 0; j < basic; ++j) {
-                // if it's not a basic code point
-                if (input.charCodeAt(j) >= 0x80) {
-                  error('not-basic')
-                }
-                output.push(input.charCodeAt(j))
-              }
+	/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */
+	function ucs2decode(string) {
+		var output = [],
+		    counter = 0,
+		    length = string.length,
+		    value,
+		    extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
 
-              // Main decoding loop: start just after the last delimiter if any basic code
-              // points were copied; start at the beginning otherwise.
+	/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */
+	function ucs2encode(array) {
+		return map(array, function(value) {
+			var output = '';
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+			return output;
+		}).join('');
+	}
 
-              for (
-                index = basic > 0 ? basic + 1 : 0;
-                index < inputLength /* no final expression */;
+	/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */
+	function basicToDigit(codePoint) {
+		if (codePoint - 48 < 10) {
+			return codePoint - 22;
+		}
+		if (codePoint - 65 < 26) {
+			return codePoint - 65;
+		}
+		if (codePoint - 97 < 26) {
+			return codePoint - 97;
+		}
+		return base;
+	}
 
-              ) {
-                // `index` is the index of the next character to be consumed.
-                // Decode a generalized variable-length integer into `delta`,
-                // which gets added to `i`. The overflow checking is easier
-                // if we increase `i` as we go, then subtract off its starting
-                // value at the end to obtain `delta`.
-                for (
-                  oldi = i, w = 1, k = base /* no condition */;
-                  ;
-                  k += base
-                ) {
-                  if (index >= inputLength) {
-                    error('invalid-input')
-                  }
+	/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */
+	function digitToBasic(digit, flag) {
+		//  0..25 map to ASCII a..z or A..Z
+		// 26..35 map to ASCII 0..9
+		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+	}
 
-                  digit = basicToDigit(input.charCodeAt(index++))
+	/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */
+	function adapt(delta, numPoints, firstTime) {
+		var k = 0;
+		delta = firstTime ? floor(delta / damp) : delta >> 1;
+		delta += floor(delta / numPoints);
+		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+			delta = floor(delta / baseMinusTMin);
+		}
+		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+	}
 
-                  if (digit >= base || digit > floor((maxInt - i) / w)) {
-                    error('overflow')
-                  }
+	/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */
+	function decode(input) {
+		// Don't use UCS-2
+		var output = [],
+		    inputLength = input.length,
+		    out,
+		    i = 0,
+		    n = initialN,
+		    bias = initialBias,
+		    basic,
+		    j,
+		    index,
+		    oldi,
+		    w,
+		    k,
+		    digit,
+		    t,
+		    /** Cached calculation results */
+		    baseMinusT;
 
-                  i += digit * w
-                  t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias
+		// Handle the basic code points: let `basic` be the number of input code
+		// points before the last delimiter, or `0` if there is none, then copy
+		// the first basic code points to the output.
 
-                  if (digit < t) {
-                    break
-                  }
+		basic = input.lastIndexOf(delimiter);
+		if (basic < 0) {
+			basic = 0;
+		}
 
-                  baseMinusT = base - t
-                  if (w > floor(maxInt / baseMinusT)) {
-                    error('overflow')
-                  }
+		for (j = 0; j < basic; ++j) {
+			// if it's not a basic code point
+			if (input.charCodeAt(j) >= 0x80) {
+				error('not-basic');
+			}
+			output.push(input.charCodeAt(j));
+		}
 
-                  w *= baseMinusT
-                }
+		// Main decoding loop: start just after the last delimiter if any basic code
+		// points were copied; start at the beginning otherwise.
 
-                out = output.length + 1
-                bias = adapt(i - oldi, out, oldi == 0)
+		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
 
-                // `i` was supposed to wrap around from `out` to `0`,
-                // incrementing `n` each time, so we'll fix that now:
-                if (floor(i / out) > maxInt - n) {
-                  error('overflow')
-                }
+			// `index` is the index of the next character to be consumed.
+			// Decode a generalized variable-length integer into `delta`,
+			// which gets added to `i`. The overflow checking is easier
+			// if we increase `i` as we go, then subtract off its starting
+			// value at the end to obtain `delta`.
+			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
 
-                n += floor(i / out)
-                i %= out
+				if (index >= inputLength) {
+					error('invalid-input');
+				}
 
-                // Insert `n` at position `i` of the output
-                output.splice(i++, 0, n)
-              }
+				digit = basicToDigit(input.charCodeAt(index++));
 
-              return ucs2encode(output)
-            }
+				if (digit >= base || digit > floor((maxInt - i) / w)) {
+					error('overflow');
+				}
 
-            /**
-             * Converts a string of Unicode symbols (e.g. a domain name label) to a
-             * Punycode string of ASCII-only symbols.
-             * @memberOf punycode
-             * @param {String} input The string of Unicode symbols.
-             * @returns {String} The resulting Punycode string of ASCII-only symbols.
-             */
-            function encode(input) {
-              var n,
-                delta,
-                handledCPCount,
-                basicLength,
-                bias,
-                j,
-                m,
-                q,
-                k,
-                t,
-                currentValue,
-                output = [],
-                /** `inputLength` will hold the number of code points in `input`. */
-                inputLength,
-                /** Cached calculation results */
-                handledCPCountPlusOne,
-                baseMinusT,
-                qMinusT
+				i += digit * w;
+				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
 
-              // Convert the input in UCS-2 to Unicode
-              input = ucs2decode(input)
+				if (digit < t) {
+					break;
+				}
 
-              // Cache the length
-              inputLength = input.length
+				baseMinusT = base - t;
+				if (w > floor(maxInt / baseMinusT)) {
+					error('overflow');
+				}
 
-              // Initialize the state
-              n = initialN
-              delta = 0
-              bias = initialBias
+				w *= baseMinusT;
 
-              // Handle the basic code points
-              for (j = 0; j < inputLength; ++j) {
-                currentValue = input[j]
-                if (currentValue < 0x80) {
-                  output.push(stringFromCharCode(currentValue))
-                }
-              }
+			}
 
-              handledCPCount = basicLength = output.length
+			out = output.length + 1;
+			bias = adapt(i - oldi, out, oldi == 0);
 
-              // `handledCPCount` is the number of code points that have been handled;
-              // `basicLength` is the number of basic code points.
+			// `i` was supposed to wrap around from `out` to `0`,
+			// incrementing `n` each time, so we'll fix that now:
+			if (floor(i / out) > maxInt - n) {
+				error('overflow');
+			}
 
-              // Finish the basic string - if it is not empty - with a delimiter
-              if (basicLength) {
-                output.push(delimiter)
-              }
+			n += floor(i / out);
+			i %= out;
 
-              // Main encoding loop:
-              while (handledCPCount < inputLength) {
-                // All non-basic code points < n have been handled already. Find the next
-                // larger one:
-                for (m = maxInt, j = 0; j < inputLength; ++j) {
-                  currentValue = input[j]
-                  if (currentValue >= n && currentValue < m) {
-                    m = currentValue
-                  }
-                }
+			// Insert `n` at position `i` of the output
+			output.splice(i++, 0, n);
 
-                // Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-                // but guard against overflow
-                handledCPCountPlusOne = handledCPCount + 1
-                if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-                  error('overflow')
-                }
+		}
 
-                delta += (m - n) * handledCPCountPlusOne
-                n = m
+		return ucs2encode(output);
+	}
 
-                for (j = 0; j < inputLength; ++j) {
-                  currentValue = input[j]
+	/**
+	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
+	 * Punycode string of ASCII-only symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */
+	function encode(input) {
+		var n,
+		    delta,
+		    handledCPCount,
+		    basicLength,
+		    bias,
+		    j,
+		    m,
+		    q,
+		    k,
+		    t,
+		    currentValue,
+		    output = [],
+		    /** `inputLength` will hold the number of code points in `input`. */
+		    inputLength,
+		    /** Cached calculation results */
+		    handledCPCountPlusOne,
+		    baseMinusT,
+		    qMinusT;
 
-                  if (currentValue < n && ++delta > maxInt) {
-                    error('overflow')
-                  }
+		// Convert the input in UCS-2 to Unicode
+		input = ucs2decode(input);
 
-                  if (currentValue == n) {
-                    // Represent delta as a generalized variable-length integer
-                    for (q = delta, k = base /* no condition */; ; k += base) {
-                      t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias
-                      if (q < t) {
-                        break
-                      }
-                      qMinusT = q - t
-                      baseMinusT = base - t
-                      output.push(
-                        stringFromCharCode(
-                          digitToBasic(t + (qMinusT % baseMinusT), 0)
-                        )
-                      )
-                      q = floor(qMinusT / baseMinusT)
-                    }
+		// Cache the length
+		inputLength = input.length;
 
-                    output.push(stringFromCharCode(digitToBasic(q, 0)))
-                    bias = adapt(
-                      delta,
-                      handledCPCountPlusOne,
-                      handledCPCount == basicLength
-                    )
-                    delta = 0
-                    ++handledCPCount
-                  }
-                }
+		// Initialize the state
+		n = initialN;
+		delta = 0;
+		bias = initialBias;
 
-                ++delta
-                ++n
-              }
-              return output.join('')
-            }
+		// Handle the basic code points
+		for (j = 0; j < inputLength; ++j) {
+			currentValue = input[j];
+			if (currentValue < 0x80) {
+				output.push(stringFromCharCode(currentValue));
+			}
+		}
 
-            /**
-             * Converts a Punycode string representing a domain name or an email address
-             * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
-             * it doesn't matter if you call it on a string that has already been
-             * converted to Unicode.
-             * @memberOf punycode
-             * @param {String} input The Punycoded domain name or email address to
-             * convert to Unicode.
-             * @returns {String} The Unicode representation of the given Punycode
-             * string.
-             */
-            function toUnicode(input) {
-              return mapDomain(input, function (string) {
-                return regexPunycode.test(string)
-                  ? decode(string.slice(4).toLowerCase())
-                  : string
-              })
-            }
+		handledCPCount = basicLength = output.length;
 
-            /**
-             * Converts a Unicode string representing a domain name or an email address to
-             * Punycode. Only the non-ASCII parts of the domain name will be converted,
-             * i.e. it doesn't matter if you call it with a domain that's already in
-             * ASCII.
-             * @memberOf punycode
-             * @param {String} input The domain name or email address to convert, as a
-             * Unicode string.
-             * @returns {String} The Punycode representation of the given domain name or
-             * email address.
-             */
-            function toASCII(input) {
-              return mapDomain(input, function (string) {
-                return regexNonASCII.test(string)
-                  ? 'xn--' + encode(string)
-                  : string
-              })
-            }
+		// `handledCPCount` is the number of code points that have been handled;
+		// `basicLength` is the number of basic code points.
 
-            /*--------------------------------------------------------------------------*/
+		// Finish the basic string - if it is not empty - with a delimiter
+		if (basicLength) {
+			output.push(delimiter);
+		}
 
-            /** Define the public API */
-            punycode = {
-              /**
-               * A string representing the current Punycode.js version number.
-               * @memberOf punycode
-               * @type String
-               */
-              version: '1.4.1',
-              /**
-               * An object of methods to convert from JavaScript's internal character
-               * representation (UCS-2) to Unicode code points, and back.
-               * @see <https://mathiasbynens.be/notes/javascript-encoding>
-               * @memberOf punycode
-               * @type Object
-               */
-              ucs2: {
-                decode: ucs2decode,
-                encode: ucs2encode,
-              },
-              decode: decode,
-              encode: encode,
-              toASCII: toASCII,
-              toUnicode: toUnicode,
-            }
+		// Main encoding loop:
+		while (handledCPCount < inputLength) {
 
-            /** Expose `punycode` */
-            // Some AMD build optimizers, like r.js, check for specific condition patterns
-            // like the following:
-            if (true) {
-              !((__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-                return punycode
-              }.call(exports, __webpack_require__, exports, module)),
-              __WEBPACK_AMD_DEFINE_RESULT__ !== undefined &&
-                (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-            } else {
-            }
-          })(this)
+			// All non-basic code points < n have been handled already. Find the next
+			// larger one:
+			for (m = maxInt, j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
 
-          /* WEBPACK VAR INJECTION */
-        }.call(
-          this,
-          __webpack_require__(
-            /*! ./../../../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js */ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js'
-          )(module),
-          __webpack_require__(
-            /*! ./../../../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js */ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js'
-          )
-        ))
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow
+			handledCPCountPlusOne = handledCPCount + 1;
+			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+				error('overflow');
+			}
 
-        /***/
-      },
+			delta += (m - n) * handledCPCountPlusOne;
+			n = m;
 
-    /***/ './node_modules/object-assign/index.js':
-      /*!*********************************************!*\
+			for (j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+
+				if (currentValue < n && ++delta > maxInt) {
+					error('overflow');
+				}
+
+				if (currentValue == n) {
+					// Represent delta as a generalized variable-length integer
+					for (q = delta, k = base; /* no condition */; k += base) {
+						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+						if (q < t) {
+							break;
+						}
+						qMinusT = q - t;
+						baseMinusT = base - t;
+						output.push(
+							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+						);
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+
+			++delta;
+			++n;
+
+		}
+		return output.join('');
+	}
+
+	/**
+	 * Converts a Punycode string representing a domain name or an email address
+	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+	 * it doesn't matter if you call it on a string that has already been
+	 * converted to Unicode.
+	 * @memberOf punycode
+	 * @param {String} input The Punycoded domain name or email address to
+	 * convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 */
+	function toUnicode(input) {
+		return mapDomain(input, function(string) {
+			return regexPunycode.test(string)
+				? decode(string.slice(4).toLowerCase())
+				: string;
+		});
+	}
+
+	/**
+	 * Converts a Unicode string representing a domain name or an email address to
+	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
+	 * i.e. it doesn't matter if you call it with a domain that's already in
+	 * ASCII.
+	 * @memberOf punycode
+	 * @param {String} input The domain name or email address to convert, as a
+	 * Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name or
+	 * email address.
+	 */
+	function toASCII(input) {
+		return mapDomain(input, function(string) {
+			return regexNonASCII.test(string)
+				? 'xn--' + encode(string)
+				: string;
+		});
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	/** Define the public API */
+	punycode = {
+		/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */
+		'version': '1.4.1',
+		/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */
+		'ucs2': {
+			'decode': ucs2decode,
+			'encode': ucs2encode
+		},
+		'decode': decode,
+		'encode': encode,
+		'toASCII': toASCII,
+		'toUnicode': toUnicode
+	};
+
+	/** Expose `punycode` */
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		true
+	) {
+		!(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+			return punycode;
+		}).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+
+}(this));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module), __webpack_require__(/*! ./../../../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/object-assign/index.js":
+/*!*********************************************!*\
   !*** ./node_modules/object-assign/index.js ***!
   \*********************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
-        /*
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
 object-assign
 (c) Sindre Sorhus
 @license MIT
 */
 
-        /* eslint-disable no-unused-vars */
-        var getOwnPropertySymbols = Object.getOwnPropertySymbols
-        var hasOwnProperty = Object.prototype.hasOwnProperty
-        var propIsEnumerable = Object.prototype.propertyIsEnumerable
 
-        function toObject(val) {
-          if (val === null || val === undefined) {
-            throw new TypeError(
-              'Object.assign cannot be called with null or undefined'
-            )
-          }
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
-          return Object(val)
-        }
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
 
-        function shouldUseNative() {
-          try {
-            if (!Object.assign) {
-              return false
-            }
+	return Object(val);
+}
 
-            // Detect buggy property enumeration order in older V8 versions.
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
 
-            // https://bugs.chromium.org/p/v8/issues/detail?id=4118
-            var test1 = new String('abc') // eslint-disable-line no-new-wrappers
-            test1[5] = 'de'
-            if (Object.getOwnPropertyNames(test1)[0] === '5') {
-              return false
-            }
+		// Detect buggy property enumeration order in older V8 versions.
 
-            // https://bugs.chromium.org/p/v8/issues/detail?id=3056
-            var test2 = {}
-            for (var i = 0; i < 10; i++) {
-              test2['_' + String.fromCharCode(i)] = i
-            }
-            var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-              return test2[n]
-            })
-            if (order2.join('') !== '0123456789') {
-              return false
-            }
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
 
-            // https://bugs.chromium.org/p/v8/issues/detail?id=3056
-            var test3 = {}
-            'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-              test3[letter] = letter
-            })
-            if (
-              Object.keys(Object.assign({}, test3)).join('') !==
-              'abcdefghijklmnopqrst'
-            ) {
-              return false
-            }
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
 
-            return true
-          } catch (err) {
-            // We don't expect any of the above to throw, but better to be safe.
-            return false
-          }
-        }
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
 
-        module.exports = shouldUseNative()
-          ? Object.assign
-          : function (target, source) {
-              var from
-              var to = toObject(target)
-              var symbols
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
 
-              for (var s = 1; s < arguments.length; s++) {
-                from = Object(arguments[s])
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
 
-                for (var key in from) {
-                  if (hasOwnProperty.call(from, key)) {
-                    to[key] = from[key]
-                  }
-                }
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
 
-                if (getOwnPropertySymbols) {
-                  symbols = getOwnPropertySymbols(from)
-                  for (var i = 0; i < symbols.length; i++) {
-                    if (propIsEnumerable.call(from, symbols[i])) {
-                      to[symbols[i]] = from[symbols[i]]
-                    }
-                  }
-                }
-              }
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
 
-              return to
-            }
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
 
-        /***/
-      },
+	return to;
+};
 
-    /***/ './node_modules/prepend-http/index.js':
-      /*!********************************************!*\
+
+/***/ }),
+
+/***/ "./node_modules/prepend-http/index.js":
+/*!********************************************!*\
   !*** ./node_modules/prepend-http/index.js ***!
   \********************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        module.exports = function (url) {
-          if (typeof url !== 'string') {
-            throw new TypeError('Expected a string, got ' + typeof url)
-          }
+"use strict";
 
-          url = url.trim()
+module.exports = function (url) {
+	if (typeof url !== 'string') {
+		throw new TypeError('Expected a string, got ' + typeof url);
+	}
 
-          if (/^\.*\/|^(?!localhost)\w+:/.test(url)) {
-            return url
-          }
+	url = url.trim();
 
-          return url.replace(/^(?!(?:\w+:)?\/\/)/, 'http://')
-        }
+	if (/^\.*\/|^(?!localhost)\w+:/.test(url)) {
+		return url;
+	}
 
-        /***/
-      },
+	return url.replace(/^(?!(?:\w+:)?\/\/)/, 'http://');
+};
 
-    /***/ './node_modules/process/browser.js':
-      /*!*****************************************!*\
+
+/***/ }),
+
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
   \*****************************************/
-      /*! no static exports found */
-      /***/ function (module, exports) {
-        // shim for using process in browser
-        var process = (module.exports = {})
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-        // cached from whatever global is present so that test runners that stub it
-        // don't break things.  But we need to wrap it in a try catch in case it is
-        // wrapped in strict mode code which doesn't define any globals.  It's inside a
-        // function because try/catches deoptimize in certain engines.
+// shim for using process in browser
+var process = module.exports = {};
 
-        var cachedSetTimeout
-        var cachedClearTimeout
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
 
-        function defaultSetTimout() {
-          throw new Error('setTimeout has not been defined')
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
         }
-        function defaultClearTimeout() {
-          throw new Error('clearTimeout has not been defined')
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
         }
-        ;(function () {
-          try {
-            if (typeof setTimeout === 'function') {
-              cachedSetTimeout = setTimeout
-            } else {
-              cachedSetTimeout = defaultSetTimout
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
             }
-          } catch (e) {
-            cachedSetTimeout = defaultSetTimout
-          }
-          try {
-            if (typeof clearTimeout === 'function') {
-              cachedClearTimeout = clearTimeout
-            } else {
-              cachedClearTimeout = defaultClearTimeout
-            }
-          } catch (e) {
-            cachedClearTimeout = defaultClearTimeout
-          }
-        })()
-        function runTimeout(fun) {
-          if (cachedSetTimeout === setTimeout) {
-            //normal enviroments in sane situations
-            return setTimeout(fun, 0)
-          }
-          // if setTimeout wasn't available but was latter defined
-          if (
-            (cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) &&
-            setTimeout
-          ) {
-            cachedSetTimeout = setTimeout
-            return setTimeout(fun, 0)
-          }
-          try {
-            // when when somebody has screwed with setTimeout but no I.E. maddness
-            return cachedSetTimeout(fun, 0)
-          } catch (e) {
-            try {
-              // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-              return cachedSetTimeout.call(null, fun, 0)
-            } catch (e) {
-              // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-              return cachedSetTimeout.call(this, fun, 0)
-            }
-          }
         }
-        function runClearTimeout(marker) {
-          if (cachedClearTimeout === clearTimeout) {
-            //normal enviroments in sane situations
-            return clearTimeout(marker)
-          }
-          // if clearTimeout wasn't available but was latter defined
-          if (
-            (cachedClearTimeout === defaultClearTimeout ||
-              !cachedClearTimeout) &&
-            clearTimeout
-          ) {
-            cachedClearTimeout = clearTimeout
-            return clearTimeout(marker)
-          }
-          try {
-            // when when somebody has screwed with setTimeout but no I.E. maddness
-            return cachedClearTimeout(marker)
-          } catch (e) {
-            try {
-              // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-              return cachedClearTimeout.call(null, marker)
-            } catch (e) {
-              // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-              // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-              return cachedClearTimeout.call(this, marker)
-            }
-          }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
         }
-        var queue = []
-        var draining = false
-        var currentQueue
-        var queueIndex = -1
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
 
-        function cleanUpNextTick() {
-          if (!draining || !currentQueue) {
-            return
-          }
-          draining = false
-          if (currentQueue.length) {
-            queue = currentQueue.concat(queue)
-          } else {
-            queueIndex = -1
-          }
-          if (queue.length) {
-            drainQueue()
-          }
-        }
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
 
-        function drainQueue() {
-          if (draining) {
-            return
-          }
-          var timeout = runTimeout(cleanUpNextTick)
-          draining = true
+function noop() {}
 
-          var len = queue.length
-          while (len) {
-            currentQueue = queue
-            queue = []
-            while (++queueIndex < len) {
-              if (currentQueue) {
-                currentQueue[queueIndex].run()
-              }
-            }
-            queueIndex = -1
-            len = queue.length
-          }
-          currentQueue = null
-          draining = false
-          runClearTimeout(timeout)
-        }
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
 
-        process.nextTick = function (fun) {
-          var args = new Array(arguments.length - 1)
-          if (arguments.length > 1) {
-            for (var i = 1; i < arguments.length; i++) {
-              args[i - 1] = arguments[i]
-            }
-          }
-          queue.push(new Item(fun, args))
-          if (queue.length === 1 && !draining) {
-            runTimeout(drainQueue)
-          }
-        }
+process.listeners = function (name) { return [] }
 
-        // v8 likes predictible objects
-        function Item(fun, array) {
-          this.fun = fun
-          this.array = array
-        }
-        Item.prototype.run = function () {
-          this.fun.apply(null, this.array)
-        }
-        process.title = 'browser'
-        process.browser = true
-        process.env = {}
-        process.argv = []
-        process.version = '' // empty string to avoid regexp issues
-        process.versions = {}
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
 
-        function noop() {}
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
-        process.on = noop
-        process.addListener = noop
-        process.once = noop
-        process.off = noop
-        process.removeListener = noop
-        process.removeAllListeners = noop
-        process.emit = noop
-        process.prependListener = noop
-        process.prependOnceListener = noop
 
-        process.listeners = function (name) {
-          return []
-        }
+/***/ }),
 
-        process.binding = function (name) {
-          throw new Error('process.binding is not supported')
-        }
-
-        process.cwd = function () {
-          return '/'
-        }
-        process.chdir = function (dir) {
-          throw new Error('process.chdir is not supported')
-        }
-        process.umask = function () {
-          return 0
-        }
-
-        /***/
-      },
-
-    /***/ './node_modules/querystring-es3/decode.js':
-      /*!************************************************!*\
+/***/ "./node_modules/querystring-es3/decode.js":
+/*!************************************************!*\
   !*** ./node_modules/querystring-es3/decode.js ***!
   \************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
-        // Copyright Joyent, Inc. and other Node contributors.
-        //
-        // Permission is hereby granted, free of charge, to any person obtaining a
-        // copy of this software and associated documentation files (the
-        // "Software"), to deal in the Software without restriction, including
-        // without limitation the rights to use, copy, modify, merge, publish,
-        // distribute, sublicense, and/or sell copies of the Software, and to permit
-        // persons to whom the Software is furnished to do so, subject to the
-        // following conditions:
-        //
-        // The above copyright notice and this permission notice shall be included
-        // in all copies or substantial portions of the Software.
-        //
-        // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-        // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-        // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-        // NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-        // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-        // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-        // USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        // If obj.hasOwnProperty has been overridden, then calling
-        // obj.hasOwnProperty(prop) will break.
-        // See: https://github.com/joyent/node/issues/1707
-        function hasOwnProperty(obj, prop) {
-          return Object.prototype.hasOwnProperty.call(obj, prop)
-        }
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-        module.exports = function (qs, sep, eq, options) {
-          sep = sep || '&'
-          eq = eq || '='
-          var obj = {}
 
-          if (typeof qs !== 'string' || qs.length === 0) {
-            return obj
-          }
 
-          var regexp = /\+/g
-          qs = qs.split(sep)
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
 
-          var maxKeys = 1000
-          if (options && typeof options.maxKeys === 'number') {
-            maxKeys = options.maxKeys
-          }
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
 
-          var len = qs.length
-          // maxKeys <= 0 means that we should not limit keys count
-          if (maxKeys > 0 && len > maxKeys) {
-            len = maxKeys
-          }
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
 
-          for (var i = 0; i < len; ++i) {
-            var x = qs[i].replace(regexp, '%20'),
-              idx = x.indexOf(eq),
-              kstr,
-              vstr,
-              k,
-              v
+  var regexp = /\+/g;
+  qs = qs.split(sep);
 
-            if (idx >= 0) {
-              kstr = x.substr(0, idx)
-              vstr = x.substr(idx + 1)
-            } else {
-              kstr = x
-              vstr = ''
-            }
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
 
-            k = decodeURIComponent(kstr)
-            v = decodeURIComponent(vstr)
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
 
-            if (!hasOwnProperty(obj, k)) {
-              obj[k] = v
-            } else if (isArray(obj[k])) {
-              obj[k].push(v)
-            } else {
-              obj[k] = [obj[k], v]
-            }
-          }
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
 
-          return obj
-        }
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
 
-        var isArray =
-          Array.isArray ||
-          function (xs) {
-            return Object.prototype.toString.call(xs) === '[object Array]'
-          }
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
 
-        /***/
-      },
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
 
-    /***/ './node_modules/querystring-es3/encode.js':
-      /*!************************************************!*\
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/querystring-es3/encode.js":
+/*!************************************************!*\
   !*** ./node_modules/querystring-es3/encode.js ***!
   \************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
-        // Copyright Joyent, Inc. and other Node contributors.
-        //
-        // Permission is hereby granted, free of charge, to any person obtaining a
-        // copy of this software and associated documentation files (the
-        // "Software"), to deal in the Software without restriction, including
-        // without limitation the rights to use, copy, modify, merge, publish,
-        // distribute, sublicense, and/or sell copies of the Software, and to permit
-        // persons to whom the Software is furnished to do so, subject to the
-        // following conditions:
-        //
-        // The above copyright notice and this permission notice shall be included
-        // in all copies or substantial portions of the Software.
-        //
-        // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-        // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-        // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-        // NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-        // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-        // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-        // USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        var stringifyPrimitive = function (v) {
-          switch (typeof v) {
-            case 'string':
-              return v
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-            case 'boolean':
-              return v ? 'true' : 'false'
 
-            case 'number':
-              return isFinite(v) ? v : ''
 
-            default:
-              return ''
-          }
-        }
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
 
-        module.exports = function (obj, sep, eq, name) {
-          sep = sep || '&'
-          eq = eq || '='
-          if (obj === null) {
-            obj = undefined
-          }
+    case 'boolean':
+      return v ? 'true' : 'false';
 
-          if (typeof obj === 'object') {
-            return map(objectKeys(obj), function (k) {
-              var ks = encodeURIComponent(stringifyPrimitive(k)) + eq
-              if (isArray(obj[k])) {
-                return map(obj[k], function (v) {
-                  return ks + encodeURIComponent(stringifyPrimitive(v))
-                }).join(sep)
-              } else {
-                return ks + encodeURIComponent(stringifyPrimitive(obj[k]))
-              }
-            }).join(sep)
-          }
+    case 'number':
+      return isFinite(v) ? v : '';
 
-          if (!name) return ''
-          return (
-            encodeURIComponent(stringifyPrimitive(name)) +
-            eq +
-            encodeURIComponent(stringifyPrimitive(obj))
-          )
-        }
+    default:
+      return '';
+  }
+};
 
-        var isArray =
-          Array.isArray ||
-          function (xs) {
-            return Object.prototype.toString.call(xs) === '[object Array]'
-          }
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
 
-        function map(xs, f) {
-          if (xs.map) return xs.map(f)
-          var res = []
-          for (var i = 0; i < xs.length; i++) {
-            res.push(f(xs[i], i))
-          }
-          return res
-        }
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
 
-        var objectKeys =
-          Object.keys ||
-          function (obj) {
-            var res = []
-            for (var key in obj) {
-              if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key)
-            }
-            return res
-          }
+  }
 
-        /***/
-      },
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
 
-    /***/ './node_modules/querystring-es3/index.js':
-      /*!***********************************************!*\
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/querystring-es3/index.js":
+/*!***********************************************!*\
   !*** ./node_modules/querystring-es3/index.js ***!
   \***********************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        exports.decode = exports.parse = __webpack_require__(
-          /*! ./decode */ './node_modules/querystring-es3/decode.js'
-        )
-        exports.encode = exports.stringify = __webpack_require__(
-          /*! ./encode */ './node_modules/querystring-es3/encode.js'
-        )
+"use strict";
 
-        /***/
-      },
 
-    /***/ './node_modules/setimmediate/setImmediate.js':
-      /*!***************************************************!*\
+exports.decode = exports.parse = __webpack_require__(/*! ./decode */ "./node_modules/querystring-es3/decode.js");
+exports.encode = exports.stringify = __webpack_require__(/*! ./encode */ "./node_modules/querystring-es3/encode.js");
+
+
+/***/ }),
+
+/***/ "./node_modules/setimmediate/setImmediate.js":
+/*!***************************************************!*\
   !*** ./node_modules/setimmediate/setImmediate.js ***!
   \***************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        /* WEBPACK VAR INJECTION */ ;(function (global, process) {
-          ;(function (global, undefined) {
-            'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-            if (global.setImmediate) {
-              return
-            }
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
 
-            var nextHandle = 1 // Spec says greater than zero
-            var tasksByHandle = {}
-            var currentlyRunningATask = false
-            var doc = global.document
-            var registerImmediate
+    if (global.setImmediate) {
+        return;
+    }
 
-            function setImmediate(callback) {
-              // Callback can either be a function or a string
-              if (typeof callback !== 'function') {
-                callback = new Function('' + callback)
-              }
-              // Copy function arguments
-              var args = new Array(arguments.length - 1)
-              for (var i = 0; i < args.length; i++) {
-                args[i] = arguments[i + 1]
-              }
-              // Store and register the task
-              var task = { callback: callback, args: args }
-              tasksByHandle[nextHandle] = task
-              registerImmediate(nextHandle)
-              return nextHandle++
-            }
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
 
-            function clearImmediate(handle) {
-              delete tasksByHandle[handle]
-            }
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
 
-            function run(task) {
-              var callback = task.callback
-              var args = task.args
-              switch (args.length) {
-                case 0:
-                  callback()
-                  break
-                case 1:
-                  callback(args[0])
-                  break
-                case 2:
-                  callback(args[0], args[1])
-                  break
-                case 3:
-                  callback(args[0], args[1], args[2])
-                  break
-                default:
-                  callback.apply(undefined, args)
-                  break
-              }
-            }
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
 
-            function runIfPresent(handle) {
-              // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
-              // So if we're currently running a task, we'll need to delay this invocation.
-              if (currentlyRunningATask) {
-                // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
-                // "too much recursion" error.
-                setTimeout(runIfPresent, 0, handle)
-              } else {
-                var task = tasksByHandle[handle]
-                if (task) {
-                  currentlyRunningATask = true
-                  try {
-                    run(task)
-                  } finally {
-                    clearImmediate(handle)
-                    currentlyRunningATask = false
-                  }
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
                 }
-              }
             }
+        }
+    }
 
-            function installNextTickImplementation() {
-              registerImmediate = function (handle) {
-                process.nextTick(function () {
-                  runIfPresent(handle)
-                })
-              }
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
             }
+        };
 
-            function canUsePostMessage() {
-              // The test against `importScripts` prevents this implementation from being installed inside a web worker,
-              // where `global.postMessage` means something completely different and can't be used for this purpose.
-              if (global.postMessage && !global.importScripts) {
-                var postMessageIsAsynchronous = true
-                var oldOnMessage = global.onmessage
-                global.onmessage = function () {
-                  postMessageIsAsynchronous = false
-                }
-                global.postMessage('', '*')
-                global.onmessage = oldOnMessage
-                return postMessageIsAsynchronous
-              }
-            }
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
 
-            function installPostMessageImplementation() {
-              // Installs an event handler on `global` for the `message` event: see
-              // * https://developer.mozilla.org/en/DOM/window.postMessage
-              // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
 
-              var messagePrefix = 'setImmediate$' + Math.random() + '$'
-              var onGlobalMessage = function (event) {
-                if (
-                  event.source === global &&
-                  typeof event.data === 'string' &&
-                  event.data.indexOf(messagePrefix) === 0
-                ) {
-                  runIfPresent(+event.data.slice(messagePrefix.length))
-                }
-              }
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
 
-              if (global.addEventListener) {
-                global.addEventListener('message', onGlobalMessage, false)
-              } else {
-                global.attachEvent('onmessage', onGlobalMessage)
-              }
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
 
-              registerImmediate = function (handle) {
-                global.postMessage(messagePrefix + handle, '*')
-              }
-            }
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
 
-            function installMessageChannelImplementation() {
-              var channel = new MessageChannel()
-              channel.port1.onmessage = function (event) {
-                var handle = event.data
-                runIfPresent(handle)
-              }
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
 
-              registerImmediate = function (handle) {
-                channel.port2.postMessage(handle)
-              }
-            }
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
 
-            function installReadyStateChangeImplementation() {
-              var html = doc.documentElement
-              registerImmediate = function (handle) {
-                // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-                // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-                var script = doc.createElement('script')
-                script.onreadystatechange = function () {
-                  runIfPresent(handle)
-                  script.onreadystatechange = null
-                  html.removeChild(script)
-                  script = null
-                }
-                html.appendChild(script)
-              }
-            }
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
 
-            function installSetTimeoutImplementation() {
-              registerImmediate = function (handle) {
-                setTimeout(runIfPresent, 0, handle)
-              }
-            }
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
 
-            // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
-            var attachTo =
-              Object.getPrototypeOf && Object.getPrototypeOf(global)
-            attachTo = attachTo && attachTo.setTimeout ? attachTo : global
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
 
-            // Don't get fooled by e.g. browserify environments.
-            if ({}.toString.call(global.process) === '[object process]') {
-              // For Node.js before 0.9
-              installNextTickImplementation()
-            } else if (canUsePostMessage()) {
-              // For non-IE10 modern browsers
-              installPostMessageImplementation()
-            } else if (global.MessageChannel) {
-              // For web workers, where supported
-              installMessageChannelImplementation()
-            } else if (
-              doc &&
-              'onreadystatechange' in doc.createElement('script')
-            ) {
-              // For IE 6–8
-              installReadyStateChangeImplementation()
-            } else {
-              // For older browsers
-              installSetTimeoutImplementation()
-            }
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
 
-            attachTo.setImmediate = setImmediate
-            attachTo.clearImmediate = clearImmediate
-          })(
-            typeof self === 'undefined'
-              ? typeof global === 'undefined'
-                ? this
-                : global
-              : self
-          )
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
 
-          /* WEBPACK VAR INJECTION */
-        }.call(
-          this,
-          __webpack_require__(
-            /*! ./../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js */ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js'
-          ),
-          __webpack_require__(
-            /*! ./../process/browser.js */ './node_modules/process/browser.js'
-          )
-        ))
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-        /***/
-      },
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js")))
 
-    /***/ './node_modules/sort-keys/index.js':
-      /*!*****************************************!*\
+/***/ }),
+
+/***/ "./node_modules/sort-keys/index.js":
+/*!*****************************************!*\
   !*** ./node_modules/sort-keys/index.js ***!
   \*****************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        var isPlainObj = __webpack_require__(
-          /*! is-plain-obj */ './node_modules/is-plain-obj/index.js'
-        )
+"use strict";
 
-        module.exports = function (obj, opts) {
-          if (!isPlainObj(obj)) {
-            throw new TypeError('Expected a plain object')
-          }
+var isPlainObj = __webpack_require__(/*! is-plain-obj */ "./node_modules/is-plain-obj/index.js");
 
-          opts = opts || {}
+module.exports = function (obj, opts) {
+	if (!isPlainObj(obj)) {
+		throw new TypeError('Expected a plain object');
+	}
 
-          // DEPRECATED
-          if (typeof opts === 'function') {
-            opts = { compare: opts }
-          }
+	opts = opts || {};
 
-          var deep = opts.deep
-          var seenInput = []
-          var seenOutput = []
+	// DEPRECATED
+	if (typeof opts === 'function') {
+		opts = {compare: opts};
+	}
 
-          var sortKeys = function (x) {
-            var seenIndex = seenInput.indexOf(x)
+	var deep = opts.deep;
+	var seenInput = [];
+	var seenOutput = [];
 
-            if (seenIndex !== -1) {
-              return seenOutput[seenIndex]
-            }
+	var sortKeys = function (x) {
+		var seenIndex = seenInput.indexOf(x);
 
-            var ret = {}
-            var keys = Object.keys(x).sort(opts.compare)
+		if (seenIndex !== -1) {
+			return seenOutput[seenIndex];
+		}
 
-            seenInput.push(x)
-            seenOutput.push(ret)
+		var ret = {};
+		var keys = Object.keys(x).sort(opts.compare);
 
-            for (var i = 0; i < keys.length; i++) {
-              var key = keys[i]
-              var val = x[key]
+		seenInput.push(x);
+		seenOutput.push(ret);
 
-              ret[key] = deep && isPlainObj(val) ? sortKeys(val) : val
-            }
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			var val = x[key];
 
-            return ret
-          }
+			ret[key] = deep && isPlainObj(val) ? sortKeys(val) : val;
+		}
 
-          return sortKeys(obj)
-        }
+		return ret;
+	};
 
-        /***/
-      },
+	return sortKeys(obj);
+};
 
-    /***/ './node_modules/strict-uri-encode/index.js':
-      /*!*************************************************!*\
+
+/***/ }),
+
+/***/ "./node_modules/strict-uri-encode/index.js":
+/*!*************************************************!*\
   !*** ./node_modules/strict-uri-encode/index.js ***!
   \*************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        module.exports = function (str) {
-          return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-            return '%' + c.charCodeAt(0).toString(16).toUpperCase()
-          })
-        }
+"use strict";
 
-        /***/
-      },
+module.exports = function (str) {
+	return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+		return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+	});
+};
 
-    /***/ './node_modules/timers-browserify/main.js':
-      /*!************************************************!*\
+
+/***/ }),
+
+/***/ "./node_modules/timers-browserify/main.js":
+/*!************************************************!*\
   !*** ./node_modules/timers-browserify/main.js ***!
   \************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        /* WEBPACK VAR INJECTION */ ;(function (global) {
-          var scope =
-            (typeof global !== 'undefined' && global) ||
-            (typeof self !== 'undefined' && self) ||
-            window
-          var apply = Function.prototype.apply
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-          // DOM APIs, for completeness
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
 
-          exports.setTimeout = function () {
-            return new Timeout(
-              apply.call(setTimeout, scope, arguments),
-              clearTimeout
-            )
-          }
-          exports.setInterval = function () {
-            return new Timeout(
-              apply.call(setInterval, scope, arguments),
-              clearInterval
-            )
-          }
-          exports.clearTimeout = exports.clearInterval = function (timeout) {
-            if (timeout) {
-              timeout.close()
-            }
-          }
+// DOM APIs, for completeness
 
-          function Timeout(id, clearFn) {
-            this._id = id
-            this._clearFn = clearFn
-          }
-          Timeout.prototype.unref = Timeout.prototype.ref = function () {}
-          Timeout.prototype.close = function () {
-            this._clearFn.call(scope, this._id)
-          }
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
 
-          // Does not start the time, just sets up the members needed.
-          exports.enroll = function (item, msecs) {
-            clearTimeout(item._idleTimeoutId)
-            item._idleTimeout = msecs
-          }
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(scope, this._id);
+};
 
-          exports.unenroll = function (item) {
-            clearTimeout(item._idleTimeoutId)
-            item._idleTimeout = -1
-          }
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
 
-          exports._unrefActive = exports.active = function (item) {
-            clearTimeout(item._idleTimeoutId)
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
 
-            var msecs = item._idleTimeout
-            if (msecs >= 0) {
-              item._idleTimeoutId = setTimeout(function onTimeout() {
-                if (item._onTimeout) item._onTimeout()
-              }, msecs)
-            }
-          }
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
 
-          // setimmediate attaches itself to the global object
-          __webpack_require__(
-            /*! setimmediate */ './node_modules/setimmediate/setImmediate.js'
-          )
-          // On some exotic environments, it's not clear which object `setimmediate` was
-          // able to install onto.  Search each possibility in the same order as the
-          // `setimmediate` library.
-          exports.setImmediate =
-            (typeof self !== 'undefined' && self.setImmediate) ||
-            (typeof global !== 'undefined' && global.setImmediate) ||
-            (this && this.setImmediate)
-          exports.clearImmediate =
-            (typeof self !== 'undefined' && self.clearImmediate) ||
-            (typeof global !== 'undefined' && global.clearImmediate) ||
-            (this && this.clearImmediate)
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
 
-          /* WEBPACK VAR INJECTION */
-        }.call(
-          this,
-          __webpack_require__(
-            /*! ./../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js */ './node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js'
-          )
-        ))
+// setimmediate attaches itself to the global object
+__webpack_require__(/*! setimmediate */ "./node_modules/setimmediate/setImmediate.js");
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
 
-        /***/
-      },
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js")))
 
-    /***/ './node_modules/url/url.js':
-      /*!*********************************!*\
+/***/ }),
+
+/***/ "./node_modules/url/url.js":
+/*!*********************************!*\
   !*** ./node_modules/url/url.js ***!
   \*********************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
-        // Copyright Joyent, Inc. and other Node contributors.
-        //
-        // Permission is hereby granted, free of charge, to any person obtaining a
-        // copy of this software and associated documentation files (the
-        // "Software"), to deal in the Software without restriction, including
-        // without limitation the rights to use, copy, modify, merge, publish,
-        // distribute, sublicense, and/or sell copies of the Software, and to permit
-        // persons to whom the Software is furnished to do so, subject to the
-        // following conditions:
-        //
-        // The above copyright notice and this permission notice shall be included
-        // in all copies or substantial portions of the Software.
-        //
-        // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-        // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-        // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-        // NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-        // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-        // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-        // USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        var punycode = __webpack_require__(
-          /*! punycode */ './node_modules/node-libs-browser/node_modules/punycode/punycode.js'
-        )
-        var util = __webpack_require__(
-          /*! ./util */ './node_modules/url/util.js'
-        )
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-        exports.parse = urlParse
-        exports.resolve = urlResolve
-        exports.resolveObject = urlResolveObject
-        exports.format = urlFormat
 
-        exports.Url = Url
 
-        function Url() {
-          this.protocol = null
-          this.slashes = null
-          this.auth = null
-          this.host = null
-          this.port = null
-          this.hostname = null
-          this.hash = null
-          this.search = null
-          this.query = null
-          this.pathname = null
-          this.path = null
-          this.href = null
+var punycode = __webpack_require__(/*! punycode */ "./node_modules/node-libs-browser/node_modules/punycode/punycode.js");
+var util = __webpack_require__(/*! ./util */ "./node_modules/url/util.js");
+
+exports.parse = urlParse;
+exports.resolve = urlResolve;
+exports.resolveObject = urlResolveObject;
+exports.format = urlFormat;
+
+exports.Url = Url;
+
+function Url() {
+  this.protocol = null;
+  this.slashes = null;
+  this.auth = null;
+  this.host = null;
+  this.port = null;
+  this.hostname = null;
+  this.hash = null;
+  this.search = null;
+  this.query = null;
+  this.pathname = null;
+  this.path = null;
+  this.href = null;
+}
+
+// Reference: RFC 3986, RFC 1808, RFC 2396
+
+// define these here so at least they only have to be
+// compiled once on the first module load.
+var protocolPattern = /^([a-z0-9.+-]+:)/i,
+    portPattern = /:[0-9]*$/,
+
+    // Special case for a simple path URL
+    simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
+
+    // RFC 2396: characters reserved for delimiting URLs.
+    // We actually just auto-escape these.
+    delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
+
+    // RFC 2396: characters not allowed for various reasons.
+    unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
+
+    // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
+    autoEscape = ['\''].concat(unwise),
+    // Characters that are never ever allowed in a hostname.
+    // Note that any invalid chars are also handled, but these
+    // are the ones that are *expected* to be seen, so we fast-path
+    // them.
+    nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
+    hostEndingChars = ['/', '?', '#'],
+    hostnameMaxLen = 255,
+    hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
+    hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
+    // protocols that can allow "unsafe" and "unwise" chars.
+    unsafeProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that never have a hostname.
+    hostlessProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that always contain a // bit.
+    slashedProtocol = {
+      'http': true,
+      'https': true,
+      'ftp': true,
+      'gopher': true,
+      'file': true,
+      'http:': true,
+      'https:': true,
+      'ftp:': true,
+      'gopher:': true,
+      'file:': true
+    },
+    querystring = __webpack_require__(/*! querystring */ "./node_modules/querystring-es3/index.js");
+
+function urlParse(url, parseQueryString, slashesDenoteHost) {
+  if (url && util.isObject(url) && url instanceof Url) return url;
+
+  var u = new Url;
+  u.parse(url, parseQueryString, slashesDenoteHost);
+  return u;
+}
+
+Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+  if (!util.isString(url)) {
+    throw new TypeError("Parameter 'url' must be a string, not " + typeof url);
+  }
+
+  // Copy chrome, IE, opera backslash-handling behavior.
+  // Back slashes before the query string get converted to forward slashes
+  // See: https://code.google.com/p/chromium/issues/detail?id=25916
+  var queryIndex = url.indexOf('?'),
+      splitter =
+          (queryIndex !== -1 && queryIndex < url.indexOf('#')) ? '?' : '#',
+      uSplit = url.split(splitter),
+      slashRegex = /\\/g;
+  uSplit[0] = uSplit[0].replace(slashRegex, '/');
+  url = uSplit.join(splitter);
+
+  var rest = url;
+
+  // trim before proceeding.
+  // This is to support parse stuff like "  http://foo.com  \n"
+  rest = rest.trim();
+
+  if (!slashesDenoteHost && url.split('#').length === 1) {
+    // Try fast path regexp
+    var simplePath = simplePathPattern.exec(rest);
+    if (simplePath) {
+      this.path = rest;
+      this.href = rest;
+      this.pathname = simplePath[1];
+      if (simplePath[2]) {
+        this.search = simplePath[2];
+        if (parseQueryString) {
+          this.query = querystring.parse(this.search.substr(1));
+        } else {
+          this.query = this.search.substr(1);
         }
+      } else if (parseQueryString) {
+        this.search = '';
+        this.query = {};
+      }
+      return this;
+    }
+  }
 
-        // Reference: RFC 3986, RFC 1808, RFC 2396
+  var proto = protocolPattern.exec(rest);
+  if (proto) {
+    proto = proto[0];
+    var lowerProto = proto.toLowerCase();
+    this.protocol = lowerProto;
+    rest = rest.substr(proto.length);
+  }
 
-        // define these here so at least they only have to be
-        // compiled once on the first module load.
-        var protocolPattern = /^([a-z0-9.+-]+:)/i,
-          portPattern = /:[0-9]*$/,
-          // Special case for a simple path URL
-          simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
-          // RFC 2396: characters reserved for delimiting URLs.
-          // We actually just auto-escape these.
-          delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
-          // RFC 2396: characters not allowed for various reasons.
-          unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
-          // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
-          autoEscape = ["'"].concat(unwise),
-          // Characters that are never ever allowed in a hostname.
-          // Note that any invalid chars are also handled, but these
-          // are the ones that are *expected* to be seen, so we fast-path
-          // them.
-          nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
-          hostEndingChars = ['/', '?', '#'],
-          hostnameMaxLen = 255,
-          hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
-          hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
-          // protocols that can allow "unsafe" and "unwise" chars.
-          unsafeProtocol = {
-            javascript: true,
-            'javascript:': true,
-          },
-          // protocols that never have a hostname.
-          hostlessProtocol = {
-            javascript: true,
-            'javascript:': true,
-          },
-          // protocols that always contain a // bit.
-          slashedProtocol = {
-            http: true,
-            https: true,
-            ftp: true,
-            gopher: true,
-            file: true,
-            'http:': true,
-            'https:': true,
-            'ftp:': true,
-            'gopher:': true,
-            'file:': true,
-          },
-          querystring = __webpack_require__(
-            /*! querystring */ './node_modules/querystring-es3/index.js'
-          )
+  // figure out if it's got a host
+  // user@server is *always* interpreted as a hostname, and url
+  // resolution will treat //foo/bar as host=foo,path=bar because that's
+  // how the browser resolves relative URLs.
+  if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
+    var slashes = rest.substr(0, 2) === '//';
+    if (slashes && !(proto && hostlessProtocol[proto])) {
+      rest = rest.substr(2);
+      this.slashes = true;
+    }
+  }
 
-        function urlParse(url, parseQueryString, slashesDenoteHost) {
-          if (url && util.isObject(url) && url instanceof Url) return url
+  if (!hostlessProtocol[proto] &&
+      (slashes || (proto && !slashedProtocol[proto]))) {
 
-          var u = new Url()
-          u.parse(url, parseQueryString, slashesDenoteHost)
-          return u
-        }
+    // there's a hostname.
+    // the first instance of /, ?, ;, or # ends the host.
+    //
+    // If there is an @ in the hostname, then non-host chars *are* allowed
+    // to the left of the last @ sign, unless some host-ending character
+    // comes *before* the @-sign.
+    // URLs are obnoxious.
+    //
+    // ex:
+    // http://a@b@c/ => user:a@b host:c
+    // http://a@b?@c => user:a host:c path:/?@c
 
-        Url.prototype.parse = function (
-          url,
-          parseQueryString,
-          slashesDenoteHost
-        ) {
-          if (!util.isString(url)) {
-            throw new TypeError(
-              "Parameter 'url' must be a string, not " + typeof url
-            )
-          }
+    // v0.12 TODO(isaacs): This is not quite how Chrome does things.
+    // Review our test case against browsers more comprehensively.
 
-          // Copy chrome, IE, opera backslash-handling behavior.
-          // Back slashes before the query string get converted to forward slashes
-          // See: https://code.google.com/p/chromium/issues/detail?id=25916
-          var queryIndex = url.indexOf('?'),
-            splitter =
-              queryIndex !== -1 && queryIndex < url.indexOf('#') ? '?' : '#',
-            uSplit = url.split(splitter),
-            slashRegex = /\\/g
-          uSplit[0] = uSplit[0].replace(slashRegex, '/')
-          url = uSplit.join(splitter)
+    // find the first instance of any hostEndingChars
+    var hostEnd = -1;
+    for (var i = 0; i < hostEndingChars.length; i++) {
+      var hec = rest.indexOf(hostEndingChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
 
-          var rest = url
+    // at this point, either we have an explicit point where the
+    // auth portion cannot go past, or the last @ char is the decider.
+    var auth, atSign;
+    if (hostEnd === -1) {
+      // atSign can be anywhere.
+      atSign = rest.lastIndexOf('@');
+    } else {
+      // atSign must be in auth portion.
+      // http://a@b/c@d => host:b auth:a path:/c@d
+      atSign = rest.lastIndexOf('@', hostEnd);
+    }
 
-          // trim before proceeding.
-          // This is to support parse stuff like "  http://foo.com  \n"
-          rest = rest.trim()
+    // Now we have a portion which is definitely the auth.
+    // Pull that off.
+    if (atSign !== -1) {
+      auth = rest.slice(0, atSign);
+      rest = rest.slice(atSign + 1);
+      this.auth = decodeURIComponent(auth);
+    }
 
-          if (!slashesDenoteHost && url.split('#').length === 1) {
-            // Try fast path regexp
-            var simplePath = simplePathPattern.exec(rest)
-            if (simplePath) {
-              this.path = rest
-              this.href = rest
-              this.pathname = simplePath[1]
-              if (simplePath[2]) {
-                this.search = simplePath[2]
-                if (parseQueryString) {
-                  this.query = querystring.parse(this.search.substr(1))
-                } else {
-                  this.query = this.search.substr(1)
-                }
-              } else if (parseQueryString) {
-                this.search = ''
-                this.query = {}
-              }
-              return this
-            }
-          }
+    // the host is the remaining to the left of the first non-host char
+    hostEnd = -1;
+    for (var i = 0; i < nonHostChars.length; i++) {
+      var hec = rest.indexOf(nonHostChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
+    // if we still have not hit it, then the entire thing is a host.
+    if (hostEnd === -1)
+      hostEnd = rest.length;
 
-          var proto = protocolPattern.exec(rest)
-          if (proto) {
-            proto = proto[0]
-            var lowerProto = proto.toLowerCase()
-            this.protocol = lowerProto
-            rest = rest.substr(proto.length)
-          }
+    this.host = rest.slice(0, hostEnd);
+    rest = rest.slice(hostEnd);
 
-          // figure out if it's got a host
-          // user@server is *always* interpreted as a hostname, and url
-          // resolution will treat //foo/bar as host=foo,path=bar because that's
-          // how the browser resolves relative URLs.
-          if (
-            slashesDenoteHost ||
-            proto ||
-            rest.match(/^\/\/[^@\/]+@[^@\/]+/)
-          ) {
-            var slashes = rest.substr(0, 2) === '//'
-            if (slashes && !(proto && hostlessProtocol[proto])) {
-              rest = rest.substr(2)
-              this.slashes = true
-            }
-          }
+    // pull out port.
+    this.parseHost();
 
-          if (
-            !hostlessProtocol[proto] &&
-            (slashes || (proto && !slashedProtocol[proto]))
-          ) {
-            // there's a hostname.
-            // the first instance of /, ?, ;, or # ends the host.
-            //
-            // If there is an @ in the hostname, then non-host chars *are* allowed
-            // to the left of the last @ sign, unless some host-ending character
-            // comes *before* the @-sign.
-            // URLs are obnoxious.
-            //
-            // ex:
-            // http://a@b@c/ => user:a@b host:c
-            // http://a@b?@c => user:a host:c path:/?@c
+    // we've indicated that there is a hostname,
+    // so even if it's empty, it has to be present.
+    this.hostname = this.hostname || '';
 
-            // v0.12 TODO(isaacs): This is not quite how Chrome does things.
-            // Review our test case against browsers more comprehensively.
+    // if hostname begins with [ and ends with ]
+    // assume that it's an IPv6 address.
+    var ipv6Hostname = this.hostname[0] === '[' &&
+        this.hostname[this.hostname.length - 1] === ']';
 
-            // find the first instance of any hostEndingChars
-            var hostEnd = -1
-            for (var i = 0; i < hostEndingChars.length; i++) {
-              var hec = rest.indexOf(hostEndingChars[i])
-              if (hec !== -1 && (hostEnd === -1 || hec < hostEnd)) hostEnd = hec
-            }
-
-            // at this point, either we have an explicit point where the
-            // auth portion cannot go past, or the last @ char is the decider.
-            var auth, atSign
-            if (hostEnd === -1) {
-              // atSign can be anywhere.
-              atSign = rest.lastIndexOf('@')
+    // validate a little.
+    if (!ipv6Hostname) {
+      var hostparts = this.hostname.split(/\./);
+      for (var i = 0, l = hostparts.length; i < l; i++) {
+        var part = hostparts[i];
+        if (!part) continue;
+        if (!part.match(hostnamePartPattern)) {
+          var newpart = '';
+          for (var j = 0, k = part.length; j < k; j++) {
+            if (part.charCodeAt(j) > 127) {
+              // we replace non-ASCII char with a temporary placeholder
+              // we need this to make sure size of hostname is not
+              // broken by replacing non-ASCII by nothing
+              newpart += 'x';
             } else {
-              // atSign must be in auth portion.
-              // http://a@b/c@d => host:b auth:a path:/c@d
-              atSign = rest.lastIndexOf('@', hostEnd)
-            }
-
-            // Now we have a portion which is definitely the auth.
-            // Pull that off.
-            if (atSign !== -1) {
-              auth = rest.slice(0, atSign)
-              rest = rest.slice(atSign + 1)
-              this.auth = decodeURIComponent(auth)
-            }
-
-            // the host is the remaining to the left of the first non-host char
-            hostEnd = -1
-            for (var i = 0; i < nonHostChars.length; i++) {
-              var hec = rest.indexOf(nonHostChars[i])
-              if (hec !== -1 && (hostEnd === -1 || hec < hostEnd)) hostEnd = hec
-            }
-            // if we still have not hit it, then the entire thing is a host.
-            if (hostEnd === -1) hostEnd = rest.length
-
-            this.host = rest.slice(0, hostEnd)
-            rest = rest.slice(hostEnd)
-
-            // pull out port.
-            this.parseHost()
-
-            // we've indicated that there is a hostname,
-            // so even if it's empty, it has to be present.
-            this.hostname = this.hostname || ''
-
-            // if hostname begins with [ and ends with ]
-            // assume that it's an IPv6 address.
-            var ipv6Hostname =
-              this.hostname[0] === '[' &&
-              this.hostname[this.hostname.length - 1] === ']'
-
-            // validate a little.
-            if (!ipv6Hostname) {
-              var hostparts = this.hostname.split(/\./)
-              for (var i = 0, l = hostparts.length; i < l; i++) {
-                var part = hostparts[i]
-                if (!part) continue
-                if (!part.match(hostnamePartPattern)) {
-                  var newpart = ''
-                  for (var j = 0, k = part.length; j < k; j++) {
-                    if (part.charCodeAt(j) > 127) {
-                      // we replace non-ASCII char with a temporary placeholder
-                      // we need this to make sure size of hostname is not
-                      // broken by replacing non-ASCII by nothing
-                      newpart += 'x'
-                    } else {
-                      newpart += part[j]
-                    }
-                  }
-                  // we test again with ASCII char only
-                  if (!newpart.match(hostnamePartPattern)) {
-                    var validParts = hostparts.slice(0, i)
-                    var notHost = hostparts.slice(i + 1)
-                    var bit = part.match(hostnamePartStart)
-                    if (bit) {
-                      validParts.push(bit[1])
-                      notHost.unshift(bit[2])
-                    }
-                    if (notHost.length) {
-                      rest = '/' + notHost.join('.') + rest
-                    }
-                    this.hostname = validParts.join('.')
-                    break
-                  }
-                }
-              }
-            }
-
-            if (this.hostname.length > hostnameMaxLen) {
-              this.hostname = ''
-            } else {
-              // hostnames are always lower case.
-              this.hostname = this.hostname.toLowerCase()
-            }
-
-            if (!ipv6Hostname) {
-              // IDNA Support: Returns a punycoded representation of "domain".
-              // It only converts parts of the domain name that
-              // have non-ASCII characters, i.e. it doesn't matter if
-              // you call it with a domain that already is ASCII-only.
-              this.hostname = punycode.toASCII(this.hostname)
-            }
-
-            var p = this.port ? ':' + this.port : ''
-            var h = this.hostname || ''
-            this.host = h + p
-            this.href += this.host
-
-            // strip [ and ] from the hostname
-            // the host field still retains them, though
-            if (ipv6Hostname) {
-              this.hostname = this.hostname.substr(1, this.hostname.length - 2)
-              if (rest[0] !== '/') {
-                rest = '/' + rest
-              }
+              newpart += part[j];
             }
           }
-
-          // now rest is set to the post-host stuff.
-          // chop off any delim chars.
-          if (!unsafeProtocol[lowerProto]) {
-            // First, make 100% sure that any "autoEscape" chars get
-            // escaped, even if encodeURIComponent doesn't think they
-            // need to be.
-            for (var i = 0, l = autoEscape.length; i < l; i++) {
-              var ae = autoEscape[i]
-              if (rest.indexOf(ae) === -1) continue
-              var esc = encodeURIComponent(ae)
-              if (esc === ae) {
-                esc = escape(ae)
-              }
-              rest = rest.split(ae).join(esc)
+          // we test again with ASCII char only
+          if (!newpart.match(hostnamePartPattern)) {
+            var validParts = hostparts.slice(0, i);
+            var notHost = hostparts.slice(i + 1);
+            var bit = part.match(hostnamePartStart);
+            if (bit) {
+              validParts.push(bit[1]);
+              notHost.unshift(bit[2]);
             }
-          }
-
-          // chop off from the tail first.
-          var hash = rest.indexOf('#')
-          if (hash !== -1) {
-            // got a fragment string.
-            this.hash = rest.substr(hash)
-            rest = rest.slice(0, hash)
-          }
-          var qm = rest.indexOf('?')
-          if (qm !== -1) {
-            this.search = rest.substr(qm)
-            this.query = rest.substr(qm + 1)
-            if (parseQueryString) {
-              this.query = querystring.parse(this.query)
+            if (notHost.length) {
+              rest = '/' + notHost.join('.') + rest;
             }
-            rest = rest.slice(0, qm)
-          } else if (parseQueryString) {
-            // no query string, but parseQueryString still requested
-            this.search = ''
-            this.query = {}
+            this.hostname = validParts.join('.');
+            break;
           }
-          if (rest) this.pathname = rest
-          if (slashedProtocol[lowerProto] && this.hostname && !this.pathname) {
-            this.pathname = '/'
-          }
-
-          //to support http.request
-          if (this.pathname || this.search) {
-            var p = this.pathname || ''
-            var s = this.search || ''
-            this.path = p + s
-          }
-
-          // finally, reconstruct the href based on what has been validated.
-          this.href = this.format()
-          return this
         }
+      }
+    }
 
-        // format a parsed object into a url string
-        function urlFormat(obj) {
-          // ensure it's an object, and not a string url.
-          // If it's an obj, this is a no-op.
-          // this way, you can call url_format() on strings
-          // to clean up potentially wonky urls.
-          if (util.isString(obj)) obj = urlParse(obj)
-          if (!(obj instanceof Url)) return Url.prototype.format.call(obj)
-          return obj.format()
-        }
+    if (this.hostname.length > hostnameMaxLen) {
+      this.hostname = '';
+    } else {
+      // hostnames are always lower case.
+      this.hostname = this.hostname.toLowerCase();
+    }
 
-        Url.prototype.format = function () {
-          var auth = this.auth || ''
-          if (auth) {
-            auth = encodeURIComponent(auth)
-            auth = auth.replace(/%3A/i, ':')
-            auth += '@'
-          }
+    if (!ipv6Hostname) {
+      // IDNA Support: Returns a punycoded representation of "domain".
+      // It only converts parts of the domain name that
+      // have non-ASCII characters, i.e. it doesn't matter if
+      // you call it with a domain that already is ASCII-only.
+      this.hostname = punycode.toASCII(this.hostname);
+    }
 
-          var protocol = this.protocol || '',
-            pathname = this.pathname || '',
-            hash = this.hash || '',
-            host = false,
-            query = ''
+    var p = this.port ? ':' + this.port : '';
+    var h = this.hostname || '';
+    this.host = h + p;
+    this.href += this.host;
 
-          if (this.host) {
-            host = auth + this.host
-          } else if (this.hostname) {
-            host =
-              auth +
-              (this.hostname.indexOf(':') === -1
-                ? this.hostname
-                : '[' + this.hostname + ']')
-            if (this.port) {
-              host += ':' + this.port
-            }
-          }
+    // strip [ and ] from the hostname
+    // the host field still retains them, though
+    if (ipv6Hostname) {
+      this.hostname = this.hostname.substr(1, this.hostname.length - 2);
+      if (rest[0] !== '/') {
+        rest = '/' + rest;
+      }
+    }
+  }
 
-          if (
-            this.query &&
-            util.isObject(this.query) &&
-            Object.keys(this.query).length
-          ) {
-            query = querystring.stringify(this.query)
-          }
+  // now rest is set to the post-host stuff.
+  // chop off any delim chars.
+  if (!unsafeProtocol[lowerProto]) {
 
-          var search = this.search || (query && '?' + query) || ''
+    // First, make 100% sure that any "autoEscape" chars get
+    // escaped, even if encodeURIComponent doesn't think they
+    // need to be.
+    for (var i = 0, l = autoEscape.length; i < l; i++) {
+      var ae = autoEscape[i];
+      if (rest.indexOf(ae) === -1)
+        continue;
+      var esc = encodeURIComponent(ae);
+      if (esc === ae) {
+        esc = escape(ae);
+      }
+      rest = rest.split(ae).join(esc);
+    }
+  }
 
-          if (protocol && protocol.substr(-1) !== ':') protocol += ':'
 
-          // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
-          // unless they had them to begin with.
-          if (
-            this.slashes ||
-            ((!protocol || slashedProtocol[protocol]) && host !== false)
-          ) {
-            host = '//' + (host || '')
-            if (pathname && pathname.charAt(0) !== '/')
-              pathname = '/' + pathname
-          } else if (!host) {
-            host = ''
-          }
+  // chop off from the tail first.
+  var hash = rest.indexOf('#');
+  if (hash !== -1) {
+    // got a fragment string.
+    this.hash = rest.substr(hash);
+    rest = rest.slice(0, hash);
+  }
+  var qm = rest.indexOf('?');
+  if (qm !== -1) {
+    this.search = rest.substr(qm);
+    this.query = rest.substr(qm + 1);
+    if (parseQueryString) {
+      this.query = querystring.parse(this.query);
+    }
+    rest = rest.slice(0, qm);
+  } else if (parseQueryString) {
+    // no query string, but parseQueryString still requested
+    this.search = '';
+    this.query = {};
+  }
+  if (rest) this.pathname = rest;
+  if (slashedProtocol[lowerProto] &&
+      this.hostname && !this.pathname) {
+    this.pathname = '/';
+  }
 
-          if (hash && hash.charAt(0) !== '#') hash = '#' + hash
-          if (search && search.charAt(0) !== '?') search = '?' + search
+  //to support http.request
+  if (this.pathname || this.search) {
+    var p = this.pathname || '';
+    var s = this.search || '';
+    this.path = p + s;
+  }
 
-          pathname = pathname.replace(/[?#]/g, function (match) {
-            return encodeURIComponent(match)
-          })
-          search = search.replace('#', '%23')
+  // finally, reconstruct the href based on what has been validated.
+  this.href = this.format();
+  return this;
+};
 
-          return protocol + host + pathname + search + hash
-        }
+// format a parsed object into a url string
+function urlFormat(obj) {
+  // ensure it's an object, and not a string url.
+  // If it's an obj, this is a no-op.
+  // this way, you can call url_format() on strings
+  // to clean up potentially wonky urls.
+  if (util.isString(obj)) obj = urlParse(obj);
+  if (!(obj instanceof Url)) return Url.prototype.format.call(obj);
+  return obj.format();
+}
 
-        function urlResolve(source, relative) {
-          return urlParse(source, false, true).resolve(relative)
-        }
+Url.prototype.format = function() {
+  var auth = this.auth || '';
+  if (auth) {
+    auth = encodeURIComponent(auth);
+    auth = auth.replace(/%3A/i, ':');
+    auth += '@';
+  }
 
-        Url.prototype.resolve = function (relative) {
-          return this.resolveObject(urlParse(relative, false, true)).format()
-        }
+  var protocol = this.protocol || '',
+      pathname = this.pathname || '',
+      hash = this.hash || '',
+      host = false,
+      query = '';
 
-        function urlResolveObject(source, relative) {
-          if (!source) return relative
-          return urlParse(source, false, true).resolveObject(relative)
-        }
+  if (this.host) {
+    host = auth + this.host;
+  } else if (this.hostname) {
+    host = auth + (this.hostname.indexOf(':') === -1 ?
+        this.hostname :
+        '[' + this.hostname + ']');
+    if (this.port) {
+      host += ':' + this.port;
+    }
+  }
 
-        Url.prototype.resolveObject = function (relative) {
-          if (util.isString(relative)) {
-            var rel = new Url()
-            rel.parse(relative, false, true)
-            relative = rel
-          }
+  if (this.query &&
+      util.isObject(this.query) &&
+      Object.keys(this.query).length) {
+    query = querystring.stringify(this.query);
+  }
 
-          var result = new Url()
-          var tkeys = Object.keys(this)
-          for (var tk = 0; tk < tkeys.length; tk++) {
-            var tkey = tkeys[tk]
-            result[tkey] = this[tkey]
-          }
+  var search = this.search || (query && ('?' + query)) || '';
 
-          // hash is always overridden, no matter what.
-          // even href="" will remove it.
-          result.hash = relative.hash
+  if (protocol && protocol.substr(-1) !== ':') protocol += ':';
 
-          // if the relative url is empty, then there's nothing left to do here.
-          if (relative.href === '') {
-            result.href = result.format()
-            return result
-          }
+  // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
+  // unless they had them to begin with.
+  if (this.slashes ||
+      (!protocol || slashedProtocol[protocol]) && host !== false) {
+    host = '//' + (host || '');
+    if (pathname && pathname.charAt(0) !== '/') pathname = '/' + pathname;
+  } else if (!host) {
+    host = '';
+  }
 
-          // hrefs like //foo/bar always cut to the protocol.
-          if (relative.slashes && !relative.protocol) {
-            // take everything except the protocol from relative
-            var rkeys = Object.keys(relative)
-            for (var rk = 0; rk < rkeys.length; rk++) {
-              var rkey = rkeys[rk]
-              if (rkey !== 'protocol') result[rkey] = relative[rkey]
-            }
+  if (hash && hash.charAt(0) !== '#') hash = '#' + hash;
+  if (search && search.charAt(0) !== '?') search = '?' + search;
 
-            //urlParse appends trailing / to urls like http://www.example.com
-            if (
-              slashedProtocol[result.protocol] &&
-              result.hostname &&
-              !result.pathname
-            ) {
-              result.path = result.pathname = '/'
-            }
+  pathname = pathname.replace(/[?#]/g, function(match) {
+    return encodeURIComponent(match);
+  });
+  search = search.replace('#', '%23');
 
-            result.href = result.format()
-            return result
-          }
+  return protocol + host + pathname + search + hash;
+};
 
-          if (relative.protocol && relative.protocol !== result.protocol) {
-            // if it's a known url protocol, then changing
-            // the protocol does weird things
-            // first, if it's not file:, then we MUST have a host,
-            // and if there was a path
-            // to begin with, then we MUST have a path.
-            // if it is file:, then the host is dropped,
-            // because that's known to be hostless.
-            // anything else is assumed to be absolute.
-            if (!slashedProtocol[relative.protocol]) {
-              var keys = Object.keys(relative)
-              for (var v = 0; v < keys.length; v++) {
-                var k = keys[v]
-                result[k] = relative[k]
-              }
-              result.href = result.format()
-              return result
-            }
+function urlResolve(source, relative) {
+  return urlParse(source, false, true).resolve(relative);
+}
 
-            result.protocol = relative.protocol
-            if (!relative.host && !hostlessProtocol[relative.protocol]) {
-              var relPath = (relative.pathname || '').split('/')
-              while (relPath.length && !(relative.host = relPath.shift()));
-              if (!relative.host) relative.host = ''
-              if (!relative.hostname) relative.hostname = ''
-              if (relPath[0] !== '') relPath.unshift('')
-              if (relPath.length < 2) relPath.unshift('')
-              result.pathname = relPath.join('/')
-            } else {
-              result.pathname = relative.pathname
-            }
-            result.search = relative.search
-            result.query = relative.query
-            result.host = relative.host || ''
-            result.auth = relative.auth
-            result.hostname = relative.hostname || relative.host
-            result.port = relative.port
-            // to support http.request
-            if (result.pathname || result.search) {
-              var p = result.pathname || ''
-              var s = result.search || ''
-              result.path = p + s
-            }
-            result.slashes = result.slashes || relative.slashes
-            result.href = result.format()
-            return result
-          }
+Url.prototype.resolve = function(relative) {
+  return this.resolveObject(urlParse(relative, false, true)).format();
+};
 
-          var isSourceAbs =
-              result.pathname && result.pathname.charAt(0) === '/',
-            isRelAbs =
-              relative.host ||
-              (relative.pathname && relative.pathname.charAt(0) === '/'),
-            mustEndAbs =
-              isRelAbs || isSourceAbs || (result.host && relative.pathname),
-            removeAllDots = mustEndAbs,
-            srcPath = (result.pathname && result.pathname.split('/')) || [],
-            relPath = (relative.pathname && relative.pathname.split('/')) || [],
-            psychotic = result.protocol && !slashedProtocol[result.protocol]
+function urlResolveObject(source, relative) {
+  if (!source) return relative;
+  return urlParse(source, false, true).resolveObject(relative);
+}
 
-          // if the url is a non-slashed url, then relative
-          // links like ../.. should be able
-          // to crawl up to the hostname, as well.  This is strange.
-          // result.protocol has already been set by now.
-          // Later on, put the first path part into the host field.
-          if (psychotic) {
-            result.hostname = ''
-            result.port = null
-            if (result.host) {
-              if (srcPath[0] === '') srcPath[0] = result.host
-              else srcPath.unshift(result.host)
-            }
-            result.host = ''
-            if (relative.protocol) {
-              relative.hostname = null
-              relative.port = null
-              if (relative.host) {
-                if (relPath[0] === '') relPath[0] = relative.host
-                else relPath.unshift(relative.host)
-              }
-              relative.host = null
-            }
-            mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '')
-          }
+Url.prototype.resolveObject = function(relative) {
+  if (util.isString(relative)) {
+    var rel = new Url();
+    rel.parse(relative, false, true);
+    relative = rel;
+  }
 
-          if (isRelAbs) {
-            // it's absolute.
-            result.host =
-              relative.host || relative.host === ''
-                ? relative.host
-                : result.host
-            result.hostname =
-              relative.hostname || relative.hostname === ''
-                ? relative.hostname
-                : result.hostname
-            result.search = relative.search
-            result.query = relative.query
-            srcPath = relPath
-            // fall through to the dot-handling below.
-          } else if (relPath.length) {
-            // it's relative
-            // throw away the existing file, and take the new path instead.
-            if (!srcPath) srcPath = []
-            srcPath.pop()
-            srcPath = srcPath.concat(relPath)
-            result.search = relative.search
-            result.query = relative.query
-          } else if (!util.isNullOrUndefined(relative.search)) {
-            // just pull out the search.
-            // like href='?foo'.
-            // Put this after the other two cases because it simplifies the booleans
-            if (psychotic) {
-              result.hostname = result.host = srcPath.shift()
-              //occationaly the auth can get stuck only in host
-              //this especially happens in cases like
-              //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-              var authInHost =
-                result.host && result.host.indexOf('@') > 0
-                  ? result.host.split('@')
-                  : false
-              if (authInHost) {
-                result.auth = authInHost.shift()
-                result.host = result.hostname = authInHost.shift()
-              }
-            }
-            result.search = relative.search
-            result.query = relative.query
-            //to support http.request
-            if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
-              result.path =
-                (result.pathname ? result.pathname : '') +
-                (result.search ? result.search : '')
-            }
-            result.href = result.format()
-            return result
-          }
+  var result = new Url();
+  var tkeys = Object.keys(this);
+  for (var tk = 0; tk < tkeys.length; tk++) {
+    var tkey = tkeys[tk];
+    result[tkey] = this[tkey];
+  }
 
-          if (!srcPath.length) {
-            // no path at all.  easy.
-            // we've already handled the other stuff above.
-            result.pathname = null
-            //to support http.request
-            if (result.search) {
-              result.path = '/' + result.search
-            } else {
-              result.path = null
-            }
-            result.href = result.format()
-            return result
-          }
+  // hash is always overridden, no matter what.
+  // even href="" will remove it.
+  result.hash = relative.hash;
 
-          // if a url ENDs in . or .., then it must get a trailing slash.
-          // however, if it ends in anything else non-slashy,
-          // then it must NOT get a trailing slash.
-          var last = srcPath.slice(-1)[0]
-          var hasTrailingSlash =
-            ((result.host || relative.host || srcPath.length > 1) &&
-              (last === '.' || last === '..')) ||
-            last === ''
+  // if the relative url is empty, then there's nothing left to do here.
+  if (relative.href === '') {
+    result.href = result.format();
+    return result;
+  }
 
-          // strip single dots, resolve double dots to parent dir
-          // if the path tries to go above the root, `up` ends up > 0
-          var up = 0
-          for (var i = srcPath.length; i >= 0; i--) {
-            last = srcPath[i]
-            if (last === '.') {
-              srcPath.splice(i, 1)
-            } else if (last === '..') {
-              srcPath.splice(i, 1)
-              up++
-            } else if (up) {
-              srcPath.splice(i, 1)
-              up--
-            }
-          }
+  // hrefs like //foo/bar always cut to the protocol.
+  if (relative.slashes && !relative.protocol) {
+    // take everything except the protocol from relative
+    var rkeys = Object.keys(relative);
+    for (var rk = 0; rk < rkeys.length; rk++) {
+      var rkey = rkeys[rk];
+      if (rkey !== 'protocol')
+        result[rkey] = relative[rkey];
+    }
 
-          // if the path is allowed to go above the root, restore leading ..s
-          if (!mustEndAbs && !removeAllDots) {
-            for (; up--; up) {
-              srcPath.unshift('..')
-            }
-          }
+    //urlParse appends trailing / to urls like http://www.example.com
+    if (slashedProtocol[result.protocol] &&
+        result.hostname && !result.pathname) {
+      result.path = result.pathname = '/';
+    }
 
-          if (
-            mustEndAbs &&
-            srcPath[0] !== '' &&
-            (!srcPath[0] || srcPath[0].charAt(0) !== '/')
-          ) {
-            srcPath.unshift('')
-          }
+    result.href = result.format();
+    return result;
+  }
 
-          if (hasTrailingSlash && srcPath.join('/').substr(-1) !== '/') {
-            srcPath.push('')
-          }
+  if (relative.protocol && relative.protocol !== result.protocol) {
+    // if it's a known url protocol, then changing
+    // the protocol does weird things
+    // first, if it's not file:, then we MUST have a host,
+    // and if there was a path
+    // to begin with, then we MUST have a path.
+    // if it is file:, then the host is dropped,
+    // because that's known to be hostless.
+    // anything else is assumed to be absolute.
+    if (!slashedProtocol[relative.protocol]) {
+      var keys = Object.keys(relative);
+      for (var v = 0; v < keys.length; v++) {
+        var k = keys[v];
+        result[k] = relative[k];
+      }
+      result.href = result.format();
+      return result;
+    }
 
-          var isAbsolute =
-            srcPath[0] === '' || (srcPath[0] && srcPath[0].charAt(0) === '/')
+    result.protocol = relative.protocol;
+    if (!relative.host && !hostlessProtocol[relative.protocol]) {
+      var relPath = (relative.pathname || '').split('/');
+      while (relPath.length && !(relative.host = relPath.shift()));
+      if (!relative.host) relative.host = '';
+      if (!relative.hostname) relative.hostname = '';
+      if (relPath[0] !== '') relPath.unshift('');
+      if (relPath.length < 2) relPath.unshift('');
+      result.pathname = relPath.join('/');
+    } else {
+      result.pathname = relative.pathname;
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    result.host = relative.host || '';
+    result.auth = relative.auth;
+    result.hostname = relative.hostname || relative.host;
+    result.port = relative.port;
+    // to support http.request
+    if (result.pathname || result.search) {
+      var p = result.pathname || '';
+      var s = result.search || '';
+      result.path = p + s;
+    }
+    result.slashes = result.slashes || relative.slashes;
+    result.href = result.format();
+    return result;
+  }
 
-          // put the host back
-          if (psychotic) {
-            result.hostname = result.host = isAbsolute
-              ? ''
-              : srcPath.length
-              ? srcPath.shift()
-              : ''
-            //occationaly the auth can get stuck only in host
-            //this especially happens in cases like
-            //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-            var authInHost =
-              result.host && result.host.indexOf('@') > 0
-                ? result.host.split('@')
-                : false
-            if (authInHost) {
-              result.auth = authInHost.shift()
-              result.host = result.hostname = authInHost.shift()
-            }
-          }
+  var isSourceAbs = (result.pathname && result.pathname.charAt(0) === '/'),
+      isRelAbs = (
+          relative.host ||
+          relative.pathname && relative.pathname.charAt(0) === '/'
+      ),
+      mustEndAbs = (isRelAbs || isSourceAbs ||
+                    (result.host && relative.pathname)),
+      removeAllDots = mustEndAbs,
+      srcPath = result.pathname && result.pathname.split('/') || [],
+      relPath = relative.pathname && relative.pathname.split('/') || [],
+      psychotic = result.protocol && !slashedProtocol[result.protocol];
 
-          mustEndAbs = mustEndAbs || (result.host && srcPath.length)
+  // if the url is a non-slashed url, then relative
+  // links like ../.. should be able
+  // to crawl up to the hostname, as well.  This is strange.
+  // result.protocol has already been set by now.
+  // Later on, put the first path part into the host field.
+  if (psychotic) {
+    result.hostname = '';
+    result.port = null;
+    if (result.host) {
+      if (srcPath[0] === '') srcPath[0] = result.host;
+      else srcPath.unshift(result.host);
+    }
+    result.host = '';
+    if (relative.protocol) {
+      relative.hostname = null;
+      relative.port = null;
+      if (relative.host) {
+        if (relPath[0] === '') relPath[0] = relative.host;
+        else relPath.unshift(relative.host);
+      }
+      relative.host = null;
+    }
+    mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '');
+  }
 
-          if (mustEndAbs && !isAbsolute) {
-            srcPath.unshift('')
-          }
+  if (isRelAbs) {
+    // it's absolute.
+    result.host = (relative.host || relative.host === '') ?
+                  relative.host : result.host;
+    result.hostname = (relative.hostname || relative.hostname === '') ?
+                      relative.hostname : result.hostname;
+    result.search = relative.search;
+    result.query = relative.query;
+    srcPath = relPath;
+    // fall through to the dot-handling below.
+  } else if (relPath.length) {
+    // it's relative
+    // throw away the existing file, and take the new path instead.
+    if (!srcPath) srcPath = [];
+    srcPath.pop();
+    srcPath = srcPath.concat(relPath);
+    result.search = relative.search;
+    result.query = relative.query;
+  } else if (!util.isNullOrUndefined(relative.search)) {
+    // just pull out the search.
+    // like href='?foo'.
+    // Put this after the other two cases because it simplifies the booleans
+    if (psychotic) {
+      result.hostname = result.host = srcPath.shift();
+      //occationaly the auth can get stuck only in host
+      //this especially happens in cases like
+      //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+      var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                       result.host.split('@') : false;
+      if (authInHost) {
+        result.auth = authInHost.shift();
+        result.host = result.hostname = authInHost.shift();
+      }
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    //to support http.request
+    if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
+      result.path = (result.pathname ? result.pathname : '') +
+                    (result.search ? result.search : '');
+    }
+    result.href = result.format();
+    return result;
+  }
 
-          if (!srcPath.length) {
-            result.pathname = null
-            result.path = null
-          } else {
-            result.pathname = srcPath.join('/')
-          }
+  if (!srcPath.length) {
+    // no path at all.  easy.
+    // we've already handled the other stuff above.
+    result.pathname = null;
+    //to support http.request
+    if (result.search) {
+      result.path = '/' + result.search;
+    } else {
+      result.path = null;
+    }
+    result.href = result.format();
+    return result;
+  }
 
-          //to support request.http
-          if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
-            result.path =
-              (result.pathname ? result.pathname : '') +
-              (result.search ? result.search : '')
-          }
-          result.auth = relative.auth || result.auth
-          result.slashes = result.slashes || relative.slashes
-          result.href = result.format()
-          return result
-        }
+  // if a url ENDs in . or .., then it must get a trailing slash.
+  // however, if it ends in anything else non-slashy,
+  // then it must NOT get a trailing slash.
+  var last = srcPath.slice(-1)[0];
+  var hasTrailingSlash = (
+      (result.host || relative.host || srcPath.length > 1) &&
+      (last === '.' || last === '..') || last === '');
 
-        Url.prototype.parseHost = function () {
-          var host = this.host
-          var port = portPattern.exec(host)
-          if (port) {
-            port = port[0]
-            if (port !== ':') {
-              this.port = port.substr(1)
-            }
-            host = host.substr(0, host.length - port.length)
-          }
-          if (host) this.hostname = host
-        }
+  // strip single dots, resolve double dots to parent dir
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = srcPath.length; i >= 0; i--) {
+    last = srcPath[i];
+    if (last === '.') {
+      srcPath.splice(i, 1);
+    } else if (last === '..') {
+      srcPath.splice(i, 1);
+      up++;
+    } else if (up) {
+      srcPath.splice(i, 1);
+      up--;
+    }
+  }
 
-        /***/
-      },
+  // if the path is allowed to go above the root, restore leading ..s
+  if (!mustEndAbs && !removeAllDots) {
+    for (; up--; up) {
+      srcPath.unshift('..');
+    }
+  }
 
-    /***/ './node_modules/url/util.js':
-      /*!**********************************!*\
+  if (mustEndAbs && srcPath[0] !== '' &&
+      (!srcPath[0] || srcPath[0].charAt(0) !== '/')) {
+    srcPath.unshift('');
+  }
+
+  if (hasTrailingSlash && (srcPath.join('/').substr(-1) !== '/')) {
+    srcPath.push('');
+  }
+
+  var isAbsolute = srcPath[0] === '' ||
+      (srcPath[0] && srcPath[0].charAt(0) === '/');
+
+  // put the host back
+  if (psychotic) {
+    result.hostname = result.host = isAbsolute ? '' :
+                                    srcPath.length ? srcPath.shift() : '';
+    //occationaly the auth can get stuck only in host
+    //this especially happens in cases like
+    //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+    var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                     result.host.split('@') : false;
+    if (authInHost) {
+      result.auth = authInHost.shift();
+      result.host = result.hostname = authInHost.shift();
+    }
+  }
+
+  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+  if (mustEndAbs && !isAbsolute) {
+    srcPath.unshift('');
+  }
+
+  if (!srcPath.length) {
+    result.pathname = null;
+    result.path = null;
+  } else {
+    result.pathname = srcPath.join('/');
+  }
+
+  //to support request.http
+  if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
+    result.path = (result.pathname ? result.pathname : '') +
+                  (result.search ? result.search : '');
+  }
+  result.auth = relative.auth || result.auth;
+  result.slashes = result.slashes || relative.slashes;
+  result.href = result.format();
+  return result;
+};
+
+Url.prototype.parseHost = function() {
+  var host = this.host;
+  var port = portPattern.exec(host);
+  if (port) {
+    port = port[0];
+    if (port !== ':') {
+      this.port = port.substr(1);
+    }
+    host = host.substr(0, host.length - port.length);
+  }
+  if (host) this.hostname = host;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/url/util.js":
+/*!**********************************!*\
   !*** ./node_modules/url/util.js ***!
   \**********************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        'use strict'
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        module.exports = {
-          isString: function (arg) {
-            return typeof arg === 'string'
-          },
-          isObject: function (arg) {
-            return typeof arg === 'object' && arg !== null
-          },
-          isNull: function (arg) {
-            return arg === null
-          },
-          isNullOrUndefined: function (arg) {
-            return arg == null
-          },
-        }
+"use strict";
 
-        /***/
-      },
 
-    /***/ './src/cms/cms.js':
-      /*!************************!*\
+module.exports = {
+  isString: function(arg) {
+    return typeof(arg) === 'string';
+  },
+  isObject: function(arg) {
+    return typeof(arg) === 'object' && arg !== null;
+  },
+  isNull: function(arg) {
+    return arg === null;
+  },
+  isNullOrUndefined: function(arg) {
+    return arg == null;
+  }
+};
+
+
+/***/ }),
+
+/***/ "./src/cms/cms.js":
+/*!************************!*\
   !*** ./src/cms/cms.js ***!
   \************************/
-      /*! no exports provided */
-      /***/ function (module, __webpack_exports__, __webpack_require__) {
-        'use strict'
-        __webpack_require__.r(__webpack_exports__)
-        /* harmony import */ var netlify_cms_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
-          /*! netlify-cms-app */ 'netlify-cms-app'
-        )
-        /* harmony import */ var netlify_cms_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/ __webpack_require__.n(
-          netlify_cms_app__WEBPACK_IMPORTED_MODULE_0__
-        )
-        /* harmony import */ var _components_css_Admin_Preview_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-          /*! ../components/css/Admin-Preview.css */ './src/components/css/Admin-Preview.css'
-        )
-        /* harmony import */ var _components_css_Admin_Preview_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/ __webpack_require__.n(
-          _components_css_Admin_Preview_css__WEBPACK_IMPORTED_MODULE_1__
-        )
-        var __signature__ =
-          typeof reactHotLoaderGlobal !== 'undefined'
-            ? reactHotLoaderGlobal.default.signature
-            : function (a) {
-                return a
-              }
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-        /***/
-      },
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var netlify_cms_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! netlify-cms-app */ "netlify-cms-app");
+/* harmony import */ var netlify_cms_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(netlify_cms_app__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_css_Admin_Preview_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/css/Admin-Preview.css */ "./src/components/css/Admin-Preview.css");
+/* harmony import */ var _components_css_Admin_Preview_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_css_Admin_Preview_css__WEBPACK_IMPORTED_MODULE_1__);
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
 
-    /***/ './src/components/css/Admin-Preview.css':
-      /*!**********************************************!*\
+
+
+
+/***/ }),
+
+/***/ "./src/components/css/Admin-Preview.css":
+/*!**********************************************!*\
   !*** ./src/components/css/Admin-Preview.css ***!
   \**********************************************/
-<<<<<<< HEAD
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        // extracted by mini-css-extract-plugin
-        if (true) {
-          // 1593555628216
-          var cssReload = __webpack_require__(
-            /*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ './node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js'
-          )(module.i, { hmr: true, locals: false })
-          module.hot.dispose(cssReload)
-          module.hot.accept(undefined, cssReload)
-        }
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
     if(true) {
-      // 1591815430048
+      // 1593634790101
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.i, {"hmr":true,"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
     }
   
 
-        /***/
-      },
+/***/ }),
 
-    /***/ 0:
-      /*!***************************************************************************************************************************************!*\
+/***/ 0:
+/*!***************************************************************************************************************************************!*\
   !*** multi ./node_modules/gatsby-plugin-netlify-cms/cms.js ./node_modules/gatsby-plugin-netlify-cms/cms-identity.js ./src/cms/cms.js ***!
   \***************************************************************************************************************************************/
-      /*! no static exports found */
-      /***/ function (module, exports, __webpack_require__) {
-        __webpack_require__(
-          /*! /Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms.js */ './node_modules/gatsby-plugin-netlify-cms/cms.js'
-        )
-        __webpack_require__(
-          /*! /Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms-identity.js */ './node_modules/gatsby-plugin-netlify-cms/cms-identity.js'
-        )
-        module.exports = __webpack_require__(
-          /*! /Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/src/cms/cms.js */ './src/cms/cms.js'
-        )
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-        /***/
-      },
+__webpack_require__(/*! /Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms.js */"./node_modules/gatsby-plugin-netlify-cms/cms.js");
+__webpack_require__(/*! /Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/node_modules/gatsby-plugin-netlify-cms/cms-identity.js */"./node_modules/gatsby-plugin-netlify-cms/cms-identity.js");
+module.exports = __webpack_require__(/*! /Users/nanoproductions/Documents/Development/projects/gatsby-nano-blog/src/cms/cms.js */"./src/cms/cms.js");
 
-    /***/ 'netlify-cms-app':
-      /*!********************************!*\
+
+/***/ }),
+
+/***/ "netlify-cms-app":
+/*!********************************!*\
   !*** external "NetlifyCmsApp" ***!
   \********************************/
-      /*! no static exports found */
-      /***/ function (module, exports) {
-        module.exports = NetlifyCmsApp
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-        /***/
-      },
+module.exports = NetlifyCmsApp;
 
-    /***/ 'netlify-identity-widget':
-      /*!**********************************!*\
+/***/ }),
+
+/***/ "netlify-identity-widget":
+/*!**********************************!*\
   !*** external "netlifyIdentity" ***!
   \**********************************/
-      /*! no static exports found */
-      /***/ function (module, exports) {
-        module.exports = netlifyIdentity
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-        /***/
-      },
+module.exports = netlifyIdentity;
 
-    /******/
-  }
-)
+/***/ })
+
+/******/ });
 //# sourceMappingURL=cms.js.map

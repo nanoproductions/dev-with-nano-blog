@@ -36,3 +36,13 @@ body {
 .full-width {
   width: 100%;
 }
+
+.text-center {
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  .m-full-width {
+    width: 100%;
+  }
+}

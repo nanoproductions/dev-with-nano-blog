@@ -1,8 +1,14 @@
+.post-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .post {
   display: grid;
   padding: 0.5rem 2rem;
+  background: $secondary-color;
 
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
 
   color: white;
   margin: 1rem 1rem 0.5rem 0.5rem;
@@ -27,7 +33,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .post {
-    display: block;
+  .post-container {
+    grid-template-columns: 1fr;
   }
 }

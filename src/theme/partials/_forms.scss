@@ -1,7 +1,12 @@
 input[type='text'] {
   padding: 0.6rem 1rem;
-  border: none;
-  background: transparent;
+  border: 1px solid $secondary-color;
+  background: $secondary-color;
+
+  .full-width {
+    display: flex;
+    width: 100%;
+  }
 }
 
 .form-border {
