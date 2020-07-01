@@ -4,16 +4,23 @@ import '../../theme/main.scss'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import PostState from '../../context/Posts/PostState'
+import favicon from '../../img/nano-favicon.png'
+import Helmet from 'react-helmet'
 
 const Layout = (props) => {
   return (
-    <PostState>
-      <Fragment>
-        <Navbar />
-        {props.children}
-        <Footer />
-      </Fragment>
-    </PostState>
+    <Fragment>
+      <Helmet>
+        <link rel="icon" href={favicon} />
+      </Helmet>
+      <PostState>
+        <Fragment>
+          <Navbar />
+          {props.children}
+          <Footer />
+        </Fragment>
+      </PostState>
+    </Fragment>
   )
 }
 

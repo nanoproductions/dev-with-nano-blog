@@ -377,7 +377,7 @@ To complete, we just add `{{ result }}` in our template. And let's test the appl
 
 ```html
 <div class="alert">
-    {{ result }}
+  {{ result }}
 </div>
 ```
 
