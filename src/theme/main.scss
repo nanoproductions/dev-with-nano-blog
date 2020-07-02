@@ -9,6 +9,7 @@
 @import './partials/spacing';
 @import './partials/btn';
 @import './partials/posts';
+@import './partials/reset';
 
 * {
   margin: 0;
@@ -18,10 +19,12 @@
 
 body {
   font-family: 'Quicksand', sans-serif;
-  line-height: 1.2;
+  line-height: 1.5;
   background: $primary-color;
   color: white;
 }
+
+p {line-height: 1.5; }
 
 .container {
   width: 90%;
