@@ -2,6 +2,7 @@
 title: Learn Rust | Hello World
 date: 2020-01-16
 published: true
+topic: Rust
 ---
 
 Rust is a programming language that I wanted to tackle learning for so long. So instead of just learning it myself, I decided to learn it with the community. I don’t know how long these tutorials might last, but they will last for sometime.

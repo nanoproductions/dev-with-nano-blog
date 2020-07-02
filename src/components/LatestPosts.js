@@ -1,8 +1,6 @@
-import { graphql, useStaticQuery, Link } from 'gatsby'
+import { graphql, useStaticQuery, Link, navigate } from 'gatsby'
 import React, { Fragment } from 'react'
 import Image from 'gatsby-image'
-
-import styles from '../components/css/LatestPost.module.scss'
 
 export default () => {
   const data = useStaticQuery(graphql`
@@ -42,7 +40,10 @@ export default () => {
           return (
             <div key={Math.random()} className={styles.post}>
               {!!frontmatter.cover ? (
-                <Image sizes={frontmatter.cover.childImageSharp.sizes} />
+                <Image
+                  sizes={frontmatter.cover.childImageSharp.sizes}
+                  onClick={() => navigate(fields.slug)}
+                />
               ) : null}
               <h1>
                 <Link to={fields.slug} className={styles.link}>
