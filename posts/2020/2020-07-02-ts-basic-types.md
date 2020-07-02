@@ -1,5 +1,5 @@
 ---
-title: TypeScript - 03 - Installation
+title: TypeScript - 03 - Basic Types
 date: 2020-07-02
 published: true
 cover: ./img/ts-part-3.png
