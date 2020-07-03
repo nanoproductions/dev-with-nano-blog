@@ -10,6 +10,7 @@
 @import './partials/btn';
 @import './partials/posts';
 @import './partials/reset';
+@import './partials/alert';
 
 * {
   margin: 0;
@@ -24,7 +25,9 @@ body {
   color: white;
 }
 
-p {line-height: 1.5; }
+p {
+  line-height: 1.5;
+}
 
 .container {
   width: 90%;
@@ -48,4 +51,8 @@ p {line-height: 1.5; }
   .m-full-width {
     width: 100%;
   }
+}
+
+.mt-1 {
+  margin-top: 1rem;
 }

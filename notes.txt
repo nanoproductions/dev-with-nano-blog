@@ -1,0 +1,1 @@
+filter: {fileAbsolutePath: {regex: "/(posts)/.*\\.md$/"}}
