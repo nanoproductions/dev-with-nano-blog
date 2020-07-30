@@ -1,5 +1,5 @@
 import Highlight, { defaultProps } from 'prism-react-renderer'
-import theme from 'prism-react-renderer/themes/vsDark'
+import theme from 'prism-react-renderer/themes/nightOwl'
 import React from 'react'
 
 const Code = ({ codeString, language }) => {
