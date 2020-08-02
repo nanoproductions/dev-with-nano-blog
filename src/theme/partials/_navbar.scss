@@ -1,7 +1,9 @@
 .navbar {
-  background: darken($primary-color, 5);
-  display: flex;
-  justify-content: space-between;
+  background: $secondary-color;
+  .container {
+    display: flex;
+    justify-content: space-between;
+  }
 
   .brand {
     color: white;

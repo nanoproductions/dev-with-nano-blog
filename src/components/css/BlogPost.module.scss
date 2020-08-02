@@ -1,6 +1,9 @@
 @import './Variables.scss';
 
 .post {
+  p {
+    margin-top: 2rem;
+  }
   line-height: 1.5;
   .heading {
     text-align: center;
@@ -22,6 +25,12 @@
   .body {
     width: 60%;
     margin: 0 auto;
+    h2 {
+      background: darkslateblue;
+      padding: 0.5rem 1rem;
+      margin-top: 2rem;
+      border-left: 4px solid royalblue;
+    }
 
     @media (max-width: 600px) {
       width: 95%;

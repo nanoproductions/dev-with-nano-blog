@@ -6,26 +6,28 @@ const Navbar = () => {
   const { title } = useSiteMeta()
   return (
     <nav className="navbar">
-      <Link to="/" className="brand">
-        {title}
-      </Link>
-      <ul>
-        <li>
-          <Link to="/" className="link">
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link to="/about" className="link">
-            About
-          </Link>
-        </li>
-        <li>
-          <Link to="/contact" className="link">
-            Contact
-          </Link>
-        </li>
-      </ul>
+      <div className="container">
+        <Link to="/" className="brand">
+          {title}
+        </Link>
+        <ul>
+          <li>
+            <Link to="/" className="link">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/about" className="link">
+              About
+            </Link>
+          </li>
+          <li>
+            <Link to="/contact" className="link">
+              Contact
+            </Link>
+          </li>
+        </ul>
+      </div>
     </nav>
   )
 }

@@ -13,7 +13,7 @@ const Code = ({ codeString, language }) => {
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre
           className={className}
-          style={(style, { padding: '1rem', background: '#000' })}
+          style={(style, { padding: '1rem', background: '#1d1b35' })}
         >
           {tokens.map((line, i) => (
             <div {...getLineProps({ line, key: i })}>
