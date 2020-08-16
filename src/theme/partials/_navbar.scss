@@ -34,7 +34,9 @@
 
 @media screen and (max-width: 600px) {
   .navbar {
-    display: block;
+    .container {
+      display: block;
+    }
 
     .brand {
       display: block;
