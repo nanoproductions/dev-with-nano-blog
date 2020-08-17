@@ -6,12 +6,9 @@ import { Helmet } from 'react-helmet'
 import Image from 'gatsby-image'
 
 import Layout from '../layout/Layout'
-import { Utterences } from '../../utils/Utterances'
 
 export default ({ data }) => {
   const { frontmatter, body } = data.mdx
-
-  console.log(frontmatter)
 
   return (
     <Layout>
@@ -30,6 +27,7 @@ export default ({ data }) => {
           ) : null}
 
           <div className={styles.body}>
+            <p>{data.mdx.fields.readingTime.text}</p>
             <MDXRenderer>{body}</MDXRenderer>
           </div>
         </div>
@@ -52,6 +50,11 @@ export const query = graphql`
               ...GatsbyImageSharpSizes_tracedSVG
             }
           }
+        }
+      }
+      fields {
+        readingTime {
+          text
         }
       }
     }

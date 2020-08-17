@@ -26,6 +26,9 @@ export default () => {
           }
           fields {
             slug
+              readingTime {
+                text
+              }
           }
         }
       }
@@ -49,6 +52,7 @@ export default () => {
                     {frontmatter.title}
                   </Link>
                 </h1>
+                <p>{fields.readingTime.text}</p>
                 <small>{frontmatter.date}</small>
                 <p>{excerpt}</p>
               </div>

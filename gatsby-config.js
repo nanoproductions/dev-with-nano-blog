@@ -51,5 +51,6 @@ module.exports = {
         head: true,
       },
     },
+    `gatsby-remark-reading-time`,
   ],
 }
