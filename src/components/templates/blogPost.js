@@ -27,7 +27,9 @@ export default ({ data }) => {
           ) : null}
 
           <div className={styles.body}>
-            <p>{data.mdx.fields.readingTime.text}</p>
+            <p>
+              {data.mdx.fields.readingTime.text} | {data.mdx.readingTime.words}
+            </p>
             <MDXRenderer>{body}</MDXRenderer>
           </div>
         </div>
@@ -55,6 +57,7 @@ export const query = graphql`
       fields {
         readingTime {
           text
+          words
         }
       }
     }
