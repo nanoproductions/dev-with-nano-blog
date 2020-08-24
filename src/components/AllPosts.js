@@ -2,6 +2,8 @@ import React, { Fragment } from 'react'
 import { graphql, useStaticQuery, Link } from 'gatsby'
 import Image from 'gatsby-image'
 
+import AniLink from 'gatsby-plugin-transition-link/AniLink'
+
 export default () => {
   const data = useStaticQuery(graphql`
     query {
@@ -28,6 +30,7 @@ export default () => {
             slug
               readingTime {
                 text
+
               }
           }
         }
@@ -48,9 +51,14 @@ export default () => {
               ) : null}
               <div className="post-content">
                 <h1>
-                  <Link to={fields.slug} className="link">
+                  <AniLink
+                    paintDrip
+                    to={fields.slug}
+                    hex="#5952ff"
+                    className="link"
+                  >
                     {frontmatter.title}
-                  </Link>
+                  </AniLink>
                 </h1>
                 <p>{fields.readingTime.text}</p>
                 <small>{frontmatter.date}</small>

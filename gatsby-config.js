@@ -52,5 +52,6 @@ module.exports = {
       },
     },
     `gatsby-remark-reading-time`,
+    `gatsby-plugin-transition-link`,
   ],
 }

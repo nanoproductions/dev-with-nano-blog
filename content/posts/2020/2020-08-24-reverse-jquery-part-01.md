@@ -88,7 +88,7 @@ So something like this:
 
 Before we write any code, lets see if the console has any errors for us.
 
-#![](https://i.imgur.com/XBzD3NK.png)
+![](https://i.imgur.com/XBzD3NK.png)
 
 Well, simply the error is that is does not understand the `$` variable.
 

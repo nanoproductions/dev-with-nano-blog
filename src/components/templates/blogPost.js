@@ -28,7 +28,8 @@ export default ({ data }) => {
 
           <div className={styles.body}>
             <p>
-              {data.mdx.fields.readingTime.text} | {data.mdx.readingTime.words}
+              {data.mdx.fields.readingTime.text} |{' '}
+              {data.mdx.fields.readingTime.words} words
             </p>
             <MDXRenderer>{body}</MDXRenderer>
           </div>
