@@ -2,19 +2,26 @@ backend:
   name: git-gateway
   branch: master
 
-media_folder: static/img
+media_folder: content/posts/2020/img
 public_folder: /img
+
+display_url: https://devwithnano.netlify.app
+
+logo_url: src/img/nano-favicon.png
 
 publish_mode: editorial_workflow
 collections:
   - name: 'blog'
     label: 'Blog'
-    folder: 'posts/2020'
+    folder: 'content/posts/2020'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    description: 'Add blog posts to Nano Dev Blog'
+    preview_path: 'posts/{{year}}/{{filename}}.{{extension}}'
 
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Date', name: 'date', widget: 'datetime' }
       - { label: 'Published', name: 'published', default: true }
+      - { label: 'Cover', name: 'cover', widget: 'image' }
       - { label: 'Body', name: 'body', widget: 'markdown' }

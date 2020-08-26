@@ -53,5 +53,24 @@ module.exports = {
     },
     `gatsby-remark-reading-time`,
     `gatsby-plugin-transition-link`,
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: 'Dev with Nano',
+        short_name: 'NanoBlog',
+        start_url: '/',
+        background_color: '#000000',
+        theme_color: '#171542',
+        display: 'standalone',
+        icon: 'src/img/nano-favicon.png',
+        crossOrigin: `use-credentials`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-offline`,
+      options: {
+        precachePages: [`/`, `/about/`, `/posts/2020/*`],
+      },
+    },
   ],
 }

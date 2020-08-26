@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "56b47afc33ef83347f63";
+/******/ 	var hotCurrentHash = "b02ad3d90008483cd4e5";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -795,23 +795,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/interopRequireDefault.js ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : {
-    "default": obj
-  };
-}
-
-module.exports = _interopRequireDefault;
-
-/***/ }),
-
 /***/ "./node_modules/gatsby-plugin-netlify-cms/cms-identity.js":
 /*!****************************************************************!*\
   !*** ./node_modules/gatsby-plugin-netlify-cms/cms-identity.js ***!
@@ -831,7 +814,7 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
   return a;
 };
 
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/gatsby/node_modules/@babel/runtime/helpers/interopRequireDefault.js");
 
 var _netlifyIdentityWidget = _interopRequireDefault(__webpack_require__(/*! netlify-identity-widget */ "netlify-identity-widget"));
 /* global __PATH_PREFIX__ CMS_PUBLIC_PATH */
@@ -902,7 +885,7 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
   return a;
 };
 
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/gatsby/node_modules/@babel/runtime/helpers/interopRequireDefault.js");
 
 var _netlifyCmsApp = _interopRequireDefault(__webpack_require__(/*! netlify-cms-app */ "netlify-cms-app"));
 
@@ -1064,6 +1047,23 @@ __webpack_require__.r(__webpack_exports__);
 const emitter = Object(mitt__WEBPACK_IMPORTED_MODULE_0__["default"])()
 /* harmony default export */ __webpack_exports__["default"] = (emitter);
 
+
+/***/ }),
+
+/***/ "./node_modules/gatsby/node_modules/@babel/runtime/helpers/interopRequireDefault.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/gatsby/node_modules/@babel/runtime/helpers/interopRequireDefault.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+
+module.exports = _interopRequireDefault;
 
 /***/ }),
 
