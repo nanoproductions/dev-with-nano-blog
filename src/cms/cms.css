@@ -7,3 +7,9 @@
 code {
     font-family: monospace;
 }
+
+img {
+    width: 95%;
+    padding: 1rem;
+    margin: 0 auto;
+}
