@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "gatsby develop -H 0.0.0.0 -p 8081 ",
+    "serve": "gatsby serve",
     "build": "gatsby build",
     "fmt": "prettier --write --config ./prettier.config.js ."
   },
@@ -14,13 +15,13 @@
   "author": "Nano Adam",
   "license": "ISC",
   "dependencies": {
-    "@mdx-js/mdx": "^1.5.7",
+    "@mdx-js/mdx": "1.5.9",
     "@mdx-js/react": "^1.5.7",
     "gatsby": "^2.19.22",
     "gatsby-image": "^2.4.9",
     "gatsby-plugin-google-analytics": "^2.2.2",
     "gatsby-plugin-manifest": "^2.4.24",
-    "gatsby-plugin-mdx": "^1.0.74",
+    "gatsby-plugin-mdx": "^1.2.36",
     "gatsby-plugin-netlify-cms": "^4.1.40",
     "gatsby-plugin-offline": "^3.2.24",
     "gatsby-plugin-react-helmet": "^3.1.24",
