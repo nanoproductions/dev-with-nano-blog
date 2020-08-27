@@ -6,3 +6,15 @@ cover: /img/mern-stack.png
 ---
 ## Introduction
 Welcome to the MERN Stack Complete Introduction. In this post, I will explain and show you everything you need to know to start building MERN Stack applications. 
+
+## What is the MERN Stack?
+The MERN Stack is basically an acronym for:
+- **M**ongoDB
+- **E**xpress
+- **R**eact
+- **N**ode.js
+
+Basically, here is breakdown of each technology.
+
+### MongoDB
+A 
