@@ -2,6 +2,7 @@ module.exports = {
   siteMetadata: {
     title: 'Dev with Nano',
     description: '...Learn Code',
+    siteUrl: 'https://devwithnano.netlify.app',
   },
   plugins: [
     `gatsby-transformer-sharp`,
