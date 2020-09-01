@@ -72,5 +72,6 @@ module.exports = {
         precachePages: [`/`, `/about/`, `/posts/2020/*`],
       },
     },
+    `gatsby-plugin-feed`,
   ],
 }
