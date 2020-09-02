@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "918e36934655316b83fa";
+/******/ 	var hotCurrentHash = "5580a845b0f80ec02508";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1034,14 +1034,24 @@ _netlifyCmsApp.default.registerPreviewStyle("cms.css");
 
 /***/ }),
 
-/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
+/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js":
+/*!**********************************************************************************************************************!*\
+  !*** ./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js ***!
+  \**********************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {(function () {
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+/* eslint-env browser */
+
+/*
+  eslint-disable
+  no-console,
+  func-names
+*/
+
+(function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
   enterModule && enterModule(module);
 })();
@@ -1050,139 +1060,7 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
   return a;
 };
 
-var g; // This works in non-strict mode
-
-g = function () {
-  return this;
-}();
-
-try {
-  // This works if eval is allowed (see CSP)
-  g = g || new Function("return this")();
-} catch (e) {
-  // This works if the window reference is available
-  if (typeof window === "object") g = window;
-} // g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-
-module.exports = g;
-;
-
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
-
-  if (!reactHotLoader) {
-    return;
-  }
-
-  reactHotLoader.register(g, "g", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js");
-})();
-
-;
-
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module)))
-
-/***/ }),
-
-/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/module.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
-};
-
-module.exports = function (module) {
-  if (!module.webpackPolyfill) {
-    module.deprecate = function () {};
-
-    module.paths = []; // module.parent = undefined by default
-
-    if (!module.children) module.children = [];
-    Object.defineProperty(module, "loaded", {
-      enumerable: true,
-      get: function get() {
-        return module.l;
-      }
-    });
-    Object.defineProperty(module, "id", {
-      enumerable: true,
-      get: function get() {
-        return module.i;
-      }
-    });
-    module.webpackPolyfill = 1;
-  }
-
-  return module;
-};
-
-/***/ }),
-
-/***/ "./node_modules/gatsby/cache-dir/emitter.js":
-/*!**************************************************!*\
-  !*** ./node_modules/gatsby/cache-dir/emitter.js ***!
-  \**************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var mitt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mitt */ "./node_modules/mitt/dist/mitt.es.js");
-
-
-const emitter = Object(mitt__WEBPACK_IMPORTED_MODULE_0__["default"])()
-/* harmony default export */ __webpack_exports__["default"] = (emitter);
-
-
-/***/ }),
-
-/***/ "./node_modules/is-plain-obj/index.js":
-/*!********************************************!*\
-  !*** ./node_modules/is-plain-obj/index.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var toString = Object.prototype.toString;
-
-module.exports = function (x) {
-	var prototype;
-	return toString.call(x) === '[object Object]' && (prototype = Object.getPrototypeOf(x), prototype === null || prototype === Object.getPrototypeOf({}));
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/* eslint-env browser */
-
-/*
-  eslint-disable
-  no-console,
-  func-names
-*/
-var normalizeUrl = __webpack_require__(/*! normalize-url */ "./node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js");
+var normalizeUrl = __webpack_require__(/*! normalize-url */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/normalize-url/index.js");
 
 var srcByModuleId = Object.create(null);
 var noDocument = typeof document === 'undefined';
@@ -1385,393 +1263,587 @@ module.exports = function (moduleId, options) {
   return debounce(update, 50);
 };
 
+;
+
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
+
+  if (!reactHotLoader) {
+    return;
+  }
+
+  reactHotLoader.register(srcByModuleId, "srcByModuleId", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(noDocument, "noDocument", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(forEach, "forEach", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(debounce, "debounce", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(noop, "noop", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(getCurrentScriptUrl, "getCurrentScriptUrl", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(updateCss, "updateCss", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(getReloadUrl, "getReloadUrl", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(reloadStyle, "reloadStyle", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(reloadAll, "reloadAll", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+  reactHotLoader.register(isUrlRequest, "isUrlRequest", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../webpack/buildin/module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module)))
+
 /***/ }),
 
-/***/ "./node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js":
-/*!**********************************************************************************!*\
-  !*** ./node_modules/mini-css-extract-plugin/node_modules/normalize-url/index.js ***!
-  \**********************************************************************************/
+/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/normalize-url/index.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/gatsby-plugin-netlify-cms/node_modules/normalize-url/index.js ***!
+  \************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+
+(function () {
+  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
+  enterModule && enterModule(module);
+})();
+
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
 
 var url = __webpack_require__(/*! url */ "./node_modules/url/url.js");
+
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/node-libs-browser/node_modules/punycode/punycode.js");
-var queryString = __webpack_require__(/*! query-string */ "./node_modules/mini-css-extract-plugin/node_modules/query-string/index.js");
+
+var queryString = __webpack_require__(/*! query-string */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/query-string/index.js");
+
 var prependHttp = __webpack_require__(/*! prepend-http */ "./node_modules/prepend-http/index.js");
+
 var sortKeys = __webpack_require__(/*! sort-keys */ "./node_modules/sort-keys/index.js");
+
 var objectAssign = __webpack_require__(/*! object-assign */ "./.cache/polyfills/object-assign.js");
 
 var DEFAULT_PORTS = {
-	'http:': 80,
-	'https:': 443,
-	'ftp:': 21
-};
+  'http:': 80,
+  'https:': 443,
+  'ftp:': 21
+}; // protocols that always contain a `//`` bit
 
-// protocols that always contain a `//`` bit
 var slashedProtocol = {
-	'http': true,
-	'https': true,
-	'ftp': true,
-	'gopher': true,
-	'file': true,
-	'http:': true,
-	'https:': true,
-	'ftp:': true,
-	'gopher:': true,
-	'file:': true
+  'http': true,
+  'https': true,
+  'ftp': true,
+  'gopher': true,
+  'file': true,
+  'http:': true,
+  'https:': true,
+  'ftp:': true,
+  'gopher:': true,
+  'file:': true
 };
 
 function testParameter(name, filters) {
-	return filters.some(function (filter) {
-		return filter instanceof RegExp ? filter.test(name) : filter === name;
-	});
+  return filters.some(function (filter) {
+    return filter instanceof RegExp ? filter.test(name) : filter === name;
+  });
 }
 
 module.exports = function (str, opts) {
-	opts = objectAssign({
-		normalizeProtocol: true,
-		normalizeHttps: false,
-		stripFragment: true,
-		stripWWW: true,
-		removeQueryParameters: [/^utm_\w+/i],
-		removeTrailingSlash: true,
-		removeDirectoryIndex: false
-	}, opts);
+  opts = objectAssign({
+    normalizeProtocol: true,
+    normalizeHttps: false,
+    stripFragment: true,
+    stripWWW: true,
+    removeQueryParameters: [/^utm_\w+/i],
+    removeTrailingSlash: true,
+    removeDirectoryIndex: false
+  }, opts);
 
-	if (typeof str !== 'string') {
-		throw new TypeError('Expected a string');
-	}
+  if (typeof str !== 'string') {
+    throw new TypeError('Expected a string');
+  }
 
-	var hasRelativeProtocol = str.indexOf('//') === 0;
+  var hasRelativeProtocol = str.indexOf('//') === 0; // prepend protocol
 
-	// prepend protocol
-	str = prependHttp(str.trim()).replace(/^\/\//, 'http://');
+  str = prependHttp(str.trim()).replace(/^\/\//, 'http://');
+  var urlObj = url.parse(str);
 
-	var urlObj = url.parse(str);
+  if (opts.normalizeHttps && urlObj.protocol === 'https:') {
+    urlObj.protocol = 'http:';
+  }
 
-	if (opts.normalizeHttps && urlObj.protocol === 'https:') {
-		urlObj.protocol = 'http:';
-	}
+  if (!urlObj.hostname && !urlObj.pathname) {
+    throw new Error('Invalid URL');
+  } // prevent these from being used by `url.format`
 
-	if (!urlObj.hostname && !urlObj.pathname) {
-		throw new Error('Invalid URL');
-	}
 
-	// prevent these from being used by `url.format`
-	delete urlObj.host;
-	delete urlObj.query;
+  delete urlObj.host;
+  delete urlObj.query; // remove fragment
 
-	// remove fragment
-	if (opts.stripFragment) {
-		delete urlObj.hash;
-	}
+  if (opts.stripFragment) {
+    delete urlObj.hash;
+  } // remove default port
 
-	// remove default port
-	var port = DEFAULT_PORTS[urlObj.protocol];
-	if (Number(urlObj.port) === port) {
-		delete urlObj.port;
-	}
 
-	// remove duplicate slashes
-	if (urlObj.pathname) {
-		urlObj.pathname = urlObj.pathname.replace(/\/{2,}/g, '/');
-	}
+  var port = DEFAULT_PORTS[urlObj.protocol];
 
-	// decode URI octets
-	if (urlObj.pathname) {
-		urlObj.pathname = decodeURI(urlObj.pathname);
-	}
+  if (Number(urlObj.port) === port) {
+    delete urlObj.port;
+  } // remove duplicate slashes
 
-	// remove directory index
-	if (opts.removeDirectoryIndex === true) {
-		opts.removeDirectoryIndex = [/^index\.[a-z]+$/];
-	}
 
-	if (Array.isArray(opts.removeDirectoryIndex) && opts.removeDirectoryIndex.length) {
-		var pathComponents = urlObj.pathname.split('/');
-		var lastComponent = pathComponents[pathComponents.length - 1];
+  if (urlObj.pathname) {
+    urlObj.pathname = urlObj.pathname.replace(/\/{2,}/g, '/');
+  } // decode URI octets
 
-		if (testParameter(lastComponent, opts.removeDirectoryIndex)) {
-			pathComponents = pathComponents.slice(0, pathComponents.length - 1);
-			urlObj.pathname = pathComponents.slice(1).join('/') + '/';
-		}
-	}
 
-	// resolve relative paths, but only for slashed protocols
-	if (slashedProtocol[urlObj.protocol]) {
-		var domain = urlObj.protocol + '//' + urlObj.hostname;
-		var relative = url.resolve(domain, urlObj.pathname);
-		urlObj.pathname = relative.replace(domain, '');
-	}
+  if (urlObj.pathname) {
+    urlObj.pathname = decodeURI(urlObj.pathname);
+  } // remove directory index
 
-	if (urlObj.hostname) {
-		// IDN to Unicode
-		urlObj.hostname = punycode.toUnicode(urlObj.hostname).toLowerCase();
 
-		// remove trailing dot
-		urlObj.hostname = urlObj.hostname.replace(/\.$/, '');
+  if (opts.removeDirectoryIndex === true) {
+    opts.removeDirectoryIndex = [/^index\.[a-z]+$/];
+  }
 
-		// remove `www.`
-		if (opts.stripWWW) {
-			urlObj.hostname = urlObj.hostname.replace(/^www\./, '');
-		}
-	}
+  if (Array.isArray(opts.removeDirectoryIndex) && opts.removeDirectoryIndex.length) {
+    var pathComponents = urlObj.pathname.split('/');
+    var lastComponent = pathComponents[pathComponents.length - 1];
 
-	// remove URL with empty query string
-	if (urlObj.search === '?') {
-		delete urlObj.search;
-	}
+    if (testParameter(lastComponent, opts.removeDirectoryIndex)) {
+      pathComponents = pathComponents.slice(0, pathComponents.length - 1);
+      urlObj.pathname = pathComponents.slice(1).join('/') + '/';
+    }
+  } // resolve relative paths, but only for slashed protocols
 
-	var queryParameters = queryString.parse(urlObj.search);
 
-	// remove query unwanted parameters
-	if (Array.isArray(opts.removeQueryParameters)) {
-		for (var key in queryParameters) {
-			if (testParameter(key, opts.removeQueryParameters)) {
-				delete queryParameters[key];
-			}
-		}
-	}
+  if (slashedProtocol[urlObj.protocol]) {
+    var domain = urlObj.protocol + '//' + urlObj.hostname;
+    var relative = url.resolve(domain, urlObj.pathname);
+    urlObj.pathname = relative.replace(domain, '');
+  }
 
-	// sort query parameters
-	urlObj.search = queryString.stringify(sortKeys(queryParameters));
+  if (urlObj.hostname) {
+    // IDN to Unicode
+    urlObj.hostname = punycode.toUnicode(urlObj.hostname).toLowerCase(); // remove trailing dot
 
-	// decode query parameters
-	urlObj.search = decodeURIComponent(urlObj.search);
+    urlObj.hostname = urlObj.hostname.replace(/\.$/, ''); // remove `www.`
 
-	// take advantage of many of the Node `url` normalizations
-	str = url.format(urlObj);
+    if (opts.stripWWW) {
+      urlObj.hostname = urlObj.hostname.replace(/^www\./, '');
+    }
+  } // remove URL with empty query string
 
-	// remove ending `/`
-	if (opts.removeTrailingSlash || urlObj.pathname === '/') {
-		str = str.replace(/\/$/, '');
-	}
 
-	// restore relative protocol, if applicable
-	if (hasRelativeProtocol && !opts.normalizeProtocol) {
-		str = str.replace(/^http:\/\//, '//');
-	}
+  if (urlObj.search === '?') {
+    delete urlObj.search;
+  }
 
-	return str;
+  var queryParameters = queryString.parse(urlObj.search); // remove query unwanted parameters
+
+  if (Array.isArray(opts.removeQueryParameters)) {
+    for (var key in queryParameters) {
+      if (testParameter(key, opts.removeQueryParameters)) {
+        delete queryParameters[key];
+      }
+    }
+  } // sort query parameters
+
+
+  urlObj.search = queryString.stringify(sortKeys(queryParameters)); // decode query parameters
+
+  urlObj.search = decodeURIComponent(urlObj.search); // take advantage of many of the Node `url` normalizations
+
+  str = url.format(urlObj); // remove ending `/`
+
+  if (opts.removeTrailingSlash || urlObj.pathname === '/') {
+    str = str.replace(/\/$/, '');
+  } // restore relative protocol, if applicable
+
+
+  if (hasRelativeProtocol && !opts.normalizeProtocol) {
+    str = str.replace(/^http:\/\//, '//');
+  }
+
+  return str;
 };
+
+;
+
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
+
+  if (!reactHotLoader) {
+    return;
+  }
+
+  reactHotLoader.register(DEFAULT_PORTS, "DEFAULT_PORTS", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/normalize-url/index.js");
+  reactHotLoader.register(slashedProtocol, "slashedProtocol", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/normalize-url/index.js");
+  reactHotLoader.register(testParameter, "testParameter", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/normalize-url/index.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
+/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/query-string/index.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/gatsby-plugin-netlify-cms/node_modules/query-string/index.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+
+(function () {
+  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
+  enterModule && enterModule(module);
+})();
+
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
+
+var strictUriEncode = __webpack_require__(/*! strict-uri-encode */ "./node_modules/strict-uri-encode/index.js");
+
+var objectAssign = __webpack_require__(/*! object-assign */ "./.cache/polyfills/object-assign.js");
+
+function encoderForArrayFormat(opts) {
+  switch (opts.arrayFormat) {
+    case 'index':
+      return function (key, value, index) {
+        return value === null ? [encode(key, opts), '[', index, ']'].join('') : [encode(key, opts), '[', encode(index, opts), ']=', encode(value, opts)].join('');
+      };
+
+    case 'bracket':
+      return function (key, value) {
+        return value === null ? encode(key, opts) : [encode(key, opts), '[]=', encode(value, opts)].join('');
+      };
+
+    default:
+      return function (key, value) {
+        return value === null ? encode(key, opts) : [encode(key, opts), '=', encode(value, opts)].join('');
+      };
+  }
+}
+
+function parserForArrayFormat(opts) {
+  var result;
+
+  switch (opts.arrayFormat) {
+    case 'index':
+      return function (key, value, accumulator) {
+        result = /\[(\d*)\]$/.exec(key);
+        key = key.replace(/\[\d*\]$/, '');
+
+        if (!result) {
+          accumulator[key] = value;
+          return;
+        }
+
+        if (accumulator[key] === undefined) {
+          accumulator[key] = {};
+        }
+
+        accumulator[key][result[1]] = value;
+      };
+
+    case 'bracket':
+      return function (key, value, accumulator) {
+        result = /(\[\])$/.exec(key);
+        key = key.replace(/\[\]$/, '');
+
+        if (!result) {
+          accumulator[key] = value;
+          return;
+        } else if (accumulator[key] === undefined) {
+          accumulator[key] = [value];
+          return;
+        }
+
+        accumulator[key] = [].concat(accumulator[key], value);
+      };
+
+    default:
+      return function (key, value, accumulator) {
+        if (accumulator[key] === undefined) {
+          accumulator[key] = value;
+          return;
+        }
+
+        accumulator[key] = [].concat(accumulator[key], value);
+      };
+  }
+}
+
+function encode(value, opts) {
+  if (opts.encode) {
+    return opts.strict ? strictUriEncode(value) : encodeURIComponent(value);
+  }
+
+  return value;
+}
+
+function keysSorter(input) {
+  if (Array.isArray(input)) {
+    return input.sort();
+  } else if (typeof input === 'object') {
+    return keysSorter(Object.keys(input)).sort(function (a, b) {
+      return Number(a) - Number(b);
+    }).map(function (key) {
+      return input[key];
+    });
+  }
+
+  return input;
+}
+
+exports.extract = function (str) {
+  return str.split('?')[1] || '';
+};
+
+exports.parse = function (str, opts) {
+  opts = objectAssign({
+    arrayFormat: 'none'
+  }, opts);
+  var formatter = parserForArrayFormat(opts); // Create an object with no prototype
+  // https://github.com/sindresorhus/query-string/issues/47
+
+  var ret = Object.create(null);
+
+  if (typeof str !== 'string') {
+    return ret;
+  }
+
+  str = str.trim().replace(/^(\?|#|&)/, '');
+
+  if (!str) {
+    return ret;
+  }
+
+  str.split('&').forEach(function (param) {
+    var parts = param.replace(/\+/g, ' ').split('='); // Firefox (pre 40) decodes `%3D` to `=`
+    // https://github.com/sindresorhus/query-string/pull/37
+
+    var key = parts.shift();
+    var val = parts.length > 0 ? parts.join('=') : undefined; // missing `=` should be `null`:
+    // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+
+    val = val === undefined ? null : decodeURIComponent(val);
+    formatter(decodeURIComponent(key), val, ret);
+  });
+  return Object.keys(ret).sort().reduce(function (result, key) {
+    var val = ret[key];
+
+    if (Boolean(val) && typeof val === 'object' && !Array.isArray(val)) {
+      // Sort object keys, not values
+      result[key] = keysSorter(val);
+    } else {
+      result[key] = val;
+    }
+
+    return result;
+  }, Object.create(null));
+};
+
+exports.stringify = function (obj, opts) {
+  var defaults = {
+    encode: true,
+    strict: true,
+    arrayFormat: 'none'
+  };
+  opts = objectAssign(defaults, opts);
+  var formatter = encoderForArrayFormat(opts);
+  return obj ? Object.keys(obj).sort().map(function (key) {
+    var val = obj[key];
+
+    if (val === undefined) {
+      return '';
+    }
+
+    if (val === null) {
+      return encode(key, opts);
+    }
+
+    if (Array.isArray(val)) {
+      var result = [];
+      val.slice().forEach(function (val2) {
+        if (val2 === undefined) {
+          return;
+        }
+
+        result.push(formatter(key, val2, result.length));
+      });
+      return result.join('&');
+    }
+
+    return encode(key, opts) + '=' + encode(val, opts);
+  }).filter(function (x) {
+    return x.length > 0;
+  }).join('&') : '';
+};
+
+;
+
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
+
+  if (!reactHotLoader) {
+    return;
+  }
+
+  reactHotLoader.register(encoderForArrayFormat, "encoderForArrayFormat", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/query-string/index.js");
+  reactHotLoader.register(parserForArrayFormat, "parserForArrayFormat", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/query-string/index.js");
+  reactHotLoader.register(encode, "encode", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/query-string/index.js");
+  reactHotLoader.register(keysSorter, "keysSorter", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/query-string/index.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
+/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {(function () {
+  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
+  enterModule && enterModule(module);
+})();
+
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
+
+var g; // This works in non-strict mode
+
+g = function () {
+  return this;
+}();
+
+try {
+  // This works if eval is allowed (see CSP)
+  g = g || new Function("return this")();
+} catch (e) {
+  // This works if the window reference is available
+  if (typeof window === "object") g = window;
+} // g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+
+module.exports = g;
+;
+
+(function () {
+  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
+
+  if (!reactHotLoader) {
+    return;
+  }
+
+  reactHotLoader.register(g, "g", "/Users/razzak/Documents/Development/projects/dev-with-nano-blog/node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/global.js");
+})();
+
+;
+
+(function () {
+  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
+  leaveModule && leaveModule(module);
+})();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./module.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
+/***/ "./node_modules/gatsby-plugin-netlify-cms/node_modules/webpack/buildin/module.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/module.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
+  return a;
+};
+
+module.exports = function (module) {
+  if (!module.webpackPolyfill) {
+    module.deprecate = function () {};
+
+    module.paths = []; // module.parent = undefined by default
+
+    if (!module.children) module.children = [];
+    Object.defineProperty(module, "loaded", {
+      enumerable: true,
+      get: function get() {
+        return module.l;
+      }
+    });
+    Object.defineProperty(module, "id", {
+      enumerable: true,
+      get: function get() {
+        return module.i;
+      }
+    });
+    module.webpackPolyfill = 1;
+  }
+
+  return module;
+};
+
+/***/ }),
+
+/***/ "./node_modules/gatsby/cache-dir/emitter.js":
+/*!**************************************************!*\
+  !*** ./node_modules/gatsby/cache-dir/emitter.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var mitt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mitt */ "./node_modules/mitt/dist/mitt.es.js");
+
+
+const emitter = Object(mitt__WEBPACK_IMPORTED_MODULE_0__["default"])()
+/* harmony default export */ __webpack_exports__["default"] = (emitter);
 
 
 /***/ }),
 
-/***/ "./node_modules/mini-css-extract-plugin/node_modules/query-string/index.js":
-/*!*********************************************************************************!*\
-  !*** ./node_modules/mini-css-extract-plugin/node_modules/query-string/index.js ***!
-  \*********************************************************************************/
+/***/ "./node_modules/is-plain-obj/index.js":
+/*!********************************************!*\
+  !*** ./node_modules/is-plain-obj/index.js ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var strictUriEncode = __webpack_require__(/*! strict-uri-encode */ "./node_modules/strict-uri-encode/index.js");
-var objectAssign = __webpack_require__(/*! object-assign */ "./.cache/polyfills/object-assign.js");
+var toString = Object.prototype.toString;
 
-function encoderForArrayFormat(opts) {
-	switch (opts.arrayFormat) {
-		case 'index':
-			return function (key, value, index) {
-				return value === null ? [
-					encode(key, opts),
-					'[',
-					index,
-					']'
-				].join('') : [
-					encode(key, opts),
-					'[',
-					encode(index, opts),
-					']=',
-					encode(value, opts)
-				].join('');
-			};
-
-		case 'bracket':
-			return function (key, value) {
-				return value === null ? encode(key, opts) : [
-					encode(key, opts),
-					'[]=',
-					encode(value, opts)
-				].join('');
-			};
-
-		default:
-			return function (key, value) {
-				return value === null ? encode(key, opts) : [
-					encode(key, opts),
-					'=',
-					encode(value, opts)
-				].join('');
-			};
-	}
-}
-
-function parserForArrayFormat(opts) {
-	var result;
-
-	switch (opts.arrayFormat) {
-		case 'index':
-			return function (key, value, accumulator) {
-				result = /\[(\d*)\]$/.exec(key);
-
-				key = key.replace(/\[\d*\]$/, '');
-
-				if (!result) {
-					accumulator[key] = value;
-					return;
-				}
-
-				if (accumulator[key] === undefined) {
-					accumulator[key] = {};
-				}
-
-				accumulator[key][result[1]] = value;
-			};
-
-		case 'bracket':
-			return function (key, value, accumulator) {
-				result = /(\[\])$/.exec(key);
-				key = key.replace(/\[\]$/, '');
-
-				if (!result) {
-					accumulator[key] = value;
-					return;
-				} else if (accumulator[key] === undefined) {
-					accumulator[key] = [value];
-					return;
-				}
-
-				accumulator[key] = [].concat(accumulator[key], value);
-			};
-
-		default:
-			return function (key, value, accumulator) {
-				if (accumulator[key] === undefined) {
-					accumulator[key] = value;
-					return;
-				}
-
-				accumulator[key] = [].concat(accumulator[key], value);
-			};
-	}
-}
-
-function encode(value, opts) {
-	if (opts.encode) {
-		return opts.strict ? strictUriEncode(value) : encodeURIComponent(value);
-	}
-
-	return value;
-}
-
-function keysSorter(input) {
-	if (Array.isArray(input)) {
-		return input.sort();
-	} else if (typeof input === 'object') {
-		return keysSorter(Object.keys(input)).sort(function (a, b) {
-			return Number(a) - Number(b);
-		}).map(function (key) {
-			return input[key];
-		});
-	}
-
-	return input;
-}
-
-exports.extract = function (str) {
-	return str.split('?')[1] || '';
-};
-
-exports.parse = function (str, opts) {
-	opts = objectAssign({arrayFormat: 'none'}, opts);
-
-	var formatter = parserForArrayFormat(opts);
-
-	// Create an object with no prototype
-	// https://github.com/sindresorhus/query-string/issues/47
-	var ret = Object.create(null);
-
-	if (typeof str !== 'string') {
-		return ret;
-	}
-
-	str = str.trim().replace(/^(\?|#|&)/, '');
-
-	if (!str) {
-		return ret;
-	}
-
-	str.split('&').forEach(function (param) {
-		var parts = param.replace(/\+/g, ' ').split('=');
-		// Firefox (pre 40) decodes `%3D` to `=`
-		// https://github.com/sindresorhus/query-string/pull/37
-		var key = parts.shift();
-		var val = parts.length > 0 ? parts.join('=') : undefined;
-
-		// missing `=` should be `null`:
-		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-		val = val === undefined ? null : decodeURIComponent(val);
-
-		formatter(decodeURIComponent(key), val, ret);
-	});
-
-	return Object.keys(ret).sort().reduce(function (result, key) {
-		var val = ret[key];
-		if (Boolean(val) && typeof val === 'object' && !Array.isArray(val)) {
-			// Sort object keys, not values
-			result[key] = keysSorter(val);
-		} else {
-			result[key] = val;
-		}
-
-		return result;
-	}, Object.create(null));
-};
-
-exports.stringify = function (obj, opts) {
-	var defaults = {
-		encode: true,
-		strict: true,
-		arrayFormat: 'none'
-	};
-
-	opts = objectAssign(defaults, opts);
-
-	var formatter = encoderForArrayFormat(opts);
-
-	return obj ? Object.keys(obj).sort().map(function (key) {
-		var val = obj[key];
-
-		if (val === undefined) {
-			return '';
-		}
-
-		if (val === null) {
-			return encode(key, opts);
-		}
-
-		if (Array.isArray(val)) {
-			var result = [];
-
-			val.slice().forEach(function (val2) {
-				if (val2 === undefined) {
-					return;
-				}
-
-				result.push(formatter(key, val2, result.length));
-			});
-
-			return result.join('&');
-		}
-
-		return encode(key, opts) + '=' + encode(val, opts);
-	}).filter(function (x) {
-		return x.length > 0;
-	}).join('&') : '';
+module.exports = function (x) {
+	var prototype;
+	return toString.call(x) === '[object Object]' && (prototype = Object.getPrototypeOf(x), prototype === null || prototype === Object.getPrototypeOf({}));
 };
 
 
@@ -3943,8 +4015,8 @@ module.exports = {
 
 // extracted by mini-css-extract-plugin
     if(true) {
-      // 1598527829062
-      var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.i, {"hmr":true,"locals":false});
+      // 1599085269215
+      var cssReload = __webpack_require__(/*! ./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.i, {"hmr":true,"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
     }
