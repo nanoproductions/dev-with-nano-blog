@@ -76,3 +76,41 @@ Now in `App.svelte`, replace your code with:
 Unlike other frameworks, we do not need anything else in our file for it to be considered a component. 
 
 If we wanted to add some style, we would use the `<style>` tags or for JavaScript we will use `<script>` tags. 
+
+## Creating a Component
+Let's create a Navbar component. Create a file in the 'src' directory called, `Navbar.svelte`
+
+Inside of it, put some basic styles and markup.
+```html
+<style>
+  nav {
+    background: blueviolet;
+    padding: 1rem;
+    text-align: center;
+    color: white;
+  }
+</style>
+
+<nav>
+  <h2>Svelte Todo App</h2>
+</nav>
+```
+
+We can import this component in `App.svelte`. 
+```html
+import Navbar from './Navbar.svelte';
+
+<Navbar />
+```
+
+And we use it just like any other framework. 
+
+To run our dev server, we can run:
+
+```
+npm run start
+```
+
+So we should see the Navbar being displayed on the page. 
+
+
