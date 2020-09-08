@@ -141,10 +141,10 @@ const Books = () => {
   return (
     <div>
       {books.map((book) => (
-        <div class="book">
-          <p class="book-title">Title: {book.title}</p>
-          <p class="book-author">Author: {book.author}</p>
-          <p class="book-pages">Pages: {book.pages}</p>
+        <div className="book">
+          <p className="book-title">Title: {book.title}</p>
+          <p className="book-author">Author: {book.author}</p>
+          <p className="book-pages">Pages: {book.pages}</p>
         </div>
       ))}
     </div>
@@ -178,3 +178,212 @@ Here is the CSS:
 }
 
 ```
+
+Now, that we can see the books, let's attempt to add a book. 
+
+## Add Books
+We are going to notice an issue arrise very quickly. Our `AddBooks` component does not have access to the `books`. One solution is to pass our `books` array down to props from the `App` component. Let's do that.
+
+### Refactor Books
+First, we take the books array and move it to our `App` component then pass it down via props to our `Books` component. 
+
+**App.js**
+```javascript
+import React from "react";
+import "./App.css";
+
+import Books from "./Books";
+import AddBook from "./AddBook";
+
+const App = () => {
+  let [books, setBooks] = useState([
+    {
+      title: "The Apples",
+      author: "John Doe",
+      pages: "300"
+    },
+    {
+      title: "The Oranges",
+      author: "Smith Joe",
+      pages: "250"
+    }
+  ]);
+  return (
+    <div>
+      <Books books={books} />
+      <AddBook />
+    </div>
+  );
+};
+
+export default App;
+```
+
+**Books.js**
+```javascript
+import React from "react";
+
+const Books = (props) => {
+  let { books } = props;
+
+  return (
+    <div>
+      {books.map((book) => (
+        <div className="book">
+          <p className="book-title">Title: {book.title}</p>
+          <p className="book-author">Author: {book.author}</p>
+          <p className="book-pages">Pages: {book.pages}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Books;
+```
+
+All we are doing is `destructuring` the `books` from the props in our component. Our app should still run normally. 
+
+![](https://i.imgur.com/JQ2P5X0.png)
+
+### Do `AddBook` component
+Let's add some markup and functionality to the `AddBook` component. 
+
+**AddBook.js**
+```javascript
+const AddBook = () => {
+  return (
+    <div>
+      <h3 className="addBook-heading">Add Book...</h3>
+
+      <div className="form-control">
+        <label>Book Title</label>
+        <input placeholder="Book Title" />
+      </div>
+      <div className="form-control">
+        <label>Book Author</label>
+        <input placeholder="Book Author" />
+      </div>
+      <div className="form-control">
+        <label># of Pages</label>
+        <input placeholder="# of Pages" />
+      </div>
+      <button>Add Book</button>
+    </div>
+  );
+};
+```
+
+There is no functionality in the component yet, which we will add after the css. 
+
+```css
+.addBook-heading {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.form-control {
+  margin: 1.3rem 0;
+}
+
+.form-control label {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.form-control input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: blueviolet;
+  color: white;
+  border-radius: 5px;
+}
+```
+
+Now, in our `App` component, put the `AddBook` component before the `Books` component. So our app should look like:
+
+![](https://i.imgur.com/gLwge8H.png)
+
+### Add Functionality to Component
+We will be using the `useState()` React hook to manage our component level state. 
+
+So go ahead and import `useState` from React, with the same import statement you used for React.
+```js
+import React, {useState} from 'react';
+```
+
+```js
+const AddBook = () => {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [pages, setPages] = useState("");
+  return (
+    <div>
+      <h3 className="addBook-heading">Add Book...</h3>
+
+      <div className="form-control">
+        <label>Book Title</label>
+        <input
+          placeholder="Book Title"
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
+        />
+      </div>
+      <div className="form-control">
+        <label>Book Author</label>
+        <input
+          placeholder="Book Author"
+          onChange={(e) => setAuthor(e.target.value)}
+          value={author}
+        />
+      </div>
+      <div className="form-control">
+        <label># of Pages</label>
+        <input
+          placeholder="# of Pages"
+          onChange={(e) => setPages(e.target.value)}
+          value={pages}
+        />
+      </div>
+      <button>Add Book</button>
+    </div>
+  );
+};
+``` 
+
+Let's create a function in our `App` component that takes these three fields and pushes them onto the array. 
+
+**App.js**
+```js
+const addBook = (title, author, pages) => {
+  setBooks([...books, {title, author, pages}])
+};
+
+const App = () => {
+  return (
+    <div>
+      <AddBook addBook={addBook} />
+      <Books books={books} />
+    </div>
+  );
+};
+```
+
+We can access this function in `AddBook` via props. 
+
+**AddBook.js**
+```js
+<button onClick={() => props.addBook(title, author, pages)}>
+    Add Book
+</button>
+```
+
+Now if we 
