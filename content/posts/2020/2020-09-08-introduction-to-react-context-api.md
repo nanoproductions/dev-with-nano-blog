@@ -363,11 +363,11 @@ Let's create a function in our `App` component that takes these three fields and
 
 **App.js**
 ```js
-const addBook = (title, author, pages) => {
-  setBooks([...books, {title, author, pages}])
-};
-
 const App = () => {
+  ...
+  const addBook = (title, author, pages) => {
+    setBooks([...books, {title, author, pages}])
+  };
   return (
     <div>
       <AddBook addBook={addBook} />
@@ -379,6 +379,8 @@ const App = () => {
 
 We can access this function in `AddBook` via props. 
 
+So when we use `setBooks()` via the React hook, it basically reassigns the value, so we use the spread operator to spread the previous data across, and just add another object inside of that array.
+
 **AddBook.js**
 ```js
 <button onClick={() => props.addBook(title, author, pages)}>
@@ -386,4 +388,11 @@ We can access this function in `AddBook` via props.
 </button>
 ```
 
-Now if we 
+Now if we click on the button, a book should be added to our list! 
+
+So we have successfully implemented the app to the functionality we needed it. 
+
+Next we will move on to the React Context API. 
+
+## Begin React Context API
+
