@@ -66,12 +66,6 @@ module.exports = {
         icon: 'src/img/nano-favicon.png',
         crossOrigin: `use-credentials`,
       },
-    },
-    {
-      resolve: `gatsby-plugin-offline`,
-      options: {
-        precachePages: [`/`, `/about/`, `/posts/2020/*`],
-      },
-    },
+    }
   ],
 }
