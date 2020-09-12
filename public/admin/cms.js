@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "5580a845b0f80ec02508";
+/******/ 	var hotCurrentHash = "f8de663c505188aa878e";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -4015,7 +4015,7 @@ module.exports = {
 
 // extracted by mini-css-extract-plugin
     if(true) {
-      // 1599085269215
+      // 1599871159172
       var cssReload = __webpack_require__(/*! ./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.i, {"hmr":true,"locals":false});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);

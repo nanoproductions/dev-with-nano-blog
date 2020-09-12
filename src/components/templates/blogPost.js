@@ -23,7 +23,7 @@ export default ({ data }) => {
           </div>
 
           {!!frontmatter.cover ? (
-            <Image sizes={frontmatter.cover.childImageSharp.sizes} />
+            <Image fluid={frontmatter.cover.childImageSharp.sizes} />
           ) : null}
 
           <div className={styles.body}>
