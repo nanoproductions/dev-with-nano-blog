@@ -101,7 +101,7 @@ module.exports = {
                   sort: { order: DESC, fields: [frontmatter___date] },
                   filter: {frontmatter: {published: {eq: true}}}
                 ) {
-                    node {
+                    nodes {
                       excerpt
                       html
                       fields { slug }
