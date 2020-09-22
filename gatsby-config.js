@@ -96,7 +96,7 @@ module.exports = {
             },
             query: `
               {
-                allMarkdownRemark(
+                allMdx(
                   limit: 50,
                   sort: { order: DESC, fields: [frontmatter___date] },
                   filter: {frontmatter: {published: {eq: true}}}
