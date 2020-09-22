@@ -66,6 +66,58 @@ module.exports = {
         icon: 'src/img/nano-favicon.png',
         crossOrigin: `use-credentials`,
       },
-    }
+    },
+    {
+      resolve: `gatsby-plugin-feed`,
+      options: {
+        query: `
+          {
+            site {
+              siteMetadata {
+                title
+                description
+                siteUrl
+              }
+            }
+          }
+        `,
+        feeds: [
+          {
+            serialize: ({ query: { site, allMdx } }) => {
+              return allMdx.nodes.map((node) => {
+                return Object.assign({}, node.node.frontmatter, {
+                  description: node.excerpt,
+                  date: node.frontmatter.date,
+                  url: site.siteMetadata.siteUrl + node.fields.slug,
+                  guid: site.siteMetadata.siteUrl + node.fields.slug,
+                  custom_elements: [{ 'content:encoded': node.html }],
+                })
+              })
+            },
+            query: `
+              {
+                allMarkdownRemark(
+                  limit: 50,
+                  sort: { order: DESC, fields: [frontmatter___date] },
+                  filter: {frontmatter: {published: {eq: true}}}
+                ) {
+                    node {
+                      excerpt
+                      html
+                      fields { slug }
+                      frontmatter {
+                        title
+                        date
+                    }
+                  }
+                }
+              }
+            `,
+            output: '/rss.xml',
+            title: `Dev with Nano Feed`,
+          },
+        ],
+      },
+    },
   ],
 }
