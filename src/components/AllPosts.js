@@ -45,7 +45,7 @@ export default () => {
             <div key={Math.random()} className="post">
               {!!frontmatter.cover ? (
                 <Image
-                  sizes={frontmatter.cover.childImageSharp.sizes}
+                  fluid={frontmatter.cover.childImageSharp.sizes}
                   className="image"
                 />
               ) : null}

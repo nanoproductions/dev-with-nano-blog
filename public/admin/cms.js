@@ -63,7 +63,11 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
+<<<<<<< HEAD
 /******/ 	var hotCurrentHash = "c6cc915ab88c557405e2";
+=======
+/******/ 	var hotCurrentHash = "f8de663c505188aa878e";
+>>>>>>> 88fc4d678aec99fb0ca494218b7afc0d85a46b72
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -3943,8 +3947,13 @@ module.exports = {
 
 // extracted by mini-css-extract-plugin
     if(true) {
+<<<<<<< HEAD
       // 1600806520713
       var cssReload = __webpack_require__(/*! ./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.i, {"hmr":true,"locals":false});
+=======
+      // 1599871159172
+      var cssReload = __webpack_require__(/*! ./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js */ "./node_modules/gatsby-plugin-netlify-cms/node_modules/mini-css-extract-plugin/dist/hmr/hotModuleReplacement.js")(module.i, {"hmr":true,"locals":false});
+>>>>>>> 88fc4d678aec99fb0ca494218b7afc0d85a46b72
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
     }
