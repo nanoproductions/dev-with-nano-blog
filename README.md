@@ -6,6 +6,8 @@ Welcome to the official Github Repo for Nano's Blog, Dev with Nano.
 
 ## Notifications
 
+There is now a RSS feed available. Just point it at: devwithnano.netlify.app/rss.xml
+
 If you are interested in being in the know for when I release my new posts, just follow this repo and whenever there is a commit or pull request merge, you should then know a new post is around the corner.
 
 ## Github Actions
