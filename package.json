@@ -7,7 +7,8 @@
     "dev": "gatsby develop -H 0.0.0.0 -p 8081 ",
     "serve": "gatsby serve",
     "build": "gatsby build",
-    "fmt": "prettier --write --config ./prettier.config.js ."
+    "fmt": "prettier --write --config ./prettier.config.js .",
+    "clean": "gatsby clean"
   },
   "keywords": [
     "Blog"
@@ -32,6 +33,7 @@
     "gatsby-remark-images": "^3.3.14",
     "gatsby-remark-reading-time": "^1.1.0",
     "gatsby-source-filesystem": "^2.1.48",
+    "gatsby-transformer-json": "^2.4.13",
     "gatsby-transformer-sharp": "^2.5.7",
     "gsap": "^3.5.0",
     "netlify-cms-app": "^2.11.26",

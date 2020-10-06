@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { graphql, useStaticQuery, Link } from 'gatsby'
 import Image from 'gatsby-image'
+import Dump from './Dump'
 
 import AniLink from 'gatsby-plugin-transition-link/AniLink'
 

@@ -119,5 +119,6 @@ module.exports = {
         ],
       },
     },
+    `gatsby-transformer-json`,
   ],
 }
