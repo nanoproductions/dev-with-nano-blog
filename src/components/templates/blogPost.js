@@ -9,9 +9,6 @@ import Layout from '../layout/Layout'
 
 export default ({ data, pageContext }) => {
   const { frontmatter, body } = data.mdx
-  const { previous, next } = pageContext
-
-  console.log(previous, next)
 
   return (
     <Layout>
