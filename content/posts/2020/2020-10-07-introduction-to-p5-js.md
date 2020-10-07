@@ -43,7 +43,7 @@ Either of those methods will allow you to follow along. If you are lazy, then th
   <body>
     <main></main>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
-    <script src="sketch.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
 ```
@@ -53,7 +53,9 @@ Either of those methods will allow you to follow along. If you are lazy, then th
 **app.js**
 
 ```js
-print('It works!!') // print is a function provided by p5
+function setup() {
+  print('Hello') // print is a function provided by p5 for printing to console
+}
 ```
 
 To run, just open the HTML file in a browser or via `live-server` and you should be good to go.
