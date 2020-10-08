@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql } from 'gatsby'
+import { graphql, Link } from 'gatsby'
 import { MDXRenderer } from 'gatsby-plugin-mdx'
 import styles from '../css/BlogPost.module.scss'
 import { Helmet } from 'react-helmet'
@@ -7,7 +7,7 @@ import Image from 'gatsby-image'
 
 import Layout from '../layout/Layout'
 
-export default ({ data }) => {
+export default ({ data, pageContext }) => {
   const { frontmatter, body } = data.mdx
 
   return (

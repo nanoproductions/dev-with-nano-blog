@@ -11,7 +11,7 @@ export default ({ data }) => {
   return (
     <Layout>
       <Helmet>
-        <title>Dev with Nano</title>
+        <title>Dev with Nano | Dev Blog</title>
       </Helmet>
       {/* <Showcase /> */}
       {/* <div className="container">

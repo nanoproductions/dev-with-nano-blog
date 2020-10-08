@@ -1,1 +1,16 @@
 filter: {fileAbsolutePath: {regex: "/(posts)/.*\\.md$/"}}
+
+{
+  allCoursesJson {
+    edges {
+      node {
+        courses {
+          title
+          author
+          content
+        }
+        id
+      }
+    }
+  }
+}

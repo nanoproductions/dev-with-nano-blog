@@ -119,11 +119,6 @@ module.exports = {
         ],
       },
     },
-    {
-      resolve: `gatsby-plugin-offline`,
-      options: {
-        precachePages: [`/`, `/about/`, `/posts/2020/*`],
-      },
-    },
+    `gatsby-transformer-json`,
   ],
 }
