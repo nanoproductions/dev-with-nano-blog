@@ -35,7 +35,7 @@
     "gatsby-transformer-sharp": "^2.5.7",
     "gsap": "^3.5.0",
     "netlify-cms-app": "^2.11.26",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "prettier": "^2.0.5",
     "prism-react-renderer": "^1.0.2",
     "react": "^16.12.0",
