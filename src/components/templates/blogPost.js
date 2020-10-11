@@ -15,7 +15,7 @@ export default ({ data, pageContext }) => {
       <Helmet>
         <title>{frontmatter.title}</title>
       </Helmet>
-      <div className="container">
+      <div >
         <div className={styles.post}>
           <div className={styles.heading}>
             <small className={styles.date}>{frontmatter.date}</small>
@@ -23,7 +23,7 @@ export default ({ data, pageContext }) => {
           </div>
 
           {!!frontmatter.cover ? (
-            <Image fluid={frontmatter.cover.childImageSharp.sizes} />
+            <Image fluid={frontmatter.cover.childImageSharp.sizes} className={styles.image}/>
           ) : null}
 
           <div className={styles.body}>

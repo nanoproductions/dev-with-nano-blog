@@ -3,6 +3,7 @@ title: Vue 3 Released!
 date: 2020-09-30
 published: true
 cover: ./img/vue-3-release.png
+tags: ['vue', 'javascript']
 ---
 
 > Vue 3 has been released! Check it out: v3.vuejs.org!

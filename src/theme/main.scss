@@ -17,10 +17,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   font-family: 'Quicksand', sans-serif;
+  font-size: 1.3rem;
   line-height: 1.5;
   background: $primary-color;
   color: white;

@@ -3,6 +3,7 @@ title: Introduction to p5.js
 date: 2020-10-07
 published: true
 cover: ./img/p5-js-series.png
+tags: ['p5', 'javascript']
 ---
 
 Welcome to the offical Nano series on p5.js! In the next few posts, we will be looking at creative coding with a library.

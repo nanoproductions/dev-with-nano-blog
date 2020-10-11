@@ -23,8 +23,10 @@
   }
 
   .body {
-    width: 60%;
+    width: 70%;
     margin: 0 auto;
+    font-weight: 1.4;
+
     h2 {
       background: darkslateblue;
       padding: 0.5rem 1rem;
@@ -36,5 +38,11 @@
       width: 95%;
       margin: 0 auto;
     }
+  }
+
+  .image {
+    width: auto;
+    height: 70vh;
+    object-fit: contain;
   }
 }
