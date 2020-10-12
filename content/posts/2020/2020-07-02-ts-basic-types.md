@@ -3,6 +3,7 @@ title: TypeScript - 03 - Basic Types
 date: 2020-07-02
 published: true
 cover: ./img/ts-part-3.png
+course: 'Typescript for Beginners'
 ---
 
 In the precious article we went over installing the `tsc` tool on our system. For that tool to be worth anything let's learn some TypeScript.

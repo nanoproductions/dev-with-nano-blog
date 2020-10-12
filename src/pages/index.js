@@ -14,11 +14,11 @@ export default ({ data }) => {
         <title>Dev with Nano | Dev Blog</title>
       </Helmet>
       {/* <Showcase /> */}
-      {/* <div className="container">
+      <div className="container">
         <div className="alert alert-success">
-          Check Out Comming Soon! <Link to="/coming-soon">Click Here</Link>
+          Courses page in beta! <Link to="/courses">Click Here</Link>
         </div>
-      </div> */}
+      </div>
       <AllPosts />
       {/* <EmailAdd /> */}
     </Layout>

@@ -3,6 +3,7 @@ title: TypeScript - 01 - Introduction
 date: 2020-06-02T01:51:20.818Z
 published: true
 cover: ./img/ts-part-1.png
+course: 'Typescript for Beginners'
 ---
 
 ## Welcome to Typescript

@@ -3,6 +3,7 @@ title: TypeScript - 02 - Installation
 date: 2020-07-01
 published: true
 cover: ./img/ts-part-2.png
+course: 'Typescript for Beginners'
 ---
 
 In the previous tutorial we went over a quick introduction to TypeScript and a quick benefit of TypeScript.

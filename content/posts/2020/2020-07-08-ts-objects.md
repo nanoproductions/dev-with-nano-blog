@@ -3,6 +3,7 @@ title: TypeScript - 07 - Objects
 date: 2020-07-09
 published: false
 cover: ./img/ts-part-7.png
+course: 'Typescript for Beginners'
 ---
 
 The last post was pretty long and probably took you and me a long time to work with. It took me a long time to write and took you a long time to read.
