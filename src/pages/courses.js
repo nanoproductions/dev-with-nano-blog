@@ -16,11 +16,13 @@ const Courses = () => {
     `)
     return (
         <Layout>
+            <div className="container">
             <h1>Our Courses</h1>
             {data.allMdx.group.map(group => {
                return <p>{group.tag}</p>
             })}
             {/* <Dump data={data} /> */}
+            </div>
         </Layout>
     )
 }
