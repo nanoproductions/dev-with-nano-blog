@@ -7,6 +7,8 @@ exports.createPages = ({ actions, graphql }) => {
     './src/components/templates/blogPost.js'
   )
 
+  const tagTemplate = path.resolve('./src/components/templates/tagTemplate.js')
+
   return graphql(`
     {
       allMdx {
@@ -16,7 +18,13 @@ exports.createPages = ({ actions, graphql }) => {
           }
           frontmatter {
             title
+            tags
           }
+        }
+      }
+      tagsGroup: allMdx(limit: 2000) {
+        group(field: frontmatter___tags) {
+          fieldValue
         }
       }
     }
@@ -26,6 +34,9 @@ exports.createPages = ({ actions, graphql }) => {
     }
 
     const posts = result.data.allMdx.nodes
+
+    const tags = result.data.tagsGroup.group
+    console.log('TAG' + tags)
 
     posts.forEach((post) => {
       createPage({
