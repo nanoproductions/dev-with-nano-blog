@@ -6,6 +6,7 @@ import AllPosts from '../components/AllPosts'
 import { Helmet } from 'react-helmet'
 import EmailAdd from '../components/EmailAdd'
 import { Link } from 'gatsby'
+import Snow from '../components/Snow'
 
 export default ({ data }) => {
   return (
@@ -15,9 +16,10 @@ export default ({ data }) => {
       </Helmet>
       {/* <Showcase /> */}
       <div className="container">
-        <div className="alert alert-success">
+        <Snow />
+        {/* <div className="alert alert-success">
           Courses page in beta! <Link to="/courses">Click Here</Link>
-        </div>
+        </div> */}
       </div>
       <AllPosts />
       {/* <EmailAdd /> */}
