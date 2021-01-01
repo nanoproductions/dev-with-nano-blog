@@ -52,14 +52,9 @@ export default () => {
               ) : null}
               <div className="post-content">
                 <h1>
-                  <AniLink
-                    paintDrip
-                    to={fields.slug}
-                    hex="#5952ff"
-                    className="link"
-                  >
+                  <Link to={fields.slug} className="link">
                     {frontmatter.title}
-                  </AniLink>
+                  </Link>
                 </h1>
                 <p>{fields.readingTime.text}</p>
                 <small>{frontmatter.date}</small>

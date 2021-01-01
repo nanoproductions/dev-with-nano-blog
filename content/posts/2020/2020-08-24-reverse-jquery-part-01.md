@@ -1,7 +1,7 @@
 ---
 title: Reverse jQuery - onLoad Function - Part 01
 date: 2020-08-24
-published: true
+published: false
 cover: ./img/reverse-jquery.png
 ---
 
