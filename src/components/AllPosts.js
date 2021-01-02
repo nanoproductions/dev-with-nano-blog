@@ -3,8 +3,6 @@ import { graphql, useStaticQuery, Link } from 'gatsby'
 import Image from 'gatsby-image'
 import Dump from './Dump'
 
-import AniLink from 'gatsby-plugin-transition-link/AniLink'
-
 export default () => {
   const data = useStaticQuery(graphql`
     query {

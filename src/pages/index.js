@@ -14,7 +14,7 @@ export default ({ data }) => {
       <Helmet>
         <title>Dev with Nano | Dev Blog</title>
       </Helmet>
-      {/* <Showcase /> */}
+      <Showcase />
       <div className="container">
         <Snow />
         {/* <div className="alert alert-success">

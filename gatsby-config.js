@@ -53,7 +53,12 @@ module.exports = {
       },
     },
     `gatsby-remark-reading-time`,
-    `gatsby-plugin-transition-link`,
+    {
+      resolve: 'gatsby-plugin-page-transitions',
+      options: {
+        transitionTime: 500,
+      },
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {

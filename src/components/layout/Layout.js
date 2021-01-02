@@ -7,6 +7,8 @@ import PostState from '../../context/Posts/PostState'
 import favicon from '../../img/nano-favicon.png'
 import Helmet from 'react-helmet'
 
+import PageTransition from 'gatsby-plugin-page-transitions'
+
 const Layout = (props) => {
   return (
     <Fragment>
@@ -16,9 +18,9 @@ const Layout = (props) => {
       <PostState>
         <Fragment>
           <Navbar />
-          {props.children}
-          <Footer />
+          <PageTransition>{props.children}</PageTransition>
         </Fragment>
+        <Footer />
       </PostState>
     </Fragment>
   )

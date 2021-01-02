@@ -7305,6 +7305,15 @@ gatsby-plugin-page-creator@^2.3.24:
     lodash "^4.17.15"
     slugify "^1.4.4"
 
+gatsby-plugin-page-transitions@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-page-transitions/-/gatsby-plugin-page-transitions-1.0.8.tgz#8283d1d5c2aa5bed8d79b9e23abe1918d0f6ac8e"
+  integrity sha512-mYqQf3YcFO0r9sugl0P0+W1S59fCBbrqT3v7G1a0u5geLLY88FR/RVhnLli3xRVnqvTDEadbP7ofouYAaQAV9g==
+  dependencies:
+    history "^4.7.2"
+    prop-types "^15.6.2"
+    react-transition-group "^2.4.0"
+
 gatsby-plugin-react-helmet@^3.1.24:
   version "3.1.24"
   resolved "https://registry.yarnpkg.com/gatsby-plugin-react-helmet/-/gatsby-plugin-react-helmet-3.1.24.tgz#c732cd6a6eb7b7bfc2fa06ca1423254fa6412118"
@@ -13785,7 +13794,7 @@ react-transition-group@^1.1.3:
     prop-types "^15.5.6"
     warning "^3.0.0"
 
-react-transition-group@^2.2.1, react-transition-group@^2.5.0, react-transition-group@^2.6.0:
+react-transition-group@^2.2.1, react-transition-group@^2.4.0, react-transition-group@^2.5.0, react-transition-group@^2.6.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.9.0.tgz#df9cdb025796211151a436c69a8f3b97b5b07c8d"
   integrity sha512-+HzNTCHpeQyl4MJ/bdE0u6XRMe9+XG/+aL4mCxVN4DnPBQ0/5bfHWPDuOZUzYdMj94daZaZdCCc1Dzt9R/xSSg==

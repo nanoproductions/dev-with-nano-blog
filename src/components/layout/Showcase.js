@@ -7,10 +7,10 @@ const Showcase = () => {
     <Wrapper>
       <div className="showcase">
         <div className="container">
-          <h2>Learn Code with Nano</h2>
-          <Link to="/posts" className="btn btn-primary">
+          <h2>Read or Code? Both here..</h2>
+          {/* <Link to="/posts" className="btn btn-primary">
             Get Reading
-          </Link>
+          </Link> */}
         </div>
       </div>
     </Wrapper>
