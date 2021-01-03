@@ -1,6 +1,6 @@
 ---
 title: A Look at Rescript
-date: 2020-01-03
+date: 2021-01-03
 published: true
 cover: ./img/look-rescript.png
 ---
