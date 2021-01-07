@@ -37,3 +37,14 @@
     grid-template-columns: 1fr;
   }
 }
+
+.link-read-more {
+  color: orange;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.link-read-more:hover {
+  color: orange;
+  text-decoration: underline;
+}

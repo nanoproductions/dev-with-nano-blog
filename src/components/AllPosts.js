@@ -43,10 +43,12 @@ export default () => {
           return (
             <div key={Math.random()} className="post">
               {!!frontmatter.cover ? (
-                <Image
-                  fluid={frontmatter.cover.childImageSharp.sizes}
-                  className="image"
-                />
+                <Link to={fields.slug}>
+                  <Image
+                    fluid={frontmatter.cover.childImageSharp.sizes}
+                    className="image"
+                  />
+                </Link>
               ) : null}
               <div className="post-content">
                 <h1>
@@ -56,7 +58,7 @@ export default () => {
                 </h1>
                 <p>{fields.readingTime.text}</p>
                 <small>{frontmatter.date}</small>
-                <p>{excerpt}</p>
+                <p>{excerpt} <Link to={fields.slug} className="link-read-more">Read More...</Link></p>
               </div>
             </div>
           )
